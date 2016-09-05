@@ -1,16 +1,18 @@
 {
-    "cordova-plugin-device": {
+    "phonegap-plugin-push": {
         "source": {
             "type": "local",
-            "path": "C:\\Users\\Kevin\\AppData\\Local\\Intel\\XDK\\xdk\\components\\server\\cordova\\cordova-plugins\\cordova-plugin-device"
+            "path": "/Users/amarciano/Downloads/phonegap-plugin-push-1.8.1"
         },
         "is_top_level": true,
-        "variables": {}
+        "variables": {
+            "SENDER_ID": "184977555503"
+        }
     },
-    "cordova-plugin-statusbar": {
+    "cordova-plugin-vibration": {
         "source": {
             "type": "local",
-            "path": "C:\\Users\\Kevin\\AppData\\Local\\Intel\\XDK\\xdk\\components\\server\\cordova\\cordova-plugins\\cordova-plugin-statusbar"
+            "path": "/Applications/Intel XDK.app/Contents/Resources/app.nw/components/server/cordova/cordova-plugins/cordova-plugin-vibration"
         },
         "is_top_level": true,
         "variables": {}
@@ -18,17 +20,33 @@
     "cordova-plugin-splashscreen": {
         "source": {
             "type": "local",
-            "path": "C:\\Users\\Kevin\\AppData\\Local\\Intel\\XDK\\xdk\\components\\server\\cordova\\cordova-plugins\\cordova-plugin-splashscreen"
+            "path": "/Applications/Intel XDK.app/Contents/Resources/app.nw/components/server/cordova/cordova-plugins/cordova-plugin-splashscreen"
         },
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-vibration": {
+    "cordova-plugin-statusbar": {
         "source": {
             "type": "local",
-            "path": "C:\\Users\\Kevin\\AppData\\Local\\Intel\\XDK\\xdk\\components\\server\\cordova\\cordova-plugins\\cordova-plugin-vibration"
+            "path": "/Applications/Intel XDK.app/Contents/Resources/app.nw/components/server/cordova/cordova-plugins/cordova-plugin-statusbar"
         },
         "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-device": {
+        "source": {
+            "type": "local",
+            "path": "/Applications/Intel XDK.app/Contents/Resources/app.nw/components/server/cordova/cordova-plugins/cordova-plugin-device"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-compat": {
+        "source": {
+            "type": "local",
+            "path": "/Applications/Intel XDK.app/Contents/Resources/app.nw/components/server/cordova/cordova-plugins/cordova-plugin-compat"
+        },
+        "is_top_level": false,
         "variables": {}
     }
 }

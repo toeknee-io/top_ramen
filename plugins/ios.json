@@ -7,16 +7,20 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-device": {
+        "phonegap-plugin-push": {
+            "SENDER_ID": "184977555503",
             "PACKAGE_NAME": "io.cordova.hellocordova"
         },
-        "cordova-plugin-statusbar": {
+        "cordova-plugin-vibration": {
             "PACKAGE_NAME": "io.cordova.hellocordova"
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "io.cordova.hellocordova"
         },
-        "cordova-plugin-vibration": {
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "io.cordova.hellocordova"
+        },
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "io.cordova.hellocordova"
         }
     },

@@ -7,16 +7,20 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-device": {
+        "phonegap-plugin-push": {
+            "SENDER_ID": "184977555503",
             "PACKAGE_NAME": "HelloCordova"
         },
-        "cordova-plugin-statusbar": {
+        "cordova-plugin-vibration": {
             "PACKAGE_NAME": "HelloCordova"
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "HelloCordova"
         },
-        "cordova-plugin-vibration": {
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "HelloCordova"
+        },
+        "cordova-plugin-device": {
             "PACKAGE_NAME": "HelloCordova"
         }
     },

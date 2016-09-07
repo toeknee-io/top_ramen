@@ -6,3 +6,4 @@ var app = {
 //window.innerWidth * window.devicePixelRatio
 //window.innerHeight * window.devicePixelRatio
 var scaleRatio = window.devicePixelRatio / 3;
+console.log(window.devicePixelRatio);

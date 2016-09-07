@@ -1,5 +1,9 @@
 app.boot = {}
 
+app.boot.preload = function() {
+	//app.game.load.audio('menu', 'assets/menu.ogg' );
+}
+
 app.boot.create = function() {
 	console.log('Boot State');
 

@@ -4,7 +4,7 @@ var imageSize = '';
 
 app.menu.preload = function() {
 
-	app.game.load.image('menu_bg', 'assets/bg2.jpg');
+	app.game.load.image('menu_bg', 'assets/bg4.jpg');
 	app.game.load.image('title', 'assets/title.png');
 
 	app.game.load.image('play_button','assets/button_play.png');
@@ -73,6 +73,12 @@ app.menu.create = function() {
 		child.y = buttonSpacer * scaleRatio;
 		buttonSpacer += 220;
 	}
+
+	fb.anchor.x = 1;
+	fb.x = regs.x - 10;
+	googs.anchor.x = 0;
+	googs.x = regs.x + 10;
+	googs.y = regs.y + 218 * scaleRatio;
 
 	optionsButton.anchor.y = 0.5;
 	optionsButton.x = app.game.world.width * .12;

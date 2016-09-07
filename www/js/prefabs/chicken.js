@@ -7,7 +7,7 @@ chicken.spawn = function() {
 	if (gameOver) {
 		return;
 	}
-	chicken.speed = app.game.rnd.integerInRange(400,700);
+	chicken.speed = app.game.rnd.integerInRange(600,750);
 	chicken.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	chicken.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'spritesheet','chicken.png');
 	ings.add(chicken.sprite);
@@ -17,4 +17,6 @@ chicken.spawn = function() {
 	chicken.motionTween = app.game.add.tween(chicken.sprite).to({ y: app.game.world.height * .20 }, chicken.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	chicken.fadeInTween = app.game.add.tween(chicken.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	chicken.motionTween.onComplete.addOnce(killIng, this);
+
+	chicken.sound = pop;
 }

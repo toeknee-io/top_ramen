@@ -24,4 +24,6 @@ bug.spawn = function() {
 	bug.fadeInTween = app.game.add.tween(bug.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	bug.rotateTween = app.game.add.tween(bug.sprite).to({ angle: -30 }, bug.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	bug.motionTween.onComplete.addOnce(killIng, this);
+
+	bug.sound = pop;
 }

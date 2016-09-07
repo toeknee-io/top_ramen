@@ -25,4 +25,6 @@ kitty.spawn = function() {
 	kitty.motionTween = app.game.add.tween(kitty.sprite).to({ y: 50 }, kitty.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	kitty.fadeInTween = app.game.add.tween(kitty.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	kitty.motionTween.onComplete.addOnce(killIng, this);
+
+	kitty.sound = pop;
 }

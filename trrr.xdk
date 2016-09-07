@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-phaser-portrait/sample.zip",
       "projectGuid": "a5480e87-8129-4614-b213-9642f1d313c5",
-      "lastModifiedDate": 1472996755380,
+      "lastModifiedDate": 1473189926954,
       "creationDate": 1472530281932
     },
     "sourceDirectory": "www",
@@ -164,7 +164,7 @@
           "android-signed": true
         },
         "isActive_": true,
-        "certificateId_": "yl70yR4iDUeMKgxv2U-KZg2",
+        "certificateId_": "",
         "appName_": "Top Ramen",
         "appID_": "com.bitsmitten.topramen.android",
         "appAccess_": {

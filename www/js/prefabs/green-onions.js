@@ -23,6 +23,8 @@ greenOnions.spawn = function() {
 	greenOnions.motionTween = app.game.add.tween(greenOnions.sprite).to({ y: 50 }, greenOnions.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	greenOnions.fadeInTween = app.game.add.tween(greenOnions.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	greenOnions.motionTween.onComplete.addOnce(killIng, this);
+
+	greenOnions.sound = pop;
 }
 
 greenOnions.fadeOutTween = function() {

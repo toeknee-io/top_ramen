@@ -10,7 +10,7 @@
 // Listen to deviceready event which is fired when Cordova plugins are ready
 
 (function() {
-    
+        
     var loader = {
 
       initialize: function() {
@@ -23,7 +23,7 @@
       },
 
       onDeviceReady: function() {
-
+          
         try {
 
           loader.push = PushNotification.init({
@@ -40,7 +40,7 @@
 
           loader.push.on('registration', function(data) {
 
-            //console.log("regId from event: " + data.registrationId);
+            console.log("regId from event: " + data.registrationId);
 
             var storedRegId = window.localStorage.getItem('registrationId');
 
@@ -83,4 +83,4 @@
 
     loader.initialize();
 
-});
+})();

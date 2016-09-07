@@ -23,6 +23,8 @@ noodles.spawn = function() {
 	noodles.motionTween = app.game.add.tween(noodles.sprite).to({ y: 50 }, noodles.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	noodles.fadeInTween = app.game.add.tween(noodles.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	noodles.motionTween.onComplete.addOnce(killIng, this);
+
+	noodles.sound = pop;
 }
 
 noodles.fadeOutTween = function() {

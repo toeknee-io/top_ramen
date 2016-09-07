@@ -23,6 +23,8 @@ chili.spawn = function() {
 	chili.motionTween = app.game.add.tween(chili.sprite).to({ y: 50 }, chili.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	chili.fadeInTween = app.game.add.tween(chili.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	chili.motionTween.onComplete.addOnce(killIng, this);
+
+	chili.sound = pop;
 }
 
 chili.fadeOutTween = function() {

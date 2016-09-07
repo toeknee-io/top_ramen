@@ -33,6 +33,8 @@ app.level.preload = function() {
 
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
+	if (!imageSize) imageSize = '';
+
 	if (window.devicePixelRatio == 2) {
 		imageSize = 'X2';
 	} else if (window.devicePixelRatio >= 3) {
@@ -49,7 +51,7 @@ app.level.preload = function() {
 	app.game.load.image('dot1', 'assets/dot1.png');
 	app.game.load.image('dot2', 'assets/dot2.png');
 	app.game.load.image('dot3', 'assets/dot3.png');
-	app.game.load.image('cutting-board', 'assets/cutting-board' + imageSize + '.png');
+	app.game.load.image('cutting-board', 'assets/cutting-board.png');
 	app.game.load.atlasJSONHash('spritesheet', 'assets/spritesheet.png', 'assets/spritesheet.json');
 
 	app.game.load.bitmapFont('8bit', 'assets/fonts/8bit.png', 'assets/fonts/8bit.fnt' );
@@ -69,9 +71,6 @@ app.level.create = function() {
 	ings = app.game.add.group();
 	ings.inputEnableChildren = true;
 
-	var bgGroup = app.game.add.group();
-	app.game.world.bringToTop(ings);
-
 	// Timer to call end of game
 	app.game.time.events.add(60000, time, this);
 
@@ -85,41 +84,38 @@ app.level.create = function() {
 	bg.x = app.game.width/2 - bg.width/2;
 	bg.moveDown();
 
+	var dot1 = app.game.add.sprite(0,0,'dot1');
+	var dot2 = app.game.add.sprite(app.game.world.width,200,'dot2');
+	var dot3 = app.game.add.sprite(0,app.game.world.height,'dot3');
+
+	var dotGroup = app.game.add.group();
+
+	dotGroup.add(dot1);
+	dotGroup.add(dot2);
+	dotGroup.add(dot3);
+
+	app.game.physics.arcade.enable(dotGroup);
+
+	dotGroup.forEach(setupDots,this,true);
+
+	function setupDots(child) {
+		child.scale.setTo(scaleRatio,scaleRatio);
+		child.body.velocity.setTo(30, 40);
+    	child.body.bounce.set(1);
+    	child.body.collideWorldBounds = true;
+	}
+
+    // Set up cutting board
+	var cutting = app.game.add.image(app.game.world.centerX,app.game.world.centerY,'cutting-board');
+	cutting.scale.setTo(scaleRatio*1.7, scaleRatio*1.7);
+	cutting.anchor.x = 0.5;
+	cutting.anchor.y = 0.5;
+
+	app.game.world.bringToTop(ings);
+
 	// Set up top light bar
 	var lights = app.game.add.sprite(0, 0 - 30 * scaleRatio, 'lights');
 	lights.x = app.game.width/2 - lights.width/2;
-
-	// Set up cutting board
-	var cutting = app.game.add.image(app.game.world.centerX,app.game.world.height,'cutting-board');
-	cutting.scale.setTo(scaleRatio*1.7);
-	cutting.anchor.x = 0.5;
-	cutting.anchor.y = 1.3;
-
-	var dot = app.game.add.sprite(0,0,'dot1');
-	var dot2 = app.game.add.sprite(200,400,'dot2');
-	var dot3 = app.game.add.sprite(300,app.game.world.height,'dot3');
-
-	// Fix all this
-	bgGroup.add(bg);
-    bgGroup.add(dot);
-    bgGroup.add(dot2);
-    bgGroup.add(dot3);
-    bgGroup.add(cutting);
-
-	app.game.physics.arcade.enable(bgGroup);
-
-	dot.body.velocity.setTo(20, 20);
-    dot.body.bounce.set(1);
-    dot.body.collideWorldBounds = true;
-
-	dot2.body.velocity.setTo(30, 40);
-    dot2.body.bounce.set(1);
-    dot2.body.collideWorldBounds = true;
-
-    dot3.body.velocity.setTo(20, 40);
-    dot3.body.bounce.set(1);
-    dot3.body.collideWorldBounds = true;
-
 
 	// Set up bottom wooden board
 	var board = app.game.add.image(0 - 40 * scaleRatio,app.game.height - 200 * scaleRatio, 'spritesheet', 'board.png');
@@ -161,6 +157,9 @@ app.level.create = function() {
     steamEmitter.setAlpha(0, .4, 10000);
     steamEmitter.setScale(0.2, .4, 0.2, .7, 4000, Phaser.Easing.easeOut);
     steamEmitter.start(false,500,20);
+    steamEmitter.forEachAlive(function(p) {
+    	p.scale.setTo(scaleRatio,scaleRatio);
+    });
     steamEmitter.emitX = bowl.x + bowl.width/2;
     steamEmitter.emitY = bowl.y + 20;
 
@@ -237,7 +236,7 @@ function time() {
 
 // Collect (tap) ingredients
 function collect(ingredient) {
-	pop.play();
+	collectSound(this);
 
 	if("vibrate" in window.navigator) {
 	    window.navigator.vibrate(100);
@@ -260,7 +259,6 @@ function collect(ingredient) {
 		bonusText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - bonusText.width - 10);
 	}
 
-	//emitter.scale.setTo(scaleRatio, scaleRatio);
 	emitter.x = this.sprite.x + this.sprite.width/2;
     emitter.y = this.sprite.y + this.sprite.height/2;
     emitter.start(true, 600, null, app.game.rnd.integerInRange(3,6));
@@ -269,8 +267,6 @@ function collect(ingredient) {
     	app.game.add.tween(p).to({ alpha: 0 }, 600, Phaser.Easing.easeOut, true, 0, 0, false);
     });
     app.game.time.events.add(600, destroyEmitter, this);
-
-    //app.game.add.tween(emitter).to({ alpha: 0 }, 300, Phaser.Easing.easeIn, true, 0, 0, false);
 
 	score += this.worth;
 	if (!bonus) {
@@ -299,8 +295,11 @@ function reSpawn(ref) {
 
 // Destroy after killed or collected
 function destroyIng(ingredient) {
-	//ingredient.fadeOutTween();
 	ingredient.sprite.pendingDestroy = true;
+}
+
+function collectSound(ing) {
+	ing.sound.play();
 }
 
 // GAME OVER

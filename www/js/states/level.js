@@ -30,11 +30,11 @@ var ings;
 
 app.level.preload = function() {
 	console.log('Level Sate');
-
+    
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 	if (!imageSize) imageSize = '';
-
+    
 	if (window.devicePixelRatio == 2) {
 		imageSize = 'X2';
 	} else if (window.devicePixelRatio >= 3) {

@@ -157,7 +157,7 @@
         "name_": "Android",
         "preferences_": {
           "android-minSdkVersion": "14",
-          "android-targetSdkVersion": "21",
+          "android-targetSdkVersion": "23",
           "android-installLocation": "auto",
           "Fullscreen": true,
           "Orientation": "portrait",
@@ -205,7 +205,7 @@
           "Orientation": "portrait",
           "deployment-target": "8.0"
         },
-        "isActive_": true,
+        "isActive_": false,
         "certificateId_": "",
         "appName_": "trrr",
         "appID_": "xdk.intel.phaser.js.project",
@@ -248,7 +248,7 @@
           "Fullscreen": true,
           "Orientation": "portrait"
         },
-        "isActive_": true,
+        "isActive_": false,
         "certificateId_": "",
         "appName_": "trrr",
         "appID_": "xdk.intel.phaser.js.project",

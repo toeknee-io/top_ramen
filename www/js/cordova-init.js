@@ -68,7 +68,7 @@
           });
 
           loader.push.on('notification', function(data) {
-            console.log('notification event: ' + data);
+            console.log('notification event: ' + JSON.stringify(data));
           });
 
           navigator.splashscreen.hide();

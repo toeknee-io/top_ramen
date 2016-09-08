@@ -9,19 +9,19 @@
     "installed_plugins": {
         "phonegap-plugin-push": {
             "SENDER_ID": "184977555503",
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-vibration": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
@@ -29,7 +29,7 @@
     },
     "dependent_plugins": {
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         }
     }
 }

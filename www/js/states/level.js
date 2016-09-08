@@ -239,7 +239,7 @@ function collect(ingredient) {
 	collectSound(this);
 
 	if("vibrate" in window.navigator) {
-	    window.navigator.vibrate(100);
+	    window.navigator.vibrate(50);
 	}
 
 	if (this.bonus == 0 && this.worth > 0 && goodFadeOut.isRunning == false) {

@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-phaser-portrait/sample.zip",
       "projectGuid": "a5480e87-8129-4614-b213-9642f1d313c5",
-      "lastModifiedDate": 1473189926954,
+      "lastModifiedDate": 1473460660743,
       "creationDate": 1472530281932
     },
     "sourceDirectory": "www",
@@ -148,6 +148,25 @@
         "description": "Cordova Device Plugin",
         "data": {},
         "dependedBy": []
+      },
+      {
+        "id": "cordova-plugin-inappbrowser",
+        "name": "InAppBrowser",
+        "version": "1.4.0",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-inappbrowser",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-inappbrowser",
+        "selectedState": "Included",
+        "checksum": "f88bc51f",
+        "dependsOn": [],
+        "topLevel": true,
+        "cordovaVersion": ">=3.1.0",
+        "permissions": {},
+        "description": "Cordova InAppBrowser Plugin",
+        "data": {},
+        "dependedBy": []
       }
     ],
     "buildConfigurations": {
@@ -164,7 +183,7 @@
           "android-signed": true
         },
         "isActive_": true,
-        "certificateId_": "",
+        "certificateId_": "yl70yR4iDUeMKgxv2U-KZg2",
         "appName_": "Top Ramen",
         "appID_": "com.bitsmitten.topramen.android",
         "appAccess_": {
@@ -205,7 +224,7 @@
           "Orientation": "portrait",
           "deployment-target": "8.0"
         },
-        "isActive_": false,
+        "isActive_": true,
         "certificateId_": "",
         "appName_": "trrr",
         "appID_": "xdk.intel.phaser.js.project",
@@ -248,7 +267,7 @@
           "Fullscreen": true,
           "Orientation": "portrait"
         },
-        "isActive_": false,
+        "isActive_": true,
         "certificateId_": "",
         "appName_": "trrr",
         "appID_": "xdk.intel.phaser.js.project",

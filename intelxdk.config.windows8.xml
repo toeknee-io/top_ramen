@@ -15,12 +15,12 @@
 <allow-intent href="sms:*"/>
 <allow-intent href="mailto:*"/>
 <allow-intent href="geo:*"/>
-<intelxdk:plugin intelxdk:name="StatusBar" intelxdk:value="cordova-plugin-statusbar" intelxdk:version="2.1.3" intelxdk:checksum="c0146fbc" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="Device" intelxdk:value="cordova-plugin-device" intelxdk:version="1.1.2" intelxdk:checksum="2373ccea" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="Splashscreen" intelxdk:value="cordova-plugin-splashscreen" intelxdk:version="3.2.2" intelxdk:checksum="47137083" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="Vibration" intelxdk:value="cordova-plugin-vibration" intelxdk:version="2.1.1" intelxdk:checksum="cf9984de" intelxdk:type="file"/>
 <intelxdk:plugin intelxdk:name="PushPlugin" intelxdk:value="phonegap-plugin-push" intelxdk:version="1.8.1" intelxdk:checksum="d606ede" intelxdk:type="file">
 <intelxdk:param intelxdk:name="SENDER_ID" intelxdk:value="184977555503"/></intelxdk:plugin>
+<intelxdk:plugin intelxdk:name="Vibration" intelxdk:value="cordova-plugin-vibration" intelxdk:version="2.1.1" intelxdk:checksum="cf9984de" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="Splashscreen" intelxdk:value="cordova-plugin-splashscreen" intelxdk:version="3.2.2" intelxdk:checksum="47137083" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="StatusBar" intelxdk:value="cordova-plugin-statusbar" intelxdk:version="2.1.3" intelxdk:checksum="c0146fbc" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="Device" intelxdk:value="cordova-plugin-device" intelxdk:version="1.1.2" intelxdk:checksum="2373ccea" intelxdk:type="file"/>
 <preference name="windows-publisher-display-name"/>
 <preference name="windows-publisher-id"/>
 <preference name="Fullscreen" value="true"/>

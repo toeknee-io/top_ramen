@@ -52,7 +52,7 @@
     "cordova-plugin-inappbrowser": {
         "source": {
             "type": "local",
-            "path": "/Applications/Intel XDK.app/Contents/Resources/app.nw/components/server/cordova/cordova-plugins/cordova-plugin-inappbrowser"
+            "path": "C:\\Users\\Kevin\\AppData\\Local\\Intel\\XDK\\xdk\\components\\server\\cordova\\cordova-plugins\\cordova-plugin-inappbrowser"
         },
         "is_top_level": true,
         "variables": {}

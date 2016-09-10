@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-phaser-portrait/sample.zip",
       "projectGuid": "a5480e87-8129-4614-b213-9642f1d313c5",
-      "lastModifiedDate": 1473460660743,
+      "lastModifiedDate": 1473464409060,
       "creationDate": 1472530281932
     },
     "sourceDirectory": "www",
@@ -67,7 +67,7 @@
             "${applicationId}.permission.C2D_MESSAGE"
           ]
         },
-        "description": "\n\t\tThis plugin allows your application to receive push notifications on Android, iOS and Windows devices.\n    Android uses Google Cloud Messaging.\n    iOS uses Apple APNS Notifications.\n    Windows uses Microsoft WNS Notifications.\n\t",
+        "description": "\r\n\t\tThis plugin allows your application to receive push notifications on Android, iOS and Windows devices.\r\n    Android uses Google Cloud Messaging.\r\n    iOS uses Apple APNS Notifications.\r\n    Windows uses Microsoft WNS Notifications.\r\n\t",
         "data": {},
         "dependedBy": []
       },
@@ -110,7 +110,8 @@
         "permissions": {},
         "description": "Cordova Splashscreen Plugin",
         "data": {},
-        "dependedBy": []
+        "dependedBy": [],
+        "cordovaVersion": ">=3.1.0"
       },
       {
         "id": "cordova-plugin-statusbar",
@@ -183,7 +184,7 @@
           "android-signed": true
         },
         "isActive_": true,
-        "certificateId_": "yl70yR4iDUeMKgxv2U-KZg2",
+        "certificateId_": "",
         "appName_": "Top Ramen",
         "appID_": "com.bitsmitten.topramen.android",
         "appAccess_": {

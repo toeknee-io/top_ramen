@@ -2,6 +2,8 @@ app.boot = {}
 
 app.boot.preload = function() {
 	//app.game.load.audio('menu', 'assets/menu.ogg' );
+
+	app.game.load.image('menu_bg', 'assets/bg4.jpg');
 }
 
 app.boot.create = function() {

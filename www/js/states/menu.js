@@ -4,7 +4,6 @@ var imageSize = '';
 
 app.menu.preload = function() {
 
-	app.game.load.image('menu_bg', 'assets/bg4.jpg');
 	app.game.load.image('title', 'assets/title.png');
 
 	app.game.load.image('play_button','assets/button_play.png');
@@ -93,7 +92,7 @@ function quickPlay() {
 }
 
 function challenge() {
-
+	app.game.state.start('challenge');
 }
 
 function options() {

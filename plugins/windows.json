@@ -22,9 +22,6 @@
         },
         "cordova-plugin-device": {
             "PACKAGE_NAME": "HelloCordova"
-        },
-        "cordova-plugin-inappbrowser": {
-            "PACKAGE_NAME": "HelloCordova"
         }
     },
     "dependent_plugins": {}

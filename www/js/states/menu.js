@@ -101,13 +101,13 @@ function options() {
 }
 
 function fbLogin() {
-    cordova.InAppBrowser.open('http://www.toeknee.io:3000/auth/facebook', '_self', 'location=no,zoom=no');
+    window.open('http://www.toeknee.io:3000/auth/facebook', '_self', 'location=no,menubar=no,status=no,zoom=no,scrollbars=no,fullscreen=yes,titlebar=no,toolbar=no');
 }
 
 function googleLogin() {
-    cordova.InAppBrowser.open('http://www.toeknee.io:3000/auth/google', '_self', 'location=no,zoom=no');
+    window.open('http://www.toeknee.io:3000/auth/google', '_self', 'location=no,menubar=no,status=no,zoom=no,scrollbars=no,fullscreen=yes,titlebar=no,toolbar=no');
 }
 
 function regsLogin() {
-    cordova.InAppBrowser.open('http://www.toeknee.io:3000/local', '_self', 'location=no,zoom=no');
+    window.open('http://www.toeknee.io:3000/local', '_self', 'location=no,menubar=no,status=no,zoom=no,scrollbars=no,fullscreen=yes,titlebar=no,toolbar=no');
 }

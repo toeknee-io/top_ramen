@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-phaser-portrait/sample.zip",
       "projectGuid": "a5480e87-8129-4614-b213-9642f1d313c5",
-      "lastModifiedDate": 1473460660743,
+      "lastModifiedDate": 1473514282942,
       "creationDate": 1472530281932
     },
     "sourceDirectory": "www",
@@ -110,7 +110,8 @@
         "permissions": {},
         "description": "Cordova Splashscreen Plugin",
         "data": {},
-        "dependedBy": []
+        "dependedBy": [],
+        "cordovaVersion": ">=3.1.0"
       },
       {
         "id": "cordova-plugin-statusbar",
@@ -350,7 +351,7 @@
         "runtime_": "W3C on Chrome OS",
         "name_": "Chrome",
         "preferences_": {},
-        "isActive_": false,
+        "isActive_": true,
         "certificateId_": "",
         "appName_": "trrr",
         "appID_": "not.yet.specified",

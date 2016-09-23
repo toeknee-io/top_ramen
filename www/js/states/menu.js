@@ -101,7 +101,7 @@
     };
 
     function quickPlay() {
-    	menuSong.stop();
+    	//menuSong.stop();
         app.game.state.start('level');
     }
 

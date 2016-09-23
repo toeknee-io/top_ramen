@@ -142,7 +142,7 @@
         $.post(
           'http://www.toeknee.io:3000/api/users/logout'
         ).fail(function(err) {
-          console.error("failed to logout user:", err.message);
+          console.error("failed to logout user: " + err.message);
         }).always(function() {
             window.console.info("clearing cookies and restarting game state");
             window.localStorage.removeItem('userId');
@@ -169,37 +169,42 @@
         var loginUrl = BASE_URL + (provider === 'local' ? loginUri : '/mobile/redirect' + loginUri) + '?uuid=' + devId
 
         console.log('logging in with url', loginUrl);
+        
+        storage.setItem('tryLogin', 'true');
+        
+        var ref = cordova.InAppBrowser.open(loginUrl, '_self', opts);        
 
-        var ref = cordova.InAppBrowser.open(loginUrl, '_self', opts);
-
-        storage.setItem('tryLogin', true);
-
-        ref.addEventListener('loadstop', function(event) {
+        ref.addEventListener('loadstart', function(event) {
            
-            console.log('loadstop url:', event.url);
+            window.console.log('loadstart url:', event.url);
             
-            if (~event.url.indexOf('/auth/account')) {
+            if (~event.url.indexOf('/auth/account'))              
+                ref.close();
+            
+        });
+        
+        ref.addEventListener('exit', function(event) {
+            
+            window.console.log('iab exit');
+            
+            $.get(
+              BASE_URL + "/api/devices/findOne?filter[where][deviceId]=" + devId
+            ).done(function(data) {
 
-                $.get(
-                  BASE_URL + "api/devices/findOne?filter[where][deviceId]=" + devId
-                ).done(function(data) {
+                if (data && data.userId) {
 
-                    if (data && data.userId) {
+                    storage.setItem('userId', data.userId);
+                    storage.setItem('tryLogin', 'false');
+                    
+                    app.game.state.restart();
+                    
+                    getIdentity(data,provider);
 
-                        storage.setItem('userId', data.userId);
-                        storage.setItem('tryLogin', 'false');
+                }
 
-                        ref.close();
-
-                        getIdentity(data,provider);
-
-                    }
-
-                }).fail(function(err) {
-                  console.error("failed to get userId using device.uuid:", err.message);
-                });
-                
-            }
+            }).fail(function(err) {
+              console.error("failed to get userId using device.uuid: " + err.message);
+            });            
             
         });
 

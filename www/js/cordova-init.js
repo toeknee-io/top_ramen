@@ -31,6 +31,7 @@
                   if (data && data.userId) {
                       storage.setItem('userId', data.userId);
                       //storage.removeItem('tryLogin');
+                      
                       getIdentity(data);
                   }
               }).fail(function(err) {

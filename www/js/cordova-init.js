@@ -21,19 +21,23 @@
           var dev = window.device;
           var storage = window.localStorage;
           
-          if (dev && dev.uuid) {
+          if (storage.getItem('tryLogin') !== 'false' && dev && dev.uuid) {
               
               console.log('getting user for device.uuid', dev.uuid);
               
               $.get(
                   "http://www.toeknee.io:3000/api/devices/findOne?filter[where][deviceId]=" + dev.uuid
               ).done(function(data) {
+                  
                   if (data && data.userId) {
+                      
                       storage.setItem('userId', data.userId);
-                      //storage.removeItem('tryLogin');
+                      storage.setItem('tryLogin', 'false');
                       
                       getIdentity(data);
+                      
                   }
+                  
               }).fail(function(err) {
                   console.error("failed to get userId using device.uuid:", err.message);
               });  

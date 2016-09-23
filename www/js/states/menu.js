@@ -64,8 +64,10 @@
         var playButton = app.game.add.button(0, 0, 'play_button', quickPlay);
         var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
         
-        if (facebook) {
-        	var fb = app.game.add.button(0, 0, 'fb_logout', fbLogout);
+        var isLoggedIn = (window.localStorage.getItem('userId') ? true : false);
+
+        if (isLoggedIn) {
+        	var fb = app.game.add.button(0, 0, 'fb_logout', logout);
         } else {
         	var fb = app.game.add.button(0, 0, 'fb_login', fbLogin);
         }
@@ -135,8 +137,20 @@
         login('facebook');
     }
 
-    function fbLogout() {
-
+    function logout() {   
+        
+        $.post(
+          'http://www.toeknee.io:3000/api/users/logout'
+        ).fail(function(err) {
+          console.error("failed to logout user:", err.message);
+        }).always(function() {
+            window.console.info("clearing cookies and restarting game state");
+            window.localStorage.removeItem('userId');
+            window.localStorage.removeItem('connect.sid');              
+            window.localStorage.setItem('tryLogin', 'false');
+            app.game.state.restart();  
+        });
+        
     }
 
     function regsLogin() {
@@ -144,43 +158,46 @@
     }
 
     function login(provider, opts) {
-
-        if (provider !== 'local') provider = 'auth/' + provider;
+        
         if (!opts || typeof opts !== 'string') opts = 'location=no,zoom=no';
-
+        
+        var BASE_URL = 'http://www.toeknee.io:3000';
+        var loginUri = '/auth/' + provider;
         var devId = window.device.uuid;
         var storage = window.localStorage;
+        
+        var loginUrl = BASE_URL + (provider === 'local' ? loginUri : '/mobile/redirect' + loginUri) + '?uuid=' + devId
 
-        console.log('logging in device.uuid', devId);
+        console.log('logging in with url', loginUrl);
 
-        var ref = cordova.InAppBrowser.open('http://www.toeknee.io:3000/mobile/redirect/' + provider + '?uuid=' + devId, '_self', opts);
+        var ref = cordova.InAppBrowser.open(loginUrl, '_self', opts);
 
         storage.setItem('tryLogin', true);
 
-        ref.addEventListener('loadstart', function(event) {
+        ref.addEventListener('loadstop', function(event) {
            
-            console.log('loadstart url:', event.url);
+            console.log('loadstop url:', event.url);
             
             if (~event.url.indexOf('/auth/account')) {
 
                 $.get(
-                  "http://www.toeknee.io:3000/api/devices/findOne?filter[where][deviceId]=" + devId
+                  BASE_URL + "api/devices/findOne?filter[where][deviceId]=" + devId
                 ).done(function(data) {
-                  
+
                     if (data && data.userId) {
-                      
-                        storage.setItem('userId', data.userId);                      
-                        storage.removeItem('tryLogin');
-                      
+
+                        storage.setItem('userId', data.userId);
+                        storage.setItem('tryLogin', 'false');
+
                         ref.close();
 
-                        getIdentity(data,provider);              
-                  
+                        getIdentity(data,provider);
+
                     }
-                    
+
                 }).fail(function(err) {
                   console.error("failed to get userId using device.uuid:", err.message);
-                });  
+                });
                 
             }
             

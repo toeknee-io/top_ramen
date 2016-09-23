@@ -1,6 +1,6 @@
 app.level = {};
 
-var score = 0;
+var score;
 var scoreText;
 var goodText;
 var bonusText;
@@ -8,10 +8,10 @@ var bonusFadeIn;
 var bonusFadeOut;
 var gameTimer;
 var bonusTimer;
-var timeLeft = 60;
-var bonusTime = 0;
-var bonus = false;
-var gameOver = false;
+var timeLeft;
+var bonusTime;
+var bonus;
+var gameOver;
 
 var pop;
 
@@ -66,6 +66,12 @@ app.level.preload = function() {
 }
 
 app.level.create = function() {
+
+	timeLeft = 60;
+	score = 0;
+	bonusTime = 0;
+	bonus = false;
+	gameOver = false;
 
 	// Groups
 	ings = app.game.add.group();
@@ -129,6 +135,8 @@ app.level.create = function() {
 
 	// Audio
 	pop = app.game.add.audio('pop');
+	//var lvlSong = app.game.add.audio('lvl');
+	//lvlSong.play();
 
 	// Score text
 	scoreText = app.game.add.text(39 * scaleRatio,30 * scaleRatio,'Score \n 0',{
@@ -308,4 +316,6 @@ function endGame() {
 	timeLeft = 0;
 	ings.callAll('destroy');
 	console.log("End of Game");
+	app.game.state.clearCurrentState();
+	app.game.state.start('menu');
 }

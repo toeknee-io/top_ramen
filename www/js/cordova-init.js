@@ -1,16 +1,10 @@
-/**
- * Initialize Cordova plugins
- * For more Corova plugins, please go to [Cordova Plugin Registry](http://plugins.cordova.io/#/).
- * In Intel XDK, you can enable / disable / add Cordova Plugins on
- * Projects Tab
- *  -> Cordova 3.x Hybrid Mobile App Settings
- *     -> Plugins and Permissions
- */
- /* jshint browser:true */
-// Listen to deviceready event which is fired when Cordova plugins are ready
+/* jshint browser: true, jquery: true, devel: true */
+/* globals PushNotification */
 
 (function() {
-        
+    
+    "use strict";
+    
     var loader = {
 
       initialize: function() {
@@ -24,58 +18,77 @@
 
       onDeviceReady: function() {
           
-          try {
-
-              loader.push = PushNotification.init({
-                "android": {
-                  "senderID": "184977555503"
-                },
-                "ios": {
-                  "sound": true,
-                  "vibration": true,
-                  "badge": true
-                },
-                "windows": {}
-              });
-
-              loader.push.on('registration', function(data) {
-                  
-                  //console.log("regId from event: " + data.registrationId);
-                  
-                  var storedRegId = window.localStorage.getItem('registrationId');
-                  
-                  //console.log('regId from local store: ' + storedRegId);
-                  
-                  if (!storedRegId || storedRegId !== data.registrationId) {
-
-                      window.localStorage.setItem('registrationId', data.registrationId);
-
-                      $.post(
-                          "http://www.toeknee.io:3000/api/devices",
-                          { "deviceId": data.registrationId }
-                      ).done(function(msg) {
-                          console.log("regId saved to server: " + msg);
-                      }).fail(function(err) {
-                          console.error("failed to save regId to server: " + err.message);
-                      });    
-
-                  }            
-
-              });
-
-              loader.push.on('error', function(err) {
-                  console.error("push err: " + err.message);
-              });
-
-              loader.push.on('notification', function(data) {
-                  console.log('notification event: ' + JSON.stringify(data));
-              });
-
-              navigator.splashscreen.hide();
+          var dev = window.device;
+          var storage = window.localStorage;
+          
+          if (dev && dev.uuid) {
               
-        } catch (err) {
-          console.error('cordova-init err: ' + err);
-        }
+              console.log('getting user for device.uuid', dev.uuid);
+              
+              $.get(
+                  "http://www.toeknee.io:3000/api/devices/findOne?filter[where][deviceId]=" + dev.uuid
+              ).done(function(data) {
+                  if (data && data.userId) {
+                      storage.setItem('userId', data.userId);
+                      //storage.removeItem('tryLogin');
+                      getIdentity(data);
+                  }
+              }).fail(function(err) {
+                  console.error("failed to get userId using device.uuid:", err.message);
+              });  
+              
+          }
+
+          loader.push = PushNotification.init({
+            "android": {
+              "senderID": "184977555503"
+            },
+            "ios": {
+              "sound": true,
+              "vibration": true,
+              "badge": true
+            },
+            "windows": {}
+          });
+
+          loader.push.on('registration', function(data) {
+
+              var storedRegId = storage.getItem('registrationId');
+
+              if (!storedRegId || storedRegId !== data.registrationId) {
+
+                  storage.setItem('registrationId', data.registrationId);
+                  
+                  var devPlatform = dev.platform ? dev.platform.toLowerCase() : "";
+                  
+                  $.post(
+                      "http://www.toeknee.io:3000/api/installations",
+                      { 
+                          "appId": "com.bitsmitten.topramen." + devPlatform,
+                          "deviceToken": data.registrationId,
+                          "deviceType": devPlatform,
+                          "status": "Active",
+                          "userId": storage.getItem('userId')
+                      }
+                  ).done(function(msg) {
+                      console.log("regId saved to server:", JSON.stringify(msg));
+                  }).fail(function(err) {
+                      console.error("failed to save regId to server:", err.message);
+                  });    
+
+              }            
+
+          });
+
+          loader.push.on('error', function(err) {
+              console.error("push err:", err.message);
+          });
+
+          loader.push.on('notification', function(data) {
+              console.log("received push notification:", JSON.stringify(data));
+          });
+
+          navigator.splashscreen.hide();
 
       }
 

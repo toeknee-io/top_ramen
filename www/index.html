@@ -31,6 +31,8 @@
     <script src="js/states/challenge.js"></script>
     <script src="js/states/level.js"></script>
 
+    <script src="js/getIdent.js"></script>
+
     <!-- Prefabs -->
     <script src="js/prefabs/noodles.js"></script>
     <script src="js/prefabs/green-onions.js"></script>
@@ -45,7 +47,7 @@
     <!-- Google Fonts -->
 	<script type="text/javascript">
 		WebFontConfig = {
-			google: { families: [ 'Chewy', 'Baloo+Paaji' ] }
+			google: { families: [ 'Baloo+Paaji' ] }
 		};
 		(function() {
 			var wf = document.createElement('script');
@@ -61,9 +63,15 @@
     <style type="text/css">
         body {
             margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
-<body id="play_area">
+<body>
+    <div id="play_area"></div>
 </body>
 </html>

@@ -1,115 +1,191 @@
-app.menu = {}
+/* jshint browser: true, jquery: true, devel: true */
+/* globals cordova, app, Phaser, scaleRatio */
 
-var imageSize = '';
-var user = {}
-var userPic;
-var userFriends;
+(function() {
+ 
+    "use strict";
 
-app.menu.preload = function() {
+    app.menu = {};
 
-	app.game.load.image('title', 'assets/title.png');
+    var imageSize = '';
+    var menuSong;
 
-	app.game.load.image('play_button','assets/button_play.png');
-	app.game.load.image('challenge_button','assets/button_challenge.png');
-	app.game.load.image('options_button','assets/cog.png');
+    app.menu.preload = function() {
 
-	app.game.load.image('fb_login','assets/fb_login.png');
-	app.game.load.image('google','assets/google.png');
-	app.game.load.image('regs','assets/regs.png');
+        app.game.load.image('menu_bg', 'assets/6.jpg');
+        app.game.load.image('title', 'assets/title.png');
 
-	if (!imageSize) imageSize = '';
+        app.game.load.image('play_button','assets/button_play.png');
+        app.game.load.image('challenge_button','assets/button_challenge.png');
+        app.game.load.image('options_button','assets/cog.png');
+        app.game.load.image('options_menu','assets/options_menu.png');
+        //app.game.load.image('login_button','assets/button_login.png');
+        app.game.load.image('not_logged','assets/not_logged.png');
 
-	if (window.devicePixelRatio == 2) {
-		imageSize = 'X2';
-	} else if (window.devicePixelRatio >= 3) {
-		imageSize = 'X3';
-	}
+        app.game.load.image('fb_login','assets/fb_login.png');
+        app.game.load.image('fb_logout','assets/fb_logout.png');
 
-	app.game.load.image('bowl', 'assets/bowl' + imageSize + '.png');
+        if (!imageSize) imageSize = '';
 
-}
+        if (window.devicePixelRatio == 2) {
+            imageSize = 'X2';
+        } else if (window.devicePixelRatio >= 3) {
+            imageSize = 'X3';
+        }
 
-app.menu.create = function() {
-	console.log('Menu State');
+        app.game.load.image('bowl', 'assets/bowl' + imageSize + '.png');
 
-	var menuSong = app.game.add.audio('menu');
-	//menuSong.play();
+    };
 
-	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    app.menu.create = function() {
+        console.log('Menu State');
 
-	var bg = app.game.add.image(0,0,'menu_bg');
-	bg.scale.setTo(scaleRatio*2.05);
+        //menuSong = app.game.add.audio('menu');
+        //menuSong.play();
 
-	var title = app.game.add.image(app.game.world.centerX,app.game.world.height * .05,'title');
-	title.anchor.x = 0.5;
-	title.scale.setTo(scaleRatio);
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-	var bowl = app.game.add.image(app.game.world.centerX,app.game.world.height * .17,'bowl');
-	bowl.anchor.x = 0.5;
+        var bg = app.game.add.image(0, 0, 'menu_bg');
+        bg.scale.setTo(2.05 * scaleRatio);
+        bg.x = app.game.world.centerX;
+        bg.anchor.x = .5;
+        bg.y = app.game.world.centerY;
+        bg.anchor.y = .5;
 
-	var buttonGroup = app.game.add.group();
+        var title = app.game.add.image(app.game.world.centerX,app.game.world.height * .12, 'title');
+        title.anchor.x = 0.5;
+        title.scale.setTo(scaleRatio);
 
-	var playButton = app.game.add.button(0,0,'play_button', quickPlay);
-	var challengeButton = app.game.add.button(0,0,'challenge_button', challenge);
-	var fb = app.game.add.button(0,0,'fb_login', fbLogin);
-	var googs = app.game.add.button(0,0,'google', googleLogin);
-	var regs = app.game.add.button(0,0,'regs', regsLogin);
+        var bowl = app.game.add.image(app.game.world.centerX,app.game.world.height * .24, 'bowl');
+        bowl.anchor.x = 0.5;
 
-	var optionsButton = app.game.add.button(0,0,'options_button', options);
+        var buttonGroup = app.game.add.group();
 
-	buttonGroup.add(playButton);
-	buttonGroup.add(challengeButton);
-	buttonGroup.add(regs);
-	buttonGroup.add(fb);
-	buttonGroup.add(googs);
-	buttonGroup.add(optionsButton);
+        var playButton = app.game.add.button(0, 0, 'play_button', quickPlay);
+        var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
+        
+        if (facebook) {
+        	var fb = app.game.add.button(0, 0, 'fb_logout', fbLogout);
+        } else {
+        	var fb = app.game.add.button(0, 0, 'fb_login', fbLogin);
+        }
 
-	var buttonSpacer = 950;
+        //var regs = app.game.add.button(0, 0, 'login_button', regsLogin);
 
-	buttonGroup.forEach(buttonsSetup,this,true);
+        var optionsButton = app.game.add.button(0, 0, 'options_button', options);
 
-	function buttonsSetup(child) {
-		child.scale.setTo(scaleRatio, scaleRatio);
-		child.x = app.game.world.centerX;
-		child.anchor.x = 0.5;
-		child.y = buttonSpacer * scaleRatio;
-		buttonSpacer += 220;
-	}
+        buttonGroup.add(playButton);
+        buttonGroup.add(challengeButton);
+        //buttonGroup.add(regs);
+        buttonGroup.add(fb);
+        buttonGroup.add(optionsButton);
 
-	fb.anchor.x = 1;
-	fb.x = regs.x - 10;
-	googs.anchor.x = 0;
-	googs.x = regs.x + 10;
-	googs.y = regs.y + 218 * scaleRatio;
+        var buttonSpacer = 1050;
 
-	optionsButton.anchor.y = 0.5;
-	optionsButton.x = app.game.world.width * .12;
-	optionsButton.y = app.game.world.height * .92;
+        buttonGroup.forEach(buttonsSetup, this, true);
 
-	var tween = this.add.tween(optionsButton).to({angle:+360}, 1500, Phaser.Easing.Linear.None, true, 0,-1);
+        function buttonsSetup(child) {
+            child.scale.setTo(scaleRatio);
+            child.x = app.game.world.centerX;
+            child.anchor.x = 0.5;
+            child.y = buttonSpacer * scaleRatio;
+            buttonSpacer += 200;
+        }
 
-};
+        optionsButton.anchor.y = 0.5;
+        optionsButton.x = app.game.world.width * .12;
+        optionsButton.y = app.game.world.height * .92;
 
-function quickPlay() {
-	app.game.state.start('level');
-}
+        var tween = this.add.tween(optionsButton).to({angle: + 360}, 3500, Phaser.Easing.Linear.None, true, 0, -1);
 
-function challenge() {
-	app.game.state.start('challenge');
-}
+    };
 
-function options() {
+    function quickPlay() {
+    	menuSong.stop();
+        app.game.state.start('level');
+    }
 
-}
+    function challenge() {
+		if (facebook) {
+			app.game.state.start('challenge');
+		} else {
+			var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
+				notLogged.destroy();
+			});
+			notLogged.scale.setTo(scaleRatio);
+			notLogged.x = app.game.world.centerX;
+			notLogged.anchor.x = .5;
+			notLogged.y = app.game.world.centerY;
+			notLogged.anchor.y = .5;
+		}
+    }
 
-function fbLogin() {
-    window.open('http://www.toeknee.io:3000/auth/facebook', '_self', 'location=no,menubar=no,status=no,zoom=no,scrollbars=no,fullscreen=yes,titlebar=no,toolbar=no');
-}
+    function options() {
+    	var options = app.game.add.button(0, 0, 'options_menu', function() {
+			options.destroy();
+		});
+		options.scale.setTo(scaleRatio);
+		options.x = app.game.world.centerX;
+		options.anchor.x = .5;
+		options.y = app.game.world.centerY;
+		options.anchor.y = .5;
+    }
 
-function googleLogin() {
-    window.open('http://www.toeknee.io:3000/auth/google', '_self', 'location=no,menubar=no,status=no,zoom=no,scrollbars=no,fullscreen=yes,titlebar=no,toolbar=no');
-}
+    function fbLogin() {
+        login('facebook');
+    }
 
-function regsLogin() {
-    window.open('http://www.toeknee.io:3000/local', '_self', 'location=no,menubar=no,status=no,zoom=no,scrollbars=no,fullscreen=yes,titlebar=no,toolbar=no');
-}
+    function fbLogout() {
+
+    }
+
+    function regsLogin() {
+    	login('local');
+    }
+
+    function login(provider, opts) {
+
+        if (provider !== 'local') provider = 'auth/' + provider;
+        if (!opts || typeof opts !== 'string') opts = 'location=no,zoom=no';
+
+        var devId = window.device.uuid;
+        var storage = window.localStorage;
+
+        console.log('logging in device.uuid', devId);
+
+        var ref = cordova.InAppBrowser.open('http://www.toeknee.io:3000/mobile/redirect/' + provider + '?uuid=' + devId, '_self', opts);
+
+        storage.setItem('tryLogin', true);
+
+        ref.addEventListener('loadstart', function(event) {
+           
+            console.log('loadstart url:', event.url);
+            
+            if (~event.url.indexOf('/auth/account')) {
+
+                $.get(
+                  "http://www.toeknee.io:3000/api/devices/findOne?filter[where][deviceId]=" + devId
+                ).done(function(data) {
+                  
+                    if (data && data.userId) {
+                      
+                        storage.setItem('userId', data.userId);                      
+                        storage.removeItem('tryLogin');
+                      
+                        ref.close();
+
+                        getIdentity(data,provider);              
+                  
+                    }
+                    
+                }).fail(function(err) {
+                  console.error("failed to get userId using device.uuid:", err.message);
+                });  
+                
+            }
+            
+        });
+
+    }
+
+})();

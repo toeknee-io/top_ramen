@@ -316,6 +316,11 @@ function endGame() {
 	timeLeft = 0;
 	ings.callAll('destroy');
 	console.log("End of Game");
+    $.post(
+        "http://www.toeknee.io:3000/api/users/" + window.localStorage.getItem("userId") + "/scores",
+        { "score": score }
+    );
 	app.game.state.clearCurrentState();
 	app.game.state.start('menu');
+    
 }

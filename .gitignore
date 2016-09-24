@@ -2,3 +2,4 @@ config.xml
 platforms/
 info.txt
 www/prepros.cfg
+.DS_Store

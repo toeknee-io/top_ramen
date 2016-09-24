@@ -1,11 +1,13 @@
 /* jshint browser: true, jquery: true, devel: true */
 /* globals PushNotification */
 
+window.trApi = null;
+
 (function() {
-    
+
     "use strict";
-    
-    var loader = {
+
+    let cordovaApp = {
 
       initialize: function() {
         this.bindEvents();
@@ -17,32 +19,25 @@
       },
 
       onDeviceReady: function() {
-          
-          var dev = window.device;
-          var storage = window.localStorage;
-          
+
+          window.trApi = new TopRamenApi();
+
+          let dev = window.device;
+          let storage = window.localStorage;
+
+          //trApi.getChallenges();
+          //trApi.postChallenge('57e4bf7230e1fe5515c34b48');
+          //trApi.patchChallenge('57e632f3c9efc6719b48979b', 10000);
+
           if (storage.getItem('tryLogin') !== 'false' && dev && dev.uuid) {
-              
-              console.log('getting user for device.uuid', dev.uuid);
-              
-              $.get(
-                  "http://www.toeknee.io:3000/api/devices/findOne?filter[where][deviceId]=" + dev.uuid
-              ).done(function(data) {
-                  
-                  if (data && data.userId) {
-                      
-                      storage.setItem('userId', data.userId);
-                      storage.setItem('tryLogin', 'false');
-                                            
-                  }
-                  
-              }).fail(function(err) {
-                  console.error("failed to get userId using device.uuid:", err.message);
-              });  
-              
+
+            console.log('getting user for device.uuid', dev.uuid);
+
+            trApi.getUserByDeviceId();
+
           }
 
-          loader.push = PushNotification.init({
+          cordovaApp.push = PushNotification.init({
             "android": {
               "senderID": "184977555503"
             },
@@ -54,40 +49,25 @@
             "windows": {}
           });
 
-          loader.push.on('registration', function(data) {
+          cordovaApp.push.on('registration', function(data) {
 
-              var storedRegId = storage.getItem('registrationId');
+              let storedRegId = storage.getItem('registrationId');
 
               if (!storedRegId || storedRegId !== data.registrationId) {
 
-                  storage.setItem('registrationId', data.registrationId);
-                  
-                  var devPlatform = dev.platform ? dev.platform.toLowerCase() : "";
-                  
-                  $.post(
-                      "http://www.toeknee.io:3000/api/installations",
-                      { 
-                          "appId": "com.bitsmitten.topramen." + devPlatform,
-                          "deviceToken": data.registrationId,
-                          "deviceType": devPlatform,
-                          "status": "Active",
-                          "userId": storage.getItem('userId')
-                      }
-                  ).done(function(msg) {
-                      console.log("regId saved to server:", JSON.stringify(msg));
-                  }).fail(function(err) {
-                      console.error("failed to save regId to server:", err.message);
-                  });    
+                storage.setItem('registrationId', data.registrationId);
 
-              }            
+                trApi.postAppInstalation();
+
+              }
 
           });
 
-          loader.push.on('error', function(err) {
+          cordovaApp.push.on('error', function(err) {
               console.error("push err:", err.message);
           });
 
-          loader.push.on('notification', function(data) {
+          cordovaApp.push.on('notification', function(data) {
               console.log("received push notification:", JSON.stringify(data));
           });
 
@@ -97,6 +77,6 @@
 
     };
 
-    loader.initialize();
+    cordovaApp.initialize();
 
 })();

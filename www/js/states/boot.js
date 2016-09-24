@@ -4,7 +4,6 @@ var facebook;
 var userPic;
 var userName = '';
 var userFBFriends;
-var isLoggedIn;
 
 app.boot.preload = function() {
 	//app.game.load.audio('menu', 'assets/menu.ogg' );

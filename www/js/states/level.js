@@ -36,9 +36,9 @@ app.level.preload = function() {
 	if (!imageSize) imageSize = '';
     
 	if (window.devicePixelRatio == 2) {
-		imageSize = 'X2';
+		imageSize = 'x2';
 	} else if (window.devicePixelRatio >= 3) {
-		imageSize = 'X3';
+		imageSize = 'x3';
 	}
 
 	// Level Assets

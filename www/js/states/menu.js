@@ -2,7 +2,7 @@
 /* globals cordova, app, Phaser, scaleRatio */
 
 (function() {
- 
+
     "use strict";
 
     app.menu = {};
@@ -63,14 +63,13 @@
 
         var playButton = app.game.add.button(0, 0, 'play_button', quickPlay);
         var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
-        
-        var isLoggedIn = (window.localStorage.getItem('userId') ? true : false);
 
-        if (isLoggedIn) {
-        	var fb = app.game.add.button(0, 0, 'fb_logout', logout);
-        } else {
-        	var fb = app.game.add.button(0, 0, 'fb_login', fbLogin);
-        }
+        let isLoggedIn = window.localStorage.getItem('userId') ? true : false;
+
+        let btnImg = isLoggedIn ? 'fb_logout' : 'fb_login';
+        let btnFn = isLoggedIn ? logout : fbLogin;
+
+        let fb = app.game.add.button(0, 0, btnImg, btnFn);
 
         //var regs = app.game.add.button(0, 0, 'login_button', regsLogin);
 
@@ -137,20 +136,8 @@
         login('facebook');
     }
 
-    function logout() {   
-        
-        $.post(
-          'http://www.toeknee.io:3000/api/users/logout'
-        ).fail(function(err) {
-          console.error("failed to logout user: " + err.message);
-        }).always(function() {
-            window.console.info("clearing cookies and restarting game state");
-            window.localStorage.removeItem('userId');
-            window.localStorage.removeItem('connect.sid');              
-            window.localStorage.setItem('tryLogin', 'false');
-            app.game.state.restart();  
-        });
-        
+    function logout() {
+        trApi.logUserOut();
     }
 
     function regsLogin() {
@@ -158,55 +145,14 @@
     }
 
     function login(provider, opts) {
-        
-        if (!opts || typeof opts !== 'string') opts = 'location=no,zoom=no';
-        
-        var BASE_URL = 'http://www.toeknee.io:3000';
-        var loginUri = '/auth/' + provider;
-        var devId = window.device.uuid;
-        var storage = window.localStorage;
-        
-        var loginUrl = BASE_URL + (provider === 'local' ? loginUri : '/mobile/redirect' + loginUri) + '?uuid=' + devId
 
-        console.log('logging in with url', loginUrl);
-        
-        storage.setItem('tryLogin', 'true');
-        
-        var ref = cordova.InAppBrowser.open(loginUrl, '_self', opts);        
+        opts = __getOpts(opts);
 
-        ref.addEventListener('loadstart', function(event) {
-           
-            window.console.log('loadstart url:', event.url);
-            
-            if (~event.url.indexOf('/auth/account'))              
-                ref.close();
-            
-        });
-        
-        ref.addEventListener('exit', function(event) {
-            
-            window.console.log('iab exit');
-            
-            $.get(
-              BASE_URL + "/api/devices/findOne?filter[where][deviceId]=" + devId
-            ).done(function(data) {
+        if (typeof opts.iab !== 'string') opts.iab = 'location=no,zoom=no';
 
-                if (data && data.userId) {
+        opts.provider = provider;
 
-                    storage.setItem('userId', data.userId);
-                    storage.setItem('tryLogin', 'false');
-                    
-                    app.game.state.restart();
-                    
-                    getIdentity(data,provider);
-
-                }
-
-            }).fail(function(err) {
-              console.error("failed to get userId using device.uuid: " + err.message);
-            });            
-            
-        });
+        trApi.logUserIn(opts)
 
     }
 

@@ -33,9 +33,7 @@
                       
                       storage.setItem('userId', data.userId);
                       storage.setItem('tryLogin', 'false');
-                      
-                      getIdentity(data);
-                      
+                                            
                   }
                   
               }).fail(function(err) {

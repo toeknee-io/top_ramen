@@ -63,11 +63,12 @@
 
         var playButton = app.game.add.button(0, 0, 'play_button', quickPlay);
         var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
-        
-        var isLoggedIn = (window.localStorage.getItem('userId') ? true : false);
+
+        isLoggedIn = (window.localStorage.getItem('userId') ? true : false);
 
         if (isLoggedIn) {
         	var fb = app.game.add.button(0, 0, 'fb_logout', logout);
+            getIdentity(window.localStorage.data,window.localStorage.provider);
         } else {
         	var fb = app.game.add.button(0, 0, 'fb_login', fbLogin);
         }
@@ -108,7 +109,7 @@
     }
 
     function challenge() {
-		if (facebook) {
+		if (isLoggedIn) {
 			app.game.state.start('challenge');
 		} else {
 			var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
@@ -142,12 +143,14 @@
         $.post(
           'http://www.toeknee.io:3000/api/users/logout'
         ).fail(function(err) {
-          console.error("failed to logout user:", err.message);
+          console.error("failed to logout user:" + err.message);
         }).always(function() {
             window.console.info("clearing cookies and restarting game state");
             window.localStorage.removeItem('userId');
             window.localStorage.removeItem('connect.sid');              
             window.localStorage.setItem('tryLogin', 'false');
+            window.localStorage.removeItem('data');
+            window.localStorage.removeItem('provider');
             app.game.state.restart();  
         });
         
@@ -169,40 +172,47 @@
         var loginUrl = BASE_URL + (provider === 'local' ? loginUri : '/mobile/redirect' + loginUri) + '?uuid=' + devId
 
         console.log('logging in with url', loginUrl);
+        
+        storage.setItem('tryLogin', 'true');
+        
+        var ref = cordova.InAppBrowser.open(loginUrl, '_self', opts);        
 
-        var ref = cordova.InAppBrowser.open(loginUrl, '_self', opts);
-
-        storage.setItem('tryLogin', true);
-
-        ref.addEventListener('loadstop', function(event) {
+        ref.addEventListener('loadstart', function(event) {
            
-            console.log('loadstop url:', event.url);
+            window.console.log('loadstart url:', event.url);
             
-            if (~event.url.indexOf('/auth/account')) {
-
-                $.get(
-                  BASE_URL + "api/devices/findOne?filter[where][deviceId]=" + devId
-                ).done(function(data) {
-
-                    if (data && data.userId) {
-
-                        storage.setItem('userId', data.userId);
-                        storage.setItem('tryLogin', 'false');
-
-                        ref.close();
-
-                        getIdentity(data,provider);
-
-                    }
-
-                }).fail(function(err) {
-                  console.error("failed to get userId using device.uuid:", err.message);
-                });
-                
-            }
+            if (~event.url.indexOf('/auth/account'))              
+                ref.close();
             
         });
+        
+        ref.addEventListener('exit', function(event) {
+            
+            window.console.log('iab exit');
+            
+            $.get(
+              BASE_URL + "/api/devices/findOne?filter[where][deviceId]=" + devId
+            ).done(function(data) {
 
+                if (data && data.userId) {
+
+                    storage.setItem('userId', data.userId);
+                    storage.setItem('tryLogin', 'false');
+                    storage.setItem('data', data.userId);
+                    storage.setItem('provider', provider);
+                    
+                    app.game.state.restart();
+                    
+                    getIdentity(data.userId,provider);
+
+                }
+
+            }).fail(function(err) {
+              console.error("failed to get userId using device.uuid: " + err.message);
+            });            
+            
+        });
+            
     }
 
 })();

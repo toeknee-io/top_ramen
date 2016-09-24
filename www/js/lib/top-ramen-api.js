@@ -57,14 +57,14 @@ class TopRamenApi {
         }
 
       }).fail(function(err) {
-        console.error(`Failed to get userId using deviceId [${deviceId}] : ${err.message}`);
+        console.error(`Failed to get userId using deviceId [${deviceId}] : ${err.responseJSON.error.message}`);
       });
 
   }
 
   getUserIdentity(userId) {
 
-    userId = userId || this.userId;
+    userId = userId || this.userId || self.storage.getItem('userId');
 
     if (!userId) throw new Error('The userId is missing in getUserIdentity call');
 
@@ -84,9 +84,22 @@ class TopRamenApi {
           app.game.state.restart();
         }
 
-    }).fail(function(err) {
-      console.error("failed: " + err.message);
-    });
+      }).fail(function(err) {
+        console.error(`failed: ${err.responseJSON.error.message}`);
+      });
+
+  }
+
+  getUserIdentityBySocialId(provider, externalId) {
+
+    if (!provider || !externalId)
+      throw new Error(`The externalId ${externalId} or provider ${provider} is missing in getUserIdentityBySocialId call`);
+
+    return $.get(
+        `${this.API_URL}/userIdentities?filter[where][externalId]=${externalId}`
+      ).fail(function(err) {
+        console.error(`Failed to get getUserIdentityBySocialId because: ${err.responseJSON.error.message}`);
+      });
 
   }
 
@@ -97,7 +110,7 @@ class TopRamenApi {
     opts = __getOpts(opts);
 
     let deviceToken = opts.registrationId || self.storage.getItem('registrationId');
-    let userId = opts.userId || self.userId;
+    let userId = opts.userId || self.userId || self.storage.getItem('userId');
 
     if (!deviceToken || !userId)
       throw new Error(`The deviceToken [${deviceToken}] or userId [${userId}] is missing in the postAppInstalation call`);
@@ -114,7 +127,7 @@ class TopRamenApi {
       ).done(function(msg) {
           console.log(`pushRegId saved to server: ${JSON.stringify(msg)}`);
       }).fail(function(err) {
-          console.error(`Failed to save pushRegId to server: ${err.message}`);
+          console.error(`Failed to save pushRegId to server: ${err.responseJSON.error.message}`);
       });
 
   }
@@ -130,15 +143,11 @@ class TopRamenApi {
     let loginUri = `/auth/${opts.provider}`;
     let loginUrl = `${self.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${self.deviceId}`
 
-    console.log(`logging in with url ${loginUrl}`);
-
     self.storage.setItem('tryLogin', 'true');
 
     let iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
 
     iab.addEventListener('loadstart', function(event) {
-
-      console.log('loadstart url:', event.url);
 
       if (~event.url.indexOf('/auth/account'))
         iab.close();
@@ -146,8 +155,6 @@ class TopRamenApi {
     });
 
     iab.addEventListener('exit', function(event) {
-
-      console.log('iab exiting after social login');
 
       self.getUserByDeviceId().always( () => app.game.state.restart() );
 
@@ -161,11 +168,7 @@ class TopRamenApi {
 
     $.post(
       `${self.API_URL}/users/logout`
-    ).fail(function(err) {
-      console.error(`failed to log out user: ${err.message}`);
-    }).always(function() {
-
-      console.info("logging user out, clearing cookies and restarting game state");
+    ).always(function() {
 
       self.storage.removeItem('userId');
       self.storage.removeItem('connect.sid');
@@ -173,6 +176,67 @@ class TopRamenApi {
 
       app.game.state.restart();
 
+    }).fail(function(err) {
+      console.error(`Log out API error: ${err.responseJSON.error.message}`);
+      window.location.reload(true);
+    });
+
+  }
+
+  postChallenge(userId) {
+
+    let self = this;
+
+    let challengerId = self.userId || self.storage.getItem('userId');
+    let challengedId = userId;
+
+    if (!challengerId || !challengedId)
+      throw new Error('Missing challenger or someone to challenge in sendChallenge call');
+
+    $.post(
+      `${self.API_URL}/challenges`,
+      { challenger: { userId: challengerId }, challenged: { userId: challengedId } }
+    ).done(function(data) {
+      console.log(`challenge created: ${JSON.stringify(data)}`);
+    }).fail(function(err) {
+      console.error(`Failed to create challenge: ${err.responseJSON.error.message}`);
+    });
+
+  }
+
+  getChallenges() {
+
+    let self = this;
+
+    if (!self.userId)
+      throw new Error('Missing userId in getChallenges call');
+
+    $.get(
+      `${self.API_URL}/challenges?filter[where][challenged.id]=${self.userId}`
+    ).done(function(data) {
+      console.log(`got challenges: ${JSON.stringify(data)}`);
+    }).fail(function(err) {
+      console.error(`Failed to get challenges: ${err.responseJSON.error.message}`);
+    });
+
+  }
+
+  patchChallenge(challengeId, score) {
+
+    let self = this;
+
+    if (!challengeId || !score)
+      throw new Error(`Missing challengeId [${challengeId}] or score [${score}] in patchChallenge call`);
+
+    $.ajax({
+      method: 'PATCH',
+      url: `${self.API_URL}/challenges/${challengeId}`,
+      data: { userId: self.userId, score: score },
+      dataType: "json"
+    }).done(function(data) {
+      console.log(`updated challenge: ${JSON.stringify(data)}`);
+    }).fail(function(err) {
+      console.error(`Failed to update challenge: ${err.responseJSON.error.message}`);
     });
 
   }

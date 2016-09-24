@@ -98,5 +98,25 @@ function fbLoad(arg) {
 }
 
 function challengeFn() {
+
 	console.log('Challenged: ' + this.name);
+
+	let provider = 'facebook';
+
+	trApi.getUserIdentityBySocialId(provider, this.id)
+		.done(function(identities) {
+
+			identities.forEach(function(identity) {
+
+				console.log(`identity.userId [${identity.userId}]`);
+
+				if (identity.provider === provider)
+					trApi.postChallenge(identity.userId);
+
+			});
+
+		}).fail(function(err) {
+   		console.error(`Failed to iterate over getUserIdentityBySocialId response because: ${err.responseJSON.error.message}`);
+    });
+
 }

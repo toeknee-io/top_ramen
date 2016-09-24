@@ -107,8 +107,8 @@
     }
 
     function challenge() {
-		if (facebook) {
-			app.game.state.start('challenge');
+        if (facebook) {
+            app.game.state.start('challenge');
 		} else {
 			var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
 				notLogged.destroy();

@@ -198,7 +198,6 @@ class TopRamenApi {
       { challenger: { userId: challengerId }, challenged: { userId: challengedId } }
     ).done(function(data) {
       console.log(`challenge created: ${JSON.stringify(data)}`);
-      challengeSentPopup(data);
     }).fail(function(err) {
       console.error(`Failed to create challenge: ${err.responseJSON.error.message}`);
     });
@@ -216,25 +215,19 @@ class TopRamenApi {
       `${self.API_URL}/challenges?filter[where][or][0][challenged.userId]=${self.userId}&filter[where][or][1][challenger.userId]=${self.userId}`
     ).done(function(data) {
       console.log(`got challenges: ${JSON.stringify(data)}`);
-      challenges = data;
     }).fail(function(err) {
       console.error(`Failed to get challenges: ${err.responseJSON.error.message}`);
     });
 
   }
 
-  loadChallengeImages(challenger) {
+  getOpponent(opponent) {
 
     let self = this;
 
     return $.get(
-      `${self.API_URL}/users/${challenger}/identities`
+      `${self.API_URL}/users/${opponent}/identities`
     ).done(function(challenger) {
-
-      challenger = challenger[0];
-
-      var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
-      app.game.load.image(challenger.externalId + 'pic', challengerPic);
 
     }).fail(function(err) {
       console.error(`failed: ${err.responseJSON.error.message}`);
@@ -242,41 +235,6 @@ class TopRamenApi {
 
   }
 
-  createChallengedButton(challenge, picY, challengerGroup) {
-
-    let self = this;
-
-    return $.get(
-      `${self.API_URL}/users/${challenge.challenger.userId}/identities`
-    ).done(function(challenger) {
-
-      challenger = challenger[0];
-
-      var butt = app.game.add.button(0, picY, 'item', challengeStart, challenge);
-      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
-      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
-        font: 60 + 'px Baloo Paaji',
-        fill: '#fff',
-        align: "right",
-      } );
-
-
-
-      butt.scale.setTo(.8 * scaleRatio);
-      butt.centerX = app.game.world.centerX;
-
-      butt.addChild(buttText);
-      butt.addChild(buttPic);
-
-      buttPic.scale.setTo(.8);
-
-      challengerGroup.add(butt);
-
-    }).fail(function(err) {
-      console.error(`failed: ${err.responseJSON.error.message}`);
-    });
-
-  }
 
   patchChallenge(challengeId, score) {
 
@@ -292,7 +250,7 @@ class TopRamenApi {
       dataType: "json"
     }).done(function(data) {
       console.log(`updated challenge: ${JSON.stringify(data)}`);
-      app.game.state.start('game-over', true, false, score, data);
+      //app.game.state.start('game-over', true, false, score, data);
     }).fail(function(err) {
       console.error(`Failed to update challenge: ${err.responseJSON.error.message}`);
     });

@@ -34,6 +34,44 @@
 
         app.game.load.image('bowl', 'assets/bowl' + imageSize + '.png');
 
+        if (window.localStorage.getItem('userId')) {
+
+	        trApi.getChallenges()
+				  	.done(function(challenges) {
+
+				  		challenges.forEach(function(challenge) {
+
+				  			if (challenge.challenger.userId === window.localStorage.getItem('userId')) {
+
+				  				var opponent = challenge.challenged.userId;
+
+				  			} else {
+
+				  				var opponent = challenge.challenger.userId;
+
+				  			}
+
+				  			console.log(opponent);
+
+						  	trApi.getOpponent(opponent)
+						  		.done(function(challenger) {
+
+						  			challenger = challenger[0];
+
+							      var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
+							      app.game.load.image(challenger.externalId + 'pic', challengerPic);
+							      app.game.load.start();
+
+						  		})
+
+						  })
+
+				  	}).fail(function(err) {
+				   		console.error(`Failed to get challenges because: ${err.responseJSON.error.message}`);
+				    });
+
+				  }
+
     };
 
     app.menu.create = function() {
@@ -66,9 +104,17 @@
 
         let isLoggedIn = window.localStorage.getItem('userId') ? true : false;
 
-        if (isLoggedIn === true) {
-            trApi.getChallenges();
-        }
+        /*if (isLoggedIn === true) {
+
+            trApi.getChallenges()
+            	.done(function(data) {
+
+
+
+            	}).fail(function(err) {
+					   		console.error(`Failed to get challenges because: ${err.responseJSON.error.message}`);
+					    });
+        }*/
 
         let btnImg = isLoggedIn ? 'fb_logout' : 'fb_login';
         let btnFn = isLoggedIn ? logout : fbLogin;
@@ -111,18 +157,18 @@
     }
 
     function challenge() {
-        if (window.localStorage.getItem('userId')) {
-            app.game.state.start('challenge');
-		} else {
-			var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
-				notLogged.destroy();
-			});
-			notLogged.scale.setTo(scaleRatio);
-			notLogged.x = app.game.world.centerX;
-			notLogged.anchor.x = .5;
-			notLogged.y = app.game.world.centerY;
-			notLogged.anchor.y = .5;
-		}
+      if (window.localStorage.getItem('userId')) {
+          app.game.state.start('challenge');
+			} else {
+				var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
+					notLogged.destroy();
+				});
+				notLogged.scale.setTo(scaleRatio);
+				notLogged.x = app.game.world.centerX;
+				notLogged.anchor.x = .5;
+				notLogged.y = app.game.world.centerY;
+				notLogged.anchor.y = .5;
+			}
     }
 
     function challenges() {
@@ -142,14 +188,14 @@
 
     function options() {
     	var options = app.game.add.button(0, 0, 'options_menu', function() {
-			options.destroy();
-		});
-		options.scale.setTo(scaleRatio);
-		options.x = app.game.world.centerX;
-		options.anchor.x = .5;
-		options.y = app.game.world.centerY;
-		options.anchor.y = .5;
-    }
+				options.destroy();
+			});
+			options.scale.setTo(scaleRatio);
+			options.x = app.game.world.centerX;
+			options.anchor.x = .5;
+			options.y = app.game.world.centerY;
+			options.anchor.y = .5;
+	    }
 
     function fbLogin() {
         login('facebook');

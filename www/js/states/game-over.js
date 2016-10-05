@@ -5,14 +5,11 @@ app.gameover.init = function(score, challengeData) {
 	app.gameover.score = score;
 	app.gameover.challengeData = challengeData;
 
-	console.log(app.gameover.challengeData);
-
 }
 
 app.gameover.preload = function() {
 
-	app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
-	app.game.load.image('home', 'assets/home.png');
+
 
 }
 

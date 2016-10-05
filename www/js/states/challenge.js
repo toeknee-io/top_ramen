@@ -25,7 +25,6 @@ app.challenge.preload = function() {
 		});
 	}
 
-	app.game.load.image('home', 'assets/home.png');
   app.game.load.image('sent', 'assets/challenge_sent.png');
   app.game.load.image('play_now', 'assets/play_now.png');
   app.game.load.image('yes', 'assets/yes.png');
@@ -60,13 +59,6 @@ app.challenge.create = function() {
 	if (facebook) {
 		fbLoad(fbFriendsArray);
 	}
-}
-
-function goHome() {
-	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-	app.game.kineticScrolling.stop();
-	app.game.state.clearCurrentState();
-	app.game.state.start('menu');
 }
 
 function fbLoad(arg) {
@@ -115,7 +107,12 @@ function challengeFn() {
 				console.log(`identity.userId [${identity.userId}]`);
 
 				if (identity.provider === provider)
-					trApi.postChallenge(identity.userId);
+					trApi.postChallenge(identity.userId)
+						.done(function(data) {
+							challengeSentPopup(data);
+						}).fail(function(err) {
+				   		console.error(`Failed because: ${err.responseJSON.error.message}`);
+				    });
 
 			});
 
@@ -153,6 +150,7 @@ function challengeSentPopup(id) {
 
 function playNow() {
 
+	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
 	app.game.state.start('level', true, false, this.id);
 
 }

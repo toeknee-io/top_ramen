@@ -40,6 +40,9 @@ app.level.init = function(challengeId) {
 
 app.level.preload = function() {
 	console.log('Level Sate');
+
+	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
+	app.game.kineticScrolling.stop();
     
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -335,9 +338,18 @@ function endGame() {
 	app.game.state.clearCurrentState();
 
 	if (app.level.challengeId !== false) {
-		challengeData = trApi.patchChallenge(app.level.challengeId, score);
+
+		trApi.patchChallenge(app.level.challengeId, score)
+			.done(function(data) {
+
+				app.game.state.start('game-over', true, false, score, data);
+
+			})
+
 	} else {
+
 		app.game.state.start('game-over', true, false, score, challengeData);
+		
 	}
     
 }

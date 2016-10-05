@@ -15,13 +15,8 @@ app.challenges.preload = function() {
 
   app.game.kineticScrolling.start();
 
-  app.game.load.image('home', 'assets/home.png');
   app.game.load.image('userPic', userPic);
 
-  challenges.forEach(function(challenger) {
-  	trApi.loadChallengeImages(challenger.challenger.userId);
-  })
-	
 }
 
 app.challenges.create = function() {
@@ -48,22 +43,183 @@ app.challenges.create = function() {
 	welcomeText.x = app.game.world.centerX;
 	welcomeText.anchor.x = .5;
 
-	var challengerGroup = app.game.add.group();
+	trApi.getChallenges()
+		.done(function(challenges) {
 
-	var picY = 500 * scaleRatio;
+			var challengerGroup1 = app.game.add.group();
+			var challengerGroup2 = app.game.add.group();
 
-	challenges.forEach(function(challenge) {
+			var picY = 0;
 
-		trApi.createChallengedButton(challenge, picY, challengerGroup);
+			var openGames = app.game.add.text(app.game.world.centerX, 530 * scaleRatio, 'Open Challenges', {
+				font: 90 * scaleRatio + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "center",
+			});
 
-		picY += 200 * scaleRatio;
+			openGames.anchor.x = .5;
 
-	});
+			challengerGroup1.y = openGames.y + 200 * scaleRatio;
 
-	app.game.world.setBounds(0, 0, app.game.width, challengerGroup.height + 600 * scaleRatio);
+			challenges.forEach(function(challenge) {
+
+				if (challenge.status !== "finished") {
+
+					if (challenge.challenger.userId === window.localStorage.getItem('userId')) {
+
+	  				var opponent = challenge.challenged.userId;
+
+	  			} else {
+
+	  				var opponent = challenge.challenger.userId;
+
+	  			}
+
+					trApi.getOpponent(opponent)
+						.done(function(challenger) {
+
+							challenger = challenger[0];
+
+				      var butt = app.game.add.button(0, picY, 'item');
+				      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+				      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
+				        font: 60 + 'px Baloo Paaji',
+				        fill: '#fff',
+				        align: "right",
+				      } );
+
+				      butt.onInputDown.add(function() {
+
+				      	var yLoc = app.game.world.y;
+
+			      		butt.onInputUp.add(function() {
+
+			      			if (yLoc === app.game.world.y) {
+
+			      				challengeStart(this);
+
+			      			}
+
+			      		}, challenge);
+
+				      });
+
+				      butt.scale.setTo(.8 * scaleRatio);
+				      butt.centerX = app.game.world.centerX;
+
+				      butt.addChild(buttText);
+				      butt.addChild(buttPic);
+
+				      buttPic.scale.setTo(.8);
+
+				      challengerGroup1.add(butt);
+
+				      picY += 200 * scaleRatio;
+
+				      app.game.world.setBounds(0, 0, app.game.width, challengerGroup1.height + challengerGroup2.height + 1000 * scaleRatio);
+
+						})
+
+				}
+
+			});
+
+			var pic2Y = 0;
+
+			var finishedGames = app.game.add.text(app.game.world.centerX, challengerGroup1.height + 300 * scaleRatio, 'Completed Challenges', {
+				font: 90 * scaleRatio + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "center",
+			});
+
+			finishedGames.anchor.x = .5;
+
+			challenges.forEach(function(challenge) {
+
+				if (challenge.status === "finished") {
+
+					if (challenge.challenger.userId === window.localStorage.getItem('userId')) {
+
+	  				var opponent = challenge.challenged.userId;
+
+	  			} else {
+
+	  				var opponent = challenge.challenger.userId;
+
+	  			}
+
+					trApi.getOpponent(opponent)
+						.done(function(challenger) {
+
+							challenger = challenger[0];
+
+				      var butt = app.game.add.button(0, pic2Y, 'item');
+				      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+				      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
+				        font: 60 + 'px Baloo Paaji',
+				        fill: '#fff',
+				        align: "right",
+				      } );
+
+				      butt.onInputDown.add(function() {
+
+				      	var yLoc = app.game.world.y;
+
+			      		butt.onInputUp.add(function() {
+
+			      			if (yLoc === app.game.world.y) {
+
+			      				challengeStart(this);
+
+			      			}
+
+			      		}, challenge);
+
+				      });
+
+				      butt.scale.setTo(.8 * scaleRatio);
+				      butt.centerX = app.game.world.centerX;
+
+				      butt.addChild(buttText);
+				      butt.addChild(buttPic);
+
+				      buttPic.scale.setTo(.8);
+
+				      challengerGroup2.add(butt);
+
+				      pic2Y += 200 * scaleRatio;
+
+				      finishedGames.y = challengerGroup1.height + 900 * scaleRatio;
+
+				      challengerGroup2.y = finishedGames.y + 200 * scaleRatio;
+
+				      app.game.world.setBounds(0, 0, app.game.width, challengerGroup1.height + challengerGroup2.height + 1400 * scaleRatio);
+
+						})
+
+				}
+
+			});
+
+		})
 
 }
 
-function challengeStart() {
-	app.game.state.start('level', true, false, this.id);
+function challengeStart(challenge) {
+
+	if (challenge.status === 'finished') {
+
+		app.game.world.setBounds(0, 0, app.game.width, app.game.height);
+		app.game.state.start('challengeResults', true, false, challenge);
+
+	} else if (((challenge.challenger.userId === window.localStorage.getItem('userId')) && (challenge.challenger.score === null)) || ((challenge.challenged.userId === window.localStorage.getItem('userId')) && (challenge.challenged.score === null))) {
+
+		app.game.state.start('level', true, false, challenge.id);
+
+	} else {
+
+		alert('Waiting For Opponent!');
+
+	}
+
 }

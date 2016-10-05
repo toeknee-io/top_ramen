@@ -213,7 +213,7 @@ class TopRamenApi {
       throw new Error('Missing userId in getChallenges call');
 
     $.get(
-      `${self.API_URL}/challenges?filter[where][challenged.userId]=${self.userId}`
+      `${self.API_URL}/challenges?filter[where][or][0][challenged.userId]=${self.userId}&filter[where][or][1][challenger.userId]=${self.userId}`
     ).done(function(data) {
       console.log(`got challenges: ${JSON.stringify(data)}`);
       challenges = data;
@@ -222,6 +222,8 @@ class TopRamenApi {
     });
 
   }
+
+// { "where": { "or": [ { "challenger.userId": "57f433a205059e4eb59856b4" }, { "challenged.userId": "57f433a205059e4eb59856b4" } ] } }
 
   loadChallengeImages(challenger) {
 

@@ -35,6 +35,10 @@ window.trApi = null;
 
             trApi.getUserByDeviceId();
 
+          } else if (storage.getItem('tryLogin') === 'false' && storage.getItem('userId')) {
+
+            trApi.getUserIdentity(window.localStorage.userId);
+
           }
 
           cordovaApp.push = PushNotification.init({
@@ -70,8 +74,6 @@ window.trApi = null;
           cordovaApp.push.on('notification', function(data) {
               console.log("received push notification:", JSON.stringify(data));
           });
-
-          navigator.splashscreen.hide();
 
       }
 

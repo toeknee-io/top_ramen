@@ -17,14 +17,6 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-splashscreen": {
-        "source": {
-            "type": "local",
-            "path": "/Applications/Intel XDK.app/Contents/Resources/app.nw/components/server/cordova/cordova-plugins/cordova-plugin-splashscreen"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-statusbar": {
         "source": {
             "type": "local",
@@ -57,19 +49,18 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-crosswalk-webview": {
+    "cordova-plugin-whitelist": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-crosswalk-webview@2.1.0"
+            "id": "cordova-plugin-whitelist@1.3.0"
         },
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-whitelist": {
+    "cordova-plugin-crosswalk-webview": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/apache/cordova-plugin-whitelist.git",
-            "subdir": "."
+            "type": "registry",
+            "id": "cordova-plugin-crosswalk-webview@2.1.0"
         },
         "is_top_level": true,
         "variables": {}

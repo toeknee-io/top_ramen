@@ -12,7 +12,6 @@
 
     app.menu.preload = function() {
 
-        app.game.load.image('menu_bg', 'assets/6.jpg');
         app.game.load.image('title', 'assets/title.png');
 
         app.game.load.image('play_button','assets/button_play.png');
@@ -28,9 +27,9 @@
         if (!imageSize) imageSize = '';
 
         if (window.devicePixelRatio == 2) {
-            imageSize = 'x2';
+            imageSize = 'X2';
         } else if (window.devicePixelRatio >= 3) {
-            imageSize = 'x3';
+            imageSize = 'LG';
         }
 
         app.game.load.image('bowl', 'assets/bowl' + imageSize + '.png');
@@ -63,8 +62,13 @@
 
         var playButton = app.game.add.button(0, 0, 'play_button', quickPlay);
         var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
+        var challengesButton = app.game.add.button(0, 0, 'challenge_button', challenges);
 
         let isLoggedIn = window.localStorage.getItem('userId') ? true : false;
+
+        if (isLoggedIn === true) {
+            trApi.getChallenges();
+        }
 
         let btnImg = isLoggedIn ? 'fb_logout' : 'fb_login';
         let btnFn = isLoggedIn ? logout : fbLogin;
@@ -77,7 +81,7 @@
 
         buttonGroup.add(playButton);
         buttonGroup.add(challengeButton);
-        //buttonGroup.add(regs);
+        buttonGroup.add(challengesButton);
         buttonGroup.add(fb);
         buttonGroup.add(optionsButton);
 
@@ -107,8 +111,8 @@
     }
 
     function challenge() {
-		if (window.localStorage.getItem('userId')) {
-			app.game.state.start('challenge');
+        if (window.localStorage.getItem('userId')) {
+            app.game.state.start('challenge');
 		} else {
 			var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
 				notLogged.destroy();
@@ -119,6 +123,21 @@
 			notLogged.y = app.game.world.centerY;
 			notLogged.anchor.y = .5;
 		}
+    }
+
+    function challenges() {
+        if (window.localStorage.getItem('userId')) {
+            app.game.state.start('challenges');
+        } else {
+            var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
+                notLogged.destroy();
+            });
+            notLogged.scale.setTo(scaleRatio);
+            notLogged.x = app.game.world.centerX;
+            notLogged.anchor.x = .5;
+            notLogged.y = app.game.world.centerY;
+            notLogged.anchor.y = .5;
+        }
     }
 
     function options() {

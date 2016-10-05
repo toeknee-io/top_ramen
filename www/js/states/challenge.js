@@ -3,18 +3,19 @@ app.challenge = {}
 var fbFriendsArray;
 
 app.challenge.preload = function() {
+
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 	app.game.kineticScrolling = app.game.plugins.add(Phaser.Plugin.KineticScrolling);
 
 	app.game.kineticScrolling.configure({
-        kineticMovement: true,
-        verticalScroll: true,
-        horizontalScroll: false,
-        verticalWheel: true
-    });
+    kineticMovement: true,
+    verticalScroll: true,
+    horizontalScroll: false,
+    verticalWheel: true
+  });
 
-    app.game.kineticScrolling.start();
+  app.game.kineticScrolling.start();
 
 	if (facebook) {
 		fbFriendsArray = userFBFriends.responseJSON.data;
@@ -25,8 +26,11 @@ app.challenge.preload = function() {
 	}
 
 	app.game.load.image('home', 'assets/home.png');
-    app.game.load.image('item', 'assets/item_bg.png');
-    app.game.load.image('userPic', userPic);
+  app.game.load.image('sent', 'assets/challenge_sent.png');
+  app.game.load.image('play_now', 'assets/play_now.png');
+  app.game.load.image('yes', 'assets/yes.png');
+  app.game.load.image('no', 'assets/no.png');
+  app.game.load.image('userPic', userPic);
 
 }
 
@@ -41,7 +45,7 @@ app.challenge.create = function() {
 	homeButton.scale.setTo(scaleRatio);
 
 	var userPic = app.game.add.image(0, 260 * scaleRatio, 'userPic');
-	userPic.scale.setTo(.8*scaleRatio);
+	userPic.scale.setTo(.8 * scaleRatio);
 	userPic.x = app.game.world.centerX;
 	userPic.anchor.x = .5;
 
@@ -118,5 +122,43 @@ function challengeFn() {
 		}).fail(function(err) {
    		console.error(`Failed to iterate over getUserIdentityBySocialId response because: ${err.responseJSON.error.message}`);
     });
+
+}
+
+function challengeSentPopup(id) {
+
+	var btnGroup = app.game.add.group(); 
+
+	var sent = app.game.add.image(0, 200, 'play_now');
+	var yes = app.game.add.button(0, 450, 'yes', playNow, id);
+	var no = app.game.add.button(0, 700, 'no', playLater, btnGroup);
+
+	sent.scale.setTo(scaleRatio);
+	sent.x = app.game.world.centerX;
+	sent.anchor.x = .5;
+
+	yes.scale.setTo(scaleRatio);
+	yes.x = app.game.world.centerX;
+	yes.anchor.x = .5;
+
+	no.scale.setTo(scaleRatio);
+	no.x = app.game.world.centerX;
+	no.anchor.x = .5;
+
+	btnGroup.add(sent);
+	btnGroup.add(yes);
+	btnGroup.add(no);
+
+}
+
+function playNow() {
+
+	app.game.state.start('level', true, false, this.id);
+
+}
+
+function playLater() {
+
+	this.destroy();
 
 }

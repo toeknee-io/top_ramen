@@ -21,9 +21,6 @@
         "cordova-plugin-inappbrowser": {
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
-        "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
-        },
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },

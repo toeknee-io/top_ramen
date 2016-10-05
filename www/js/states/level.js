@@ -28,6 +28,16 @@ var steamEmitter;
 // Groups
 var ings;
 
+app.level.init = function(challengeId) {
+
+	app.level.challengeId = false;
+
+	if (challengeId) {
+		app.level.challengeId = challengeId;
+	}
+	
+}
+
 app.level.preload = function() {
 	console.log('Level Sate');
     
@@ -36,9 +46,9 @@ app.level.preload = function() {
 	if (!imageSize) imageSize = '';
     
 	if (window.devicePixelRatio == 2) {
-		imageSize = 'x2';
+		imageSize = 'X2';
 	} else if (window.devicePixelRatio >= 3) {
-		imageSize = 'x3';
+		imageSize = 'LG';
 	}
 
 	// Level Assets
@@ -55,8 +65,6 @@ app.level.preload = function() {
 	app.game.load.atlasJSONHash('spritesheet', 'assets/spritesheet.png', 'assets/spritesheet.json');
 
 	app.game.load.bitmapFont('8bit', 'assets/fonts/8bit.png', 'assets/fonts/8bit.fnt' );
-
-	app.game.load.audio('pop', 'assets/pop.ogg' );
 
 	leftBounds = app.game.world.width * .17;
 	rightBounds = app.game.world.width * .83;
@@ -282,6 +290,7 @@ function collect(ingredient) {
 	}
 	destroyIng(this);
 	reSpawn(this);
+
 }
 
 function destroyEmitter() {
@@ -316,11 +325,19 @@ function endGame() {
 	timeLeft = 0;
 	ings.callAll('destroy');
 	console.log("End of Game");
-    $.post(
-        "http://www.toeknee.io:3000/api/users/" + window.localStorage.getItem("userId") + "/scores",
-        { "score": score }
-    );
+	$.post(
+	    "http://www.toeknee.io:3000/api/users/" + window.localStorage.getItem("userId") + "/scores",
+	    { "score": score }
+	);
+
+	var challengeData = false;
+
 	app.game.state.clearCurrentState();
-	app.game.state.start('menu');
+
+	if (app.level.challengeId !== false) {
+		challengeData = trApi.patchChallenge(app.level.challengeId, score);
+	} else {
+		app.game.state.start('game-over', true, false, score, challengeData);
+	}
     
 }

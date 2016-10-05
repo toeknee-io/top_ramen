@@ -166,7 +166,7 @@ class TopRamenApi {
 
     let self = this;
 
-    $.post(
+    return $.post(
       `${self.API_URL}/users/logout`
     ).always(function() {
 
@@ -193,7 +193,7 @@ class TopRamenApi {
     if (!challengerId || !challengedId)
       throw new Error('Missing challenger or someone to challenge in sendChallenge call');
 
-    $.post(
+    return $.post(
       `${self.API_URL}/challenges`,
       { challenger: { userId: challengerId }, challenged: { userId: challengedId } }
     ).done(function(data) {
@@ -212,7 +212,7 @@ class TopRamenApi {
     if (!self.userId)
       throw new Error('Missing userId in getChallenges call');
 
-    $.get(
+    return $.get(
       `${self.API_URL}/challenges?filter[where][or][0][challenged.userId]=${self.userId}&filter[where][or][1][challenger.userId]=${self.userId}`
     ).done(function(data) {
       console.log(`got challenges: ${JSON.stringify(data)}`);
@@ -223,13 +223,11 @@ class TopRamenApi {
 
   }
 
-// { "where": { "or": [ { "challenger.userId": "57f433a205059e4eb59856b4" }, { "challenged.userId": "57f433a205059e4eb59856b4" } ] } }
-
   loadChallengeImages(challenger) {
 
     let self = this;
 
-    $.get(
+    return $.get(
       `${self.API_URL}/users/${challenger}/identities`
     ).done(function(challenger) {
 
@@ -248,7 +246,7 @@ class TopRamenApi {
 
     let self = this;
 
-    $.get(
+    return $.get(
       `${self.API_URL}/users/${challenge.challenger.userId}/identities`
     ).done(function(challenger) {
 
@@ -287,7 +285,7 @@ class TopRamenApi {
     if (!challengeId || !score)
       throw new Error(`Missing challengeId [${challengeId}] or score [${score}] in patchChallenge call`);
 
-    $.ajax({
+    return $.ajax({
       method: 'PATCH',
       url: `${self.API_URL}/challenges/${challengeId}`,
       data: { userId: self.userId, score: score },

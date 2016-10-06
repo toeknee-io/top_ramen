@@ -108,5 +108,5 @@ app.challengeResults.create = function() {
   });
 
   rematchButton.anchor.x = .5;
-	
+
 }

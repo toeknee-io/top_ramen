@@ -20,7 +20,7 @@ app.challenges.preload = function() {
 }
 
 app.challenges.create = function() {
-	
+
 	console.log('Challenges State');
 
 	var bg = app.game.add.image(0, 0, 'menu_bg');
@@ -51,6 +51,8 @@ app.challenges.create = function() {
 
 			var picY = 0;
 
+			var status;
+
 			var openGames = app.game.add.text(app.game.world.centerX, 530 * scaleRatio, 'Open Challenges', {
 				font: 90 * scaleRatio + 'px Baloo Paaji',
 				fill: '#fff',
@@ -78,12 +80,48 @@ app.challenges.create = function() {
 					trApi.getOpponent(opponent)
 						.done(function(challenger) {
 
+							if (challenge.status === "new") {
+
+								status = 'Open';
+
+							} else if (challenge.challenger.userId === window.localStorage.getItem('userId')) {
+
+								if (challenge.challenger.score === null) {
+
+									status = 'Your Turn';
+
+								} else if (challenge.challenged.score === null) {
+
+									status = 'Their Turn';
+
+								}
+
+							} else if (challenge.challenged.userId === window.localStorage.getItem('userId')) {
+
+								if (challenge.challenged.score === null) {
+
+									status = 'Your Turn';
+
+								} else if (challenge.challenger.score === null) {
+
+									status = 'Their Turn';
+
+								}
+
+							}
+
 							challenger = challenger[0];
 
 				      var butt = app.game.add.button(0, picY, 'item');
 				      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
 				      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
 				        font: 60 + 'px Baloo Paaji',
+				        fill: '#fff',
+				        align: "right",
+				      } );
+
+				      var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
+				        font: 40 + 'px Baloo Paaji',
 				        fill: '#fff',
 				        align: "right",
 				      } );
@@ -109,6 +147,8 @@ app.challenges.create = function() {
 
 				      butt.addChild(buttText);
 				      butt.addChild(buttPic);
+
+				      butt.addChild(buttStatus);
 
 				      buttPic.scale.setTo(.8);
 
@@ -151,12 +191,32 @@ app.challenges.create = function() {
 					trApi.getOpponent(opponent)
 						.done(function(challenger) {
 
+							if (challenge.winner === window.localStorage.getItem('userId')) {
+
+								status = 'You Won!';
+
+							} else if (challenge.winner === "tied") {
+
+								status = 'Tied';
+
+							} else {
+
+								status = 'You Lost';
+
+							}
+
 							challenger = challenger[0];
 
 				      var butt = app.game.add.button(0, pic2Y, 'item');
 				      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
 				      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
 				        font: 60 + 'px Baloo Paaji',
+				        fill: '#fff',
+				        align: "right",
+				      } );
+
+				      var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
+				        font: 40 + 'px Baloo Paaji',
 				        fill: '#fff',
 				        align: "right",
 				      } );
@@ -182,6 +242,8 @@ app.challenges.create = function() {
 
 				      butt.addChild(buttText);
 				      butt.addChild(buttPic);
+
+				      butt.addChild(buttStatus);
 
 				      buttPic.scale.setTo(.8);
 

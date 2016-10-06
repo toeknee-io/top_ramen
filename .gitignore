@@ -3,3 +3,6 @@ platforms/
 info.txt
 www/prepros.cfg
 .DS_Store
+.jshintrc
+top-ramen-game.sublime-*
+.cordova.config.android.xml

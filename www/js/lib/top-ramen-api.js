@@ -166,7 +166,7 @@ class TopRamenApi {
 
     let self = this;
 
-    $.post(
+    return $.post(
       `${self.API_URL}/users/logout`
     ).always(function() {
 
@@ -193,7 +193,7 @@ class TopRamenApi {
     if (!challengerId || !challengedId)
       throw new Error('Missing challenger or someone to challenge in sendChallenge call');
 
-    $.post(
+    return $.post(
       `${self.API_URL}/challenges`,
       { challenger: { userId: challengerId }, challenged: { userId: challengedId } }
     ).done(function(data) {
@@ -211,8 +211,8 @@ class TopRamenApi {
     if (!self.userId)
       throw new Error('Missing userId in getChallenges call');
 
-    $.get(
-      `${self.API_URL}/challenges?filter[where][challenged.id]=${self.userId}`
+    return $.get(
+      `${self.API_URL}/challenges?filter[where][or][0][challenged.userId]=${self.userId}&filter[where][or][1][challenger.userId]=${self.userId}`
     ).done(function(data) {
       console.log(`got challenges: ${JSON.stringify(data)}`);
     }).fail(function(err) {
@@ -221,6 +221,21 @@ class TopRamenApi {
 
   }
 
+  getOpponent(opponent) {
+
+    let self = this;
+
+    return $.get(
+      `${self.API_URL}/users/${opponent}/identities`
+    ).done(function(challenger) {
+
+    }).fail(function(err) {
+      console.error(`failed: ${err.responseJSON.error.message}`);
+    });
+
+  }
+
+
   patchChallenge(challengeId, score) {
 
     let self = this;
@@ -228,13 +243,14 @@ class TopRamenApi {
     if (!challengeId || !score)
       throw new Error(`Missing challengeId [${challengeId}] or score [${score}] in patchChallenge call`);
 
-    $.ajax({
+    return $.ajax({
       method: 'PATCH',
       url: `${self.API_URL}/challenges/${challengeId}`,
       data: { userId: self.userId, score: score },
       dataType: "json"
     }).done(function(data) {
       console.log(`updated challenge: ${JSON.stringify(data)}`);
+      //app.game.state.start('game-over', true, false, score, data);
     }).fail(function(err) {
       console.error(`Failed to update challenge: ${err.responseJSON.error.message}`);
     });

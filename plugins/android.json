@@ -7,29 +7,33 @@
         "files": {}
     },
     "installed_plugins": {
-        "phonegap-plugin-push": {
-            "SENDER_ID": "184977555503",
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-vibration": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+        "cordova-plugin-crosswalk-webview": {
+            "XWALK_VERSION": "21+",
+            "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
+            "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect",
+            "XWALK_MODE": "embedded",
+            "XWALK_MULTIPLEAPK": "true",
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-inappbrowser": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "phonegap-plugin-push": {
+            "SENDER_ID": "184977555503",
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         }
     },
-    "dependent_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        }
-    }
+    "dependent_plugins": {}
 }

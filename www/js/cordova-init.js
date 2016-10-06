@@ -25,10 +25,6 @@ window.trApi = null;
           let dev = window.device;
           let storage = window.localStorage;
 
-          //trApi.getChallenges();
-          //trApi.postChallenge('57e4bf7230e1fe5515c34b48');
-          //trApi.patchChallenge('57e632f3c9efc6719b48979b', 10000);
-
           if (storage.getItem('tryLogin') !== 'false' && dev && dev.uuid) {
 
             console.log('getting user for device.uuid', dev.uuid);
@@ -57,11 +53,16 @@ window.trApi = null;
 
               let storedRegId = storage.getItem('registrationId');
 
+              console.log(`onRegistration registrationId ${data.registrationId}`);
+
               if (!storedRegId || storedRegId !== data.registrationId) {
 
                 storage.setItem('registrationId', data.registrationId);
 
-                trApi.postAppInstalation();
+                var opts = {};
+                opts.registrationId = data.registrationId;
+
+                trApi.postAppInstallation(opts);
 
               }
 

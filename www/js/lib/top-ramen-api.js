@@ -103,7 +103,7 @@ class TopRamenApi {
 
   }
 
-  postAppInstalation(opts) {
+  postAppInstallation(opts) {
 
     let self = this;
 
@@ -113,7 +113,7 @@ class TopRamenApi {
     let userId = opts.userId || self.userId || self.storage.getItem('userId');
 
     if (!deviceToken || !userId)
-      throw new Error(`The deviceToken [${deviceToken}] or userId [${userId}] is missing in the postAppInstalation call`);
+      throw new Error(`The deviceToken [${deviceToken}] or userId [${userId}] is missing in the postAppInstallation call`);
 
     return $.post(
         `${this.API_URL}/installations`,
@@ -141,7 +141,7 @@ class TopRamenApi {
     opts = __getOpts(opts);
 
     let loginUri = `/auth/${opts.provider}`;
-    let loginUrl = `${self.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${self.deviceId}`
+    let loginUrl = `${self.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${self.deviceId}&deviceType=${self.platform}`
 
     self.storage.setItem('tryLogin', 'true');
 

@@ -104,8 +104,6 @@ function challengeFn() {
 
 			identities.forEach(function(identity) {
 
-				console.log(`identity.userId [${identity.userId}]`);
-
 				if (identity.provider === provider)
 					trApi.postChallenge(identity.userId)
 						.done(function(data) {
@@ -124,7 +122,7 @@ function challengeFn() {
 
 function challengeSentPopup(id) {
 
-	var btnGroup = app.game.add.group(); 
+	var btnGroup = app.game.add.group();
 
 	var sent = app.game.add.image(0, 200, 'play_now');
 	var yes = app.game.add.button(0, 450, 'yes', playNow, id);

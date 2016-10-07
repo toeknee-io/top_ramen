@@ -221,6 +221,19 @@ class TopRamenApi {
 
   }
 
+  getChallengesSorted() {
+
+    let self = this;
+
+    if (!self.userId)
+      throw new Error('Missing userId in getChallenges call');
+
+    return $.get(`${self.API_URL}/challenges/sort/${self.userId}`)
+      .done(data => console.log(`got sorted challenges: ${JSON.stringify(data)}`))
+      .fail(err => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
+
+  }
+
   getOpponent(opponent) {
 
     let self = this;

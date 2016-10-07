@@ -59,7 +59,17 @@ app.challenges.create = function() {
 				align: "center",
 			});
 
+			var finishedGames = app.game.add.text(app.game.world.centerX, 0, 'Completed Challenges', {
+				font: 90 * scaleRatio + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "center",
+			});
+
+			challengerGroup2.add(finishedGames);
+
 			openGames.anchor.x = .5;
+
+			finishedGames.anchor.x = .5;
 
 			challengerGroup1.y = openGames.y + 200 * scaleRatio;
 
@@ -143,23 +153,11 @@ app.challenges.create = function() {
 
 		      picY += 200 * scaleRatio;
 
-		      app.game.world.setBounds(0, 0, app.game.width, challengerGroup1.height + challengerGroup2.height + 1000 * scaleRatio);
-
 				}
 
-			});
+				finishedGames.y = challengerGroup1.height + 900 * scaleRatio;
 
-			var pic2Y = 0;
-
-			var finishedGames = app.game.add.text(app.game.world.centerX, challengerGroup1.height + 300 * scaleRatio, 'Completed Challenges', {
-				font: 90 * scaleRatio + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "center",
-			});
-
-			finishedGames.anchor.x = .5;
-
-			challenges.forEach(function(challenge) {
+				var pic2Y = finishedGames.y + 300;
 
 				if (challenge.status === "finished") {
 
@@ -233,13 +231,11 @@ app.challenges.create = function() {
 
 		      pic2Y += 200 * scaleRatio;
 
-		      finishedGames.y = challengerGroup1.height + 900 * scaleRatio;
-
-		      challengerGroup2.y = finishedGames.y + 200 * scaleRatio;
-
-		      app.game.world.setBounds(0, 0, app.game.width, challengerGroup1.height + challengerGroup2.height + 1400 * scaleRatio);
+		      challengerGroup2.y = challengerGroup1.height * scaleRatio;
 
 				}
+
+				app.game.world.setBounds(0, 0, app.game.width, challengerGroup1.height + challengerGroup2.height + 1000 * scaleRatio);
 
 			});
 

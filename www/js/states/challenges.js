@@ -43,7 +43,7 @@ app.challenges.create = function() {
 	welcomeText.x = app.game.world.centerX;
 	welcomeText.anchor.x = .5;
 
-	trApi.getChallenges()
+	trApi.getChallengesSorted()
 		.done(function(challenges) {
 
 			var challengerGroup1 = app.game.add.group();
@@ -73,9 +73,9 @@ app.challenges.create = function() {
 
 			challengerGroup1.y = openGames.y + 200 * scaleRatio;
 
-			challenges.forEach(function(challenge) {
+			challenges.open.forEach(function(challenge) {
 
-				if (challenge.status !== "finished") {
+					console.log(challenge);
 
 					if (challenge.status === "new") {
 
@@ -153,11 +153,13 @@ app.challenges.create = function() {
 
 		      picY += 200 * scaleRatio;
 
-				}
+			});
 
-				finishedGames.y = challengerGroup1.height + 900 * scaleRatio;
+			challengerGroup2.y = challengerGroup1.height + 900 * scaleRatio;
 
-				var pic2Y = finishedGames.y + 300;
+			var pic2Y = finishedGames.y + 300;
+
+			challenges.finished.forEach(function(challenge) {
 
 				if (challenge.status === "finished") {
 
@@ -231,13 +233,11 @@ app.challenges.create = function() {
 
 		      pic2Y += 200 * scaleRatio;
 
-		      challengerGroup2.y = challengerGroup1.height * scaleRatio;
-
 				}
 
-				app.game.world.setBounds(0, 0, app.game.width, challengerGroup1.height + challengerGroup2.height + 1000 * scaleRatio);
-
 			});
+
+			app.game.world.setBounds(0, 0, app.game.width, challengerGroup1.height + challengerGroup2.height + 1200 * scaleRatio);
 
 		});
 

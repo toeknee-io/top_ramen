@@ -103,6 +103,16 @@ class TopRamenApi {
 
   }
 
+  getUserSocial() {
+
+    return $.get(`${this.API_URL}/users/social/${this.userId}`)
+      .done(data => console.log(data))
+      .fail(function(err) {
+        console.error(`Failed to get getUserIdentityBySocialId because: ${err.responseJSON.error.message}`);
+      });
+
+  }
+
   postAppInstallation(opts) {
 
     let self = this;

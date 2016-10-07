@@ -105,7 +105,7 @@ class TopRamenApi {
 
   getUserSocial() {
     return $.get(`${this.API_URL}/users/social/${this.userId}`)
-      .done(data => console.log(`got user social info ${data}`))
+      .done(data => console.log(`got user social info ${JSON.stringify(data)}`))
       .fail(err => console.error(`Failed to get getUserIdentityBySocialId because: ${err.responseJSON.error.message}`));
   }
 

@@ -59,7 +59,7 @@ window.trApi = null;
 
                 storage.setItem('registrationId', data.registrationId);
 
-                var opts = {};
+                let opts = {};
                 opts.registrationId = data.registrationId;
 
                 trApi.postAppInstallation(opts);

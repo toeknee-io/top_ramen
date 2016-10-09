@@ -36,41 +36,25 @@
 
         if (window.localStorage.getItem('userId')) {
 
-	        trApi.getChallenges()
-				  	.done(function(challenges) {
+            trApi.getUserSocial()
+                .done(function(data) {
 
-				  		challenges.forEach(function(challenge) {
+                    app.game.load.image('myPic', data.facebook.picture);
 
-				  			if (challenge.challenger.userId === window.localStorage.getItem('userId')) {
+                  data.facebook.friends.forEach(function(friend) {
 
-				  				var opponent = challenge.challenged.userId;
+                      //var friendPic = 'https://graph.facebook.com/' + friend.id + '/picture?type=large';
+                      app.game.load.image(friend.id + 'pic', 'https://graph.facebook.com/' + friend.id + '/picture?type=large');
 
-				  			} else {
+                  })
 
-				  				var opponent = challenge.challenger.userId;
+                  app.game.load.start();
 
-				  			}
+                  //displayFriends();
 
-				  			console.log(opponent);
+                })
 
-						  	trApi.getOpponent(opponent)
-						  		.done(function(challenger) {
-
-						  			challenger = challenger[0];
-
-							      var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
-							      app.game.load.image(challenger.externalId + 'pic', challengerPic);
-							      app.game.load.start();
-
-						  		})
-
-						  })
-
-				  	}).fail(function(err) {
-				   		console.error(`Failed to get challenges because: ${err.responseJSON.error.message}`);
-				    });
-
-				  }
+        }
 
     };
 
@@ -103,18 +87,6 @@
         var challengesButton = app.game.add.button(0, 0, 'challenge_button', challenges);
 
         let isLoggedIn = window.localStorage.getItem('userId') ? true : false;
-
-        /*if (isLoggedIn === true) {
-
-            trApi.getChallenges()
-            	.done(function(data) {
-
-
-
-            	}).fail(function(err) {
-					   		console.error(`Failed to get challenges because: ${err.responseJSON.error.message}`);
-					    });
-        }*/
 
         let btnImg = isLoggedIn ? 'fb_logout' : 'fb_login';
         let btnFn = isLoggedIn ? logout : fbLogin;
@@ -150,6 +122,12 @@
         var tween = this.add.tween(optionsButton).to({angle: + 360}, 3500, Phaser.Easing.Linear.None, true, 0, -1);
 
     };
+
+    function checkImages() {
+
+
+
+    }
 
     function quickPlay() {
     	//menuSong.stop();

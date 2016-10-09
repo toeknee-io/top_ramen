@@ -1,11 +1,5 @@
 app.boot = {}
 
-var facebook;
-var userPic;
-var userName = '';
-var userFBFriends;
-//var challenges = [];
-
 app.boot.preload = function() {
 	//app.game.load.audio('menu', 'assets/sounds/menu.ogg' );
 	//app.game.load.audio('lvl', 'assets/sounds/orlvl.ogg' );

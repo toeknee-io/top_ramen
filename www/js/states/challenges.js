@@ -15,7 +15,64 @@ app.challenges.preload = function() {
 
   app.game.kineticScrolling.start();
 
-  app.game.load.image('userPic', userPic);
+  trApi.getUserSocial()
+		.done(function(data) {
+
+			app.game.load.image('myPic', data.facebook.picture);
+			app.game.load.start();
+
+			var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
+				font: 50 * scaleRatio + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "right",
+			});
+
+			welcomeText.anchor.x = .5;
+
+		})
+
+  trApi.getChallenges()
+    .done(function(challenges) {
+
+    	var challengesAmount = challenges.length;
+    	var currentChallengeNumber = 0;
+
+      challenges.forEach(function(challenge) {
+
+          if (challenge.challenger.userId === window.localStorage.getItem('userId')) {
+
+            var opponent = challenge.challenged.userId;
+
+          } else {
+
+            var opponent = challenge.challenger.userId;
+
+          }
+
+          trApi.getOpponent(opponent)
+            .done(function(challenger) {
+
+              challenger = challenger[0];
+
+              var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
+              app.game.load.image(challenger.externalId + 'pic', challengerPic);
+              app.game.load.start();
+
+              currentChallengeNumber++;
+
+              if (currentChallengeNumber === challengesAmount) {
+
+              	displayChallenges();
+
+              }
+
+            })
+
+        })      
+
+    }).fail(function(err) {
+        console.error(`Failed to get challenges because: ${err.responseJSON.error.message}`);
+    });
 
 }
 
@@ -30,18 +87,14 @@ app.challenges.create = function() {
 	var homeButton = app.game.add.button(30, 30, 'home', goHome);
 	homeButton.scale.setTo(scaleRatio);
 
-	var userPic = app.game.add.image(0, 260 * scaleRatio, 'userPic');
+};
+
+function displayChallenges() {
+
+	var userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
 	userPic.scale.setTo(.8 * scaleRatio);
 	userPic.x = app.game.world.centerX;
 	userPic.anchor.x = .5;
-
-	var welcomeText = app.game.add.text(userPic.width + 20, 160 * scaleRatio, 'Hi, ' + userName + '!', {
-			font: 50 * scaleRatio + 'px Baloo Paaji',
-			fill: '#fff',
-			align: "right",
-		});
-	welcomeText.x = app.game.world.centerX;
-	welcomeText.anchor.x = .5;
 
 	trApi.getChallengesSorted()
 		.done(function(challenges) {
@@ -74,8 +127,6 @@ app.challenges.create = function() {
 			challengerGroup1.y = openGames.y + 200 * scaleRatio;
 
 			challenges.open.forEach(function(challenge) {
-
-					console.log(challenge);
 
 					if (challenge.status === "new") {
 
@@ -241,7 +292,7 @@ app.challenges.create = function() {
 
 		});
 
-};
+}
 
 function challengeStart(challenge) {
 

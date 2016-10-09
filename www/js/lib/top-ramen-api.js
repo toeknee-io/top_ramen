@@ -62,34 +62,6 @@ class TopRamenApi {
 
   }
 
-  getUserIdentity(userId) {
-
-    userId = userId || this.userId || self.storage.getItem('userId');
-
-    if (!userId) throw new Error('The userId is missing in getUserIdentity call');
-
-    return $.get(
-        `${this.API_URL}/users/${userId}/identities`
-      ).done(function(user) {
-
-        user = user[0];
-
-        if (user.provider === 'facebook') {
-          facebook = true;
-          console.log('facebook');
-          let token = user.credentials.accessToken;
-          userName = user.profile.displayName;
-          userPic = `https://graph.facebook.com/me/picture?access_token=${token}&type=large`;
-          userFBFriends = $.get(`https://graph.facebook.com/me/friends?access_token=${token}`);
-          app.game.state.restart();
-        }
-
-      }).fail(function(err) {
-        console.error(`failed: ${err.responseJSON.error.message}`);
-      });
-
-  }
-
   getUserIdentityBySocialId(provider, externalId) {
 
     if (!provider || !externalId)

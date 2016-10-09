@@ -31,10 +31,6 @@ window.trApi = null;
 
             trApi.getUserByDeviceId();
 
-          } else if (storage.getItem('tryLogin') === 'false' && storage.getItem('userId')) {
-
-            trApi.getUserIdentity(window.localStorage.userId);
-
           }
 
           cordovaApp.push = PushNotification.init({

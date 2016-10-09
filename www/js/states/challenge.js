@@ -1,7 +1,5 @@
 app.challenge = {}
 
-var fbFriendsArray;
-
 app.challenge.preload = function() {
 
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -17,19 +15,10 @@ app.challenge.preload = function() {
 
   app.game.kineticScrolling.start();
 
-	if (facebook) {
-		fbFriendsArray = userFBFriends.responseJSON.data;
-		fbFriendsArray.forEach(function(friend) {
-			var friendPic = 'https://graph.facebook.com/' + friend.id + '/picture?type=large';
-			app.game.load.image(friend.id + 'pic', friendPic);
-		});
-	}
-
   app.game.load.image('sent', 'assets/challenge_sent.png');
   app.game.load.image('play_now', 'assets/play_now.png');
   app.game.load.image('yes', 'assets/yes.png');
   app.game.load.image('no', 'assets/no.png');
-  app.game.load.image('userPic', userPic);
 
 }
 
@@ -43,53 +32,54 @@ app.challenge.create = function() {
 	var homeButton = app.game.add.button(30, 30, 'home', goHome);
 	homeButton.scale.setTo(scaleRatio);
 
-	var userPic = app.game.add.image(0, 260 * scaleRatio, 'userPic');
-	userPic.scale.setTo(.8 * scaleRatio);
-	userPic.x = app.game.world.centerX;
-	userPic.anchor.x = .5;
+	var userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
+			userPic.scale.setTo(.8 * scaleRatio);
+			userPic.x = app.game.world.centerX;
+			userPic.anchor.x = .5;
 
-	var welcomeText = app.game.add.text(userPic.width + 20, 160 * scaleRatio, 'Hi, ' + userName + '!', {
-			font: 50 * scaleRatio + 'px Baloo Paaji',
-			fill: '#fff',
-			align: "right",
-		});
-	welcomeText.x = app.game.world.centerX;
-	welcomeText.anchor.x = .5;
-
-	if (facebook) {
-		fbLoad(fbFriendsArray);
-	}
-}
-
-function fbLoad(arg) {
 	var picY = 500 * scaleRatio;
 
 	var friendGroup = app.game.add.group();
 
-	fbFriendsArray.forEach(function(friend) {
-		var butt = app.game.add.button(0, picY, 'item', challengeFn, friend);
+	trApi.getUserSocial()
+    .done(function(data) {
 
-		butt.scale.setTo(.8 * scaleRatio);
-		butt.centerX = app.game.world.centerX;
+		var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
+				font: 50 * scaleRatio + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "right",
+			});
 
-		var buttPic = app.game.add.image(30, 30, friend.id + 'pic');
-		var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
-			font: 60 + 'px Baloo Paaji',
-			fill: '#fff',
-			align: "right",
-		} );
+		welcomeText.anchor.x = .5;
 
-		butt.addChild(buttText);
-		butt.addChild(buttPic);
+    data.facebook.friends.forEach(function(friend) {
 
-		buttPic.scale.setTo(.8);
+      var butt = app.game.add.button(0, picY, 'item', challengeFn, friend);
 
-		friendGroup.add(butt);
+			butt.scale.setTo(.8 * scaleRatio);
+			butt.centerX = app.game.world.centerX;
 
-		picY += 200 * scaleRatio;
-	});
+			var buttPic = app.game.add.image(30, 30, friend.id + 'pic');
+			var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
+				font: 60 + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "right",
+			} );
 
-	app.game.world.setBounds(0, 0, app.game.width, friendGroup.height + 600 * scaleRatio);
+			butt.addChild(buttText);
+			butt.addChild(buttPic);
+
+			buttPic.scale.setTo(.8);
+
+			friendGroup.add(butt);
+
+			picY += 200 * scaleRatio;
+
+    })
+
+  })
+
+  app.game.world.setBounds(0, 0, app.game.width, friendGroup.height + 600 * scaleRatio);
 
 }
 

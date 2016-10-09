@@ -39,18 +39,15 @@
             trApi.getUserSocial()
                 .done(function(data) {
 
-                    app.game.load.image('myPic', data.facebook.picture);
+                  app.game.load.image('myPic', data.facebook.picture);
 
                   data.facebook.friends.forEach(function(friend) {
 
-                      //var friendPic = 'https://graph.facebook.com/' + friend.id + '/picture?type=large';
                       app.game.load.image(friend.id + 'pic', 'https://graph.facebook.com/' + friend.id + '/picture?type=large');
 
                   })
 
                   app.game.load.start();
-
-                  //displayFriends();
 
                 })
 

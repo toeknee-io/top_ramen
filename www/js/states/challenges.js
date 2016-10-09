@@ -19,7 +19,6 @@ app.challenges.preload = function() {
 		.done(function(data) {
 
 			app.game.load.image('myPic', data.facebook.picture);
-			app.game.load.start();
 
 			var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
 				font: 50 * scaleRatio + 'px Baloo Paaji',
@@ -31,48 +30,25 @@ app.challenges.preload = function() {
 
 		})
 
-  trApi.getChallenges()
-    .done(function(challenges) {
+		trApi.getChallengesSorted()
+  	.done(function(challenges) {
 
-    	var challengesAmount = challenges.length;
-    	var currentChallengeNumber = 0;
+  		challenges.open.forEach(function(challenge) {
 
-      challenges.forEach(function(challenge) {
+  			let challenger = challenge[challenge.challenger.userId === window.localStorage.getItem('userId') ? 'challenged' : 'challenger'].identities[0];
 
-          if (challenge.challenger.userId === window.localStorage.getItem('userId')) {
+  			var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
+        app.game.load.image(challenger.externalId + 'pic', challengerPic);
 
-            var opponent = challenge.challenged.userId;
+        var lastKeyCheck = challenger.externalId + 'pic';
 
-          } else {
+  		})
 
-            var opponent = challenge.challenger.userId;
+  		app.game.load.start();
 
-          }
+			displayChallenges();
 
-          trApi.getOpponent(opponent)
-            .done(function(challenger) {
-
-              challenger = challenger[0];
-
-              var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
-              app.game.load.image(challenger.externalId + 'pic', challengerPic);
-              app.game.load.start();
-
-              currentChallengeNumber++;
-
-              if (currentChallengeNumber === challengesAmount) {
-
-              	displayChallenges();
-
-              }
-
-            })
-
-        })      
-
-    }).fail(function(err) {
-        console.error(`Failed to get challenges because: ${err.responseJSON.error.message}`);
-    });
+  	})
 
 }
 

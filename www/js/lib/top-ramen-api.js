@@ -201,21 +201,6 @@ class TopRamenApi {
 
   }
 
-  getOpponent(opponent) {
-
-    let self = this;
-
-    return $.get(
-      `${self.API_URL}/users/${opponent}/identities`
-    ).done(function(challenger) {
-
-    }).fail(function(err) {
-      console.error(`failed: ${err.responseJSON.error.message}`);
-    });
-
-  }
-
-
   patchChallenge(challengeId, score) {
 
     let self = this;

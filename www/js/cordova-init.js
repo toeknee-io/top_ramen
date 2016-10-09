@@ -49,9 +49,9 @@ window.trApi = null;
 
               let storedRegId = storage.getItem('registrationId');
 
-              console.log(`onRegistration registrationId ${data.registrationId}`);
-
               if (!storedRegId || storedRegId !== data.registrationId) {
+
+                console.log(`new push registrationId ${data.registrationId}`);
 
                 storage.setItem('registrationId', data.registrationId);
 

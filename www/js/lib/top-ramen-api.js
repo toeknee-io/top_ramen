@@ -41,24 +41,9 @@ class TopRamenApi {
 
     let deviceId = opts.deviceId || this.deviceId;
 
-    return $.get(
-      `${this.API_URL}/devices/findOne?filter[where][deviceId]=${deviceId}`
-      ).done(function(data) {
-
-        if (data && data.userId) {
-
-            self.userId = data.userId;
-
-            self.storage.setItem('userId', data.userId);
-            self.storage.setItem('tryLogin', 'false');
-
-            self.getUserIdentity(data.userId);
-
-        }
-
-      }).fail(function(err) {
-        console.error(`Failed to get userId using deviceId [${deviceId}] : ${err.responseJSON.error.message}`);
-      });
+    return $.get(`${this.API_URL}/devices/findOne?filter[where][deviceId]=${deviceId}`)
+      .done((data) => { if (data && data.userId) self.userId = data.userId;})
+      .fail(err => console.error(`Failed to get userId using deviceId [${deviceId}] : ${err.responseJSON.error.message}`));
 
   }
 
@@ -132,9 +117,13 @@ class TopRamenApi {
 
     });
 
-    iab.addEventListener('exit', function(event) {
+    iab.addEventListener('exit', event => {
 
-      self.getUserByDeviceId().always( () => app.game.state.restart() );
+      self.getUserByDeviceId()
+        .done(data => {
+          this.storage.setItem('userId', data.userId);
+          this.storage.setItem('tryLogin', 'false');})
+        .always(() => app.game.state.restart());
 
     });
 

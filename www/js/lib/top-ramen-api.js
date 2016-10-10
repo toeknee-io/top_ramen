@@ -110,20 +110,17 @@ class TopRamenApi {
 
     let iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
 
-    iab.addEventListener('loadstart', function(event) {
+    iab.addEventListener('loadstart', event => {
 
-      if (~event.url.indexOf('/auth/account'))
-        iab.close();
-
-    });
-
-    iab.addEventListener('exit', event => {
-
-      self.getUserByDeviceId()
-        .done(data => {
-          this.storage.setItem('userId', data.userId);
-          this.storage.setItem('tryLogin', 'false');})
-        .always(() => app.game.state.restart());
+      if (~event.url.indexOf('/auth/account')) {
+        self.getUserByDeviceId()
+          .done(data => {
+            this.storage.setItem('userId', data.userId);
+            this.storage.setItem('tryLogin', 'false'); })
+          .always(() => {
+            iab.close();
+            app.game.state.restart();});
+      }
 
     });
 
@@ -131,22 +128,18 @@ class TopRamenApi {
 
   logUserOut() {
 
-    let self = this;
+    return $.post(`${this.API_URL}/users/logout`)
+      .fail(err => console.error(`Log out API error: ${err.responseJSON.error.message}`))
+      .always(() => {
 
-    return $.post(
-      `${self.API_URL}/users/logout`
-    ).always(function() {
+        this.storage.removeItem('userId');
+        this.storage.removeItem('connect.sid');
 
-      self.storage.removeItem('userId');
-      self.storage.removeItem('connect.sid');
-      self.storage.setItem('tryLogin', 'false');
+        this.storage.setItem('tryLogin', 'false');
 
-      app.game.state.restart();
+        app.game.state.restart();
 
-    }).fail(function(err) {
-      console.error(`Log out API error: ${err.responseJSON.error.message}`);
-      window.location.reload(true);
-    });
+      });
 
   }
 
@@ -178,13 +171,8 @@ class TopRamenApi {
     if (!self.userId)
       throw new Error('Missing userId in getChallenges call');
 
-    return $.get(
-      `${self.API_URL}/challenges?filter[where][or][0][challenged.userId]=${self.userId}&filter[where][or][1][challenger.userId]=${self.userId}`
-    ).done(function(data) {
-      console.log(`got challenges: ${JSON.stringify(data)}`);
-    }).fail(function(err) {
-      console.error(`Failed to get challenges: ${err.responseJSON.error.message}`);
-    });
+    return $.get(`${self.API_URL}/challenges?filter[where][or][0][challenged.userId]=${self.userId}&filter[where][or][1][challenger.userId]=${self.userId}`)
+      .fail((err) => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
 
   }
 
@@ -196,7 +184,6 @@ class TopRamenApi {
       throw new Error('Missing userId in getChallenges call');
 
     return $.get(`${self.API_URL}/challenges/sort/${self.userId}`)
-      .done(data => console.log(`got sorted challenges: ${JSON.stringify(data)}`))
       .fail(err => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
 
   }

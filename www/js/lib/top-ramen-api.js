@@ -97,29 +97,26 @@ class TopRamenApi {
 
   logUserIn(opts) {
 
-    let self = this;
-
-    if (!self.deviceId) throw new Error('The deviceId is missing in logUserIn call');
+    if (!this.deviceId) throw new Error('The deviceId is missing in logUserIn call');
 
     opts = __getOpts(opts);
 
     let loginUri = `/auth/${opts.provider}`;
-    let loginUrl = `${self.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${self.deviceId}&deviceType=${self.platform}`
+    let loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${this.deviceId}&deviceType=${this.platform}`
 
-    self.storage.setItem('tryLogin', 'true');
+    this.storage.setItem('tryLogin', 'true');
 
     let iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
 
     iab.addEventListener('loadstart', event => {
 
       if (~event.url.indexOf('/auth/account')) {
-        self.getUserByDeviceId()
+        this.getUserByDeviceId()
           .done(data => {
             this.storage.setItem('userId', data.userId);
-            this.storage.setItem('tryLogin', 'false'); })
-          .always(() => {
-            iab.close();
-            app.game.state.restart();});
+            this.storage.setItem('tryLogin', 'false');
+            app.game.state.restart();})
+          .always(() => iab.close());
       }
 
     });

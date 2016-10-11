@@ -1,6 +1,7 @@
 app.boot = {}
 
 app.boot.preload = function() {
+
 	//app.game.load.audio('menu', 'assets/sounds/menu.ogg' );
 	//app.game.load.audio('lvl', 'assets/sounds/orlvl.ogg' );
 	app.game.load.audio('pop', 'assets/sounds/pop.ogg' );
@@ -22,7 +23,23 @@ app.boot.create = function() {
 
 	app.game.forceSingleUpdate = true;
 
-	app.game.stage.backgroundColor = "#111111";
+	app.game.stage.backgroundColor = "#000000";
 
-	app.game.state.start('menu');
+	app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+
+	setTimeout(function() {
+
+		if (navigator.splashscreen) {
+
+			navigator.splashscreen.hide();
+
+		}
+
+		setTimeout(function() {
+			app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+			app.game.state.start('menu');
+		}, 1000)
+
+	}, 2400)	
+
 }

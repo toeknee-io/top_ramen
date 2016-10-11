@@ -25,7 +25,7 @@ app.challenge.preload = function() {
 app.challenge.create = function() {
 	console.log('Challenge State');
 
-	var bg = app.game.add.image(0, 0, 'menu_bg');
+	var bg = app.game.add.image(0, 0, 'bg');
 	bg.scale.setTo(scaleRatio * 2.05);
 	bg.fixedToCamera = true;
 
@@ -44,42 +44,46 @@ app.challenge.create = function() {
 	trApi.getUserSocial()
     .done(function(data) {
 
-		var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
+		if (app.game.state.current === "challenge") {
+
+			var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
 				font: 50 * scaleRatio + 'px Baloo Paaji',
 				fill: '#fff',
 				align: "right",
 			});
 
-		welcomeText.anchor.x = .5;
+			welcomeText.anchor.x = .5;
 
-    data.facebook.friends.forEach(function(friend) {
+	    data.facebook.friends.forEach(function(friend) {
 
-      var butt = app.game.add.button(0, picY, 'item', challengeFn, friend);
+	      var butt = app.game.add.button(0, picY, 'item', challengeFn, friend);
 
-			butt.scale.setTo(.8 * scaleRatio);
-			butt.centerX = app.game.world.centerX;
+				butt.scale.setTo(.8 * scaleRatio);
+				butt.centerX = app.game.world.centerX;
 
-			var buttPic = app.game.add.image(30, 30, friend.id + 'pic');
-			var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
-				font: 60 + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "right",
-			} );
+				var buttPic = app.game.add.image(30, 30, friend.id + 'pic');
+				var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
+					font: 60 + 'px Baloo Paaji',
+					fill: '#fff',
+					align: "right",
+				} );
 
-			butt.addChild(buttText);
-			butt.addChild(buttPic);
+				butt.addChild(buttText);
+				butt.addChild(buttPic);
 
-			buttPic.scale.setTo(.8);
+				buttPic.scale.setTo(.8);
 
-			friendGroup.add(butt);
+				friendGroup.add(butt);
 
-			picY += 200 * scaleRatio;
+				picY += 200 * scaleRatio;
 
-    })
+	    })
+
+	    app.game.world.setBounds(0, 0, app.game.width, friendGroup.height + 600 * scaleRatio);
+
+		}
 
   })
-
-  app.game.world.setBounds(0, 0, app.game.width, friendGroup.height + 600 * scaleRatio);
 
 }
 

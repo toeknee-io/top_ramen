@@ -42,7 +42,6 @@ app.level.preload = function() {
 	console.log('Level Sate');
 
 	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-	app.game.kineticScrolling.stop();
     
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -65,7 +64,9 @@ app.level.preload = function() {
 	app.game.load.image('dot2', 'assets/dot2.png');
 	app.game.load.image('dot3', 'assets/dot3.png');
 	app.game.load.image('cutting-board', 'assets/cutting-board.png');
+	app.game.load.image('greenOnions', 'assets/green-onions.png');
 	app.game.load.atlasJSONHash('spritesheet', 'assets/spritesheet.png', 'assets/spritesheet.json');
+	app.game.load.atlasJSONHash('ings-sheet', 'assets/ings/ings.png', 'assets/ings/ings.json');
 
 	app.game.load.bitmapFont('8bit', 'assets/fonts/8bit.png', 'assets/fonts/8bit.fnt' );
 
@@ -124,7 +125,7 @@ app.level.create = function() {
 
     // Set up cutting board
 	var cutting = app.game.add.image(app.game.world.centerX,app.game.world.centerY,'cutting-board');
-	cutting.scale.setTo(scaleRatio*1.7, scaleRatio*1.7);
+	cutting.scale.setTo(scaleRatio*1.7);
 	cutting.anchor.x = 0.5;
 	cutting.anchor.y = 0.5;
 

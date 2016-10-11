@@ -9,7 +9,7 @@ egg.spawn = function() {
 	}
 	egg.speed = app.game.rnd.integerInRange(600,750);
 	egg.spawnTime = app.game.rnd.integerInRange(7000,12000);
-	egg.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'spritesheet','egg.png');
+	egg.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','egg.png');
 	ings.add(egg.sprite);
 	egg.sprite.alpha = 0;
 	egg.sprite.scale.setTo(scaleRatio, scaleRatio);

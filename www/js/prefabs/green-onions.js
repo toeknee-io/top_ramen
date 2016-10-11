@@ -15,7 +15,7 @@ greenOnions.spawn = function() {
 	}
 
 	greenOnions.spawnTime = app.game.rnd.integerInRange(2200,5000);
-	greenOnions.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'spritesheet','green-onions.png');
+	greenOnions.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','green-onions.png');
 	greenOnions.sprite.alpha = 0;
 	greenOnions.sprite.scale.setTo(scaleRatio, scaleRatio);
 	ings.add(greenOnions.sprite);

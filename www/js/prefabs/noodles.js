@@ -15,7 +15,7 @@ noodles.spawn = function() {
 	}
 
 	noodles.spawnTime = app.game.rnd.integerInRange(1000,5000);
-	noodles.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'spritesheet','noodles.png');
+	noodles.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','noodles.png');
 	noodles.sprite.alpha = 0;
 	noodles.sprite.scale.setTo(scaleRatio, scaleRatio);
 	ings.add(noodles.sprite);

@@ -1,4 +1,5 @@
 /*
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +17,27 @@
  * specific language governing permissions and limitations
  * under the License.
  *
- */
+*/
 
-function notSupported() {
-    console.log('StatusBar is not supported');
-    return false;
-}
+( function() {
+
+var win = null;
 
 module.exports = {
-    isVisible: false,
-    styleBlackTranslucent:notSupported,
-    styleDefault:notSupported,
-    styleLightContent:notSupported,
-    styleBlackOpaque:notSupported,
-    overlaysWebView:notSupported,
-    styleLightContect: notSupported,
-    backgroundColorByName: notSupported,
-    backgroundColorByHexString: notSupported,
-    hide: notSupported,
-    show: notSupported
+    show: function() {
+        if ( win === null ) {
+            win = window.open('splashscreen.html');
+        }
+    },
+
+    hide: function() {
+        if ( win !== null ) {
+            win.close();
+            win = null;
+        }
+    }
 };
 
+require("cordova/tizen/commandProxy").add("SplashScreen", module.exports);
+
+})();

@@ -15,7 +15,7 @@ bug.spawn = function() {
 	}
 
 	bug.speed = app.game.rnd.integerInRange(900, 1300);
-	bug.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'spritesheet','bug.png');
+	bug.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','bug.png');
 	ings.add(bug.sprite);
 	bug.sprite.alpha = 0;
 	bug.sprite.scale.setTo(scaleRatio, scaleRatio);

@@ -12,17 +12,23 @@
 
     app.menu.preload = function() {
 
-        app.game.load.image('title', 'assets/title.png');
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-        app.game.load.image('play_button','assets/button_play.png');
-        app.game.load.image('challenge_button','assets/button_challenge.png');
+        app.game.load.image('title', 'assets/title.png');
+        app.game.load.image('title2', 'assets/title2.png');
+        app.game.load.image('chefbar', 'assets/chefbar.png');
+        app.game.load.image('bg', 'assets/bg4.jpg');
+
+        app.game.load.image('play_button','assets/button_play2.png');
+        app.game.load.image('challenge_button','assets/button_challenge2.png');
+        app.game.load.image('challenges_button','assets/button_challenges2.png');
         app.game.load.image('options_button','assets/cog.png');
         app.game.load.image('options_menu','assets/options_menu.png');
         //app.game.load.image('login_button','assets/button_login.png');
         app.game.load.image('not_logged','assets/not_logged.png');
 
-        app.game.load.image('fb_login','assets/fb_login.png');
-        app.game.load.image('fb_logout','assets/fb_logout.png');
+        app.game.load.image('fb_login','assets/fb_login2.png');
+        app.game.load.image('fb_logout','assets/fb_logout2.png');
 
         if (!imageSize) imageSize = '';
 
@@ -61,29 +67,26 @@
         //menuSong = app.game.add.audio('menu');
         //menuSong.play();
 
-        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-
-        var bg = app.game.add.image(0, 0, 'menu_bg');
+        var bg = app.game.add.image(0, 0, 'bg');
         bg.scale.setTo(2.05 * scaleRatio);
-        bg.x = app.game.world.centerX;
-        bg.anchor.x = .5;
-        bg.y = app.game.world.centerY;
-        bg.anchor.y = .5;
 
-        var title = app.game.add.image(app.game.world.centerX,app.game.world.height * .12, 'title');
+        var title = app.game.add.image(app.game.world.centerX, 160 * scaleRatio, 'title2');
         title.anchor.x = 0.5;
         title.scale.setTo(scaleRatio);
 
-        var bowl = app.game.add.image(app.game.world.centerX,app.game.world.height * .24, 'bowl');
-        bowl.anchor.x = 0.5;
+        //var bowl = app.game.add.image(app.game.world.centerX,app.game.world.height * .24, 'bowl');
+        //bowl.anchor.x = 0.5;
 
         var buttonGroup = app.game.add.group();
 
         var playButton = app.game.add.button(0, 0, 'play_button', quickPlay);
         var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
-        var challengesButton = app.game.add.button(0, 0, 'challenge_button', challenges);
+        var challengesButton = app.game.add.button(0, 0, 'challenges_button', challenges);
 
         let isLoggedIn = window.localStorage.getItem('userId') ? true : false;
+
+        challengeButton.alpha = isLoggedIn ? 1 : .4;
+        challengesButton.alpha = isLoggedIn ? 1 : .4;
 
         let btnImg = isLoggedIn ? 'fb_logout' : 'fb_login';
         let btnFn = isLoggedIn ? logout : fbLogin;
@@ -92,15 +95,14 @@
 
         //var regs = app.game.add.button(0, 0, 'login_button', regsLogin);
 
-        var optionsButton = app.game.add.button(0, 0, 'options_button', options);
-
         buttonGroup.add(playButton);
         buttonGroup.add(challengeButton);
         buttonGroup.add(challengesButton);
         buttonGroup.add(fb);
-        buttonGroup.add(optionsButton);
 
-        var buttonSpacer = 1050;
+        buttonGroup.y = title.bottom + 70 * scaleRatio; 
+
+        var buttonSpacer = 0;
 
         buttonGroup.forEach(buttonsSetup, this, true);
 
@@ -112,19 +114,20 @@
             buttonSpacer += 200;
         }
 
-        optionsButton.anchor.y = 0.5;
-        optionsButton.x = app.game.world.width * .12;
-        optionsButton.y = app.game.world.height * .92;
+        var chefbar = app.game.add.image(app.game.world.centerX, app.game.world.height, 'chefbar');
+        chefbar.scale.setTo(scaleRatio);
+        chefbar.anchor.y = 1;
+        chefbar.anchor.x = .5;
+
+        var optionsButton = app.game.add.button(app.game.world.centerX, chefbar.bottom, 'options_button', options);
+        optionsButton.scale.setTo(scaleRatio);
+        optionsButton.anchor.x = .5;
+        optionsButton.anchor.y = .5;
+        optionsButton.y = (app.game.world.height * .98) - optionsButton.height / 2;
 
         var tween = this.add.tween(optionsButton).to({angle: + 360}, 3500, Phaser.Easing.Linear.None, true, 0, -1);
 
     };
-
-    function checkImages() {
-
-
-
-    }
 
     function quickPlay() {
     	//menuSong.stop();

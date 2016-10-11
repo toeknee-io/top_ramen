@@ -1,0 +1,76 @@
+{"frames": [
+
+{
+	"filename": "bug.png",
+	"frame": {"x":245,"y":716,"w":238,"h":245},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":238,"h":245},
+	"sourceSize": {"w":238,"h":245}
+},
+{
+	"filename": "chicken.png",
+	"frame": {"x":0,"y":477,"w":239,"h":239},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":239},
+	"sourceSize": {"w":239,"h":239}
+},
+{
+	"filename": "chili.png",
+	"frame": {"x":0,"y":716,"w":245,"h":239},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":245,"h":239},
+	"sourceSize": {"w":245,"h":239}
+},
+{
+	"filename": "egg.png",
+	"frame": {"x":0,"y":238,"w":239,"h":239},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":239},
+	"sourceSize": {"w":239,"h":239}
+},
+{
+	"filename": "green-onions.png",
+	"frame": {"x":239,"y":238,"w":239,"h":239},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":239},
+	"sourceSize": {"w":239,"h":239}
+},
+{
+	"filename": "kitty-brown.png",
+	"frame": {"x":239,"y":0,"w":239,"h":238},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":238},
+	"sourceSize": {"w":239,"h":238}
+},
+{
+	"filename": "kitty.png",
+	"frame": {"x":0,"y":0,"w":239,"h":238},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":238},
+	"sourceSize": {"w":239,"h":238}
+},
+{
+	"filename": "noodles.png",
+	"frame": {"x":239,"y":477,"w":239,"h":239},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":239},
+	"sourceSize": {"w":239,"h":239}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ings.png",
+	"format": "RGBA8888",
+	"size": {"w":483,"h":961},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:36ea2c709e03f2a3a4f782a7602ec17e:37728648a6f051dca67ce48f75b60a39:1dfb2d82bf01b006190943e4f03364c4$"
+}
+}

@@ -17,7 +17,7 @@ kitty.spawn = function() {
 	}
 	kitty.speed = app.game.rnd.integerInRange(900,1300);
 	kitty.spawnTime = app.game.rnd.integerInRange(5000,10000);
-	kitty.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'spritesheet','kitty' + kittyColor + '.png');
+	kitty.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','kitty' + kittyColor + '.png');
 	ings.add(kitty.sprite);
 	kitty.sprite.alpha = 0;
 	kitty.sprite.scale.setTo(scaleRatio, scaleRatio);

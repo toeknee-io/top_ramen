@@ -44,7 +44,11 @@ app.challenges.preload = function() {
 
 			app.game.load.start();
 
-			displayChallenges(challenges);
+			if (app.game.state.current === "challenges") {
+
+				displayChallenges(challenges);
+
+			}
 
 		})
 
@@ -54,7 +58,7 @@ app.challenges.create = function() {
 
 	console.log('Challenges State');
 
-	var bg = app.game.add.image(0, 0, 'menu_bg');
+	var bg = app.game.add.image(0, 0, 'bg');
 	bg.scale.setTo(scaleRatio * 2.05);
 	bg.fixedToCamera = true;
 

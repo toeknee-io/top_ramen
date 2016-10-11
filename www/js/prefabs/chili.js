@@ -15,7 +15,7 @@ chili.spawn = function() {
 	}
 
 	chili.spawnTime = app.game.rnd.integerInRange(4000,6000);
-	chili.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'spritesheet','chili.png');
+	chili.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','chili.png');
 	chili.sprite.alpha = 0;
 	chili.sprite.scale.setTo(scaleRatio, scaleRatio);
 	ings.add(chili.sprite);

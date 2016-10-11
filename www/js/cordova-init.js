@@ -1,8 +1,3 @@
-/* jshint browser: true, jquery: true, devel: true */
-/* globals PushNotification */
-
-window.trApi = null;
-
 (function() {
 
     "use strict";
@@ -20,57 +15,47 @@ window.trApi = null;
 
       onDeviceReady: function() {
 
-          window.trApi = new TopRamenApi();
+        window.trApi = new TopRamenApi();
 
-          let dev = window.device;
-          let storage = window.localStorage;
+        let dev = window.device;
+        let storage = window.localStorage;
 
-          if (storage.getItem('tryLogin') !== 'false' && dev && dev.uuid) {
+        cordovaApp.push = PushNotification.init({
+          "android": {
+            "senderID": "184977555503"
+          },
+          "ios": {
+            "sound": true,
+            "vibration": true,
+            "badge": true
+          },
+          "windows": {}
+        });
 
-            console.log('getting user for device.uuid', dev.uuid);
+        cordovaApp.push.on('registration', function(data) {
 
-            trApi.getUserByDeviceId();
+          if (_.isEmpty(storage.getItem('userId')))
+            return console.log('got push registration event, but aborting installation api call because user is not logged in');
+
+          let storedRegId = storage.getItem('registrationId');
+
+          if (!storedRegId || storedRegId !== data.registrationId) {
+
+            console.log(`new push registrationId ${data.registrationId}`);
+
+            storage.setItem('registrationId', data.registrationId);
+
+            trApi.postAppInstallation({ registrationId: data.registrationId, status: 'active' });
 
           }
 
-          cordovaApp.push = PushNotification.init({
-            "android": {
-              "senderID": "184977555503"
-            },
-            "ios": {
-              "sound": true,
-              "vibration": true,
-              "badge": true
-            },
-            "windows": {}
-          });
+        });
 
-          cordovaApp.push.on('registration', function(data) {
+        cordovaApp.push.on('error', err => console.error("push err:", err.message));
 
-              let storedRegId = storage.getItem('registrationId');
+        cordovaApp.push.on('notification', data => console.log(`received push notification: #{JSON.stringify(data)}`));
 
-              if (!storedRegId || storedRegId !== data.registrationId) {
-
-                console.log(`new push registrationId ${data.registrationId}`);
-
-                storage.setItem('registrationId', data.registrationId);
-
-                let opts = {};
-                opts.registrationId = data.registrationId;
-
-                trApi.postAppInstallation(opts);
-
-              }
-
-          });
-
-          cordovaApp.push.on('error', function(err) {
-              console.error("push err:", err.message);
-          });
-
-          cordovaApp.push.on('notification', function(data) {
-              console.log("received push notification:", JSON.stringify(data));
-          });
+        window.trApi.cordovaPush = cordovaApp.push;
 
       }
 

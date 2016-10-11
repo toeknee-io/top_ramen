@@ -162,15 +162,23 @@
     }
 
     function options() {
-    	var options = app.game.add.button(0, 0, 'options_menu', function() {
-				options.destroy();
-			});
-			options.scale.setTo(scaleRatio);
-			options.x = app.game.world.centerX;
-			options.anchor.x = .5;
-			options.y = app.game.world.centerY;
-			options.anchor.y = .5;
-	    }
+
+    	let options = app.game.add.button(0, 0, 'options_menu', () => {
+            console.log('opts pushed');
+            window.trApi.cordovaPush.unregister(
+                () => console.log('successfully unregistered from push notifications'),
+                err => console.error(`err while unregistering from push notifications ${err}`)
+            );
+            window.localStorage.removeItem('registrationId');
+		});
+
+		options.scale.setTo(scaleRatio);
+		options.x = app.game.world.centerX;
+		options.anchor.x = .5;
+		options.y = app.game.world.centerY;
+		options.anchor.y = .5;
+
+	}
 
     function fbLogin() {
         login('facebook');

@@ -2,6 +2,7 @@ var greenOnions = {};
 
 greenOnions.worth = 1;
 greenOnions.bonus = 0;
+greenOnions.type = 'good';
 
 greenOnions.spawn = function() {
 	if (gameOver) {
@@ -22,6 +23,7 @@ greenOnions.spawn = function() {
 	greenOnions.sprite.events.onInputDown.add(collect, greenOnions);
 	greenOnions.motionTween = app.game.add.tween(greenOnions.sprite).to({ y: 50 }, greenOnions.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	greenOnions.fadeInTween = app.game.add.tween(greenOnions.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
+	greenOnions.rotateTween = app.game.add.tween(greenOnions.sprite).to({ angle: 20 }, greenOnions.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	greenOnions.motionTween.onComplete.addOnce(killIng, this);
 
 	greenOnions.sound = pop;

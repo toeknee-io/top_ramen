@@ -2,6 +2,7 @@ var noodles = {};
 
 noodles.worth = 1;
 noodles.bonus = 0;
+noodles.type = 'good';
 
 noodles.spawn = function() {
 	if (gameOver) {
@@ -22,6 +23,7 @@ noodles.spawn = function() {
 	noodles.sprite.events.onInputDown.add(collect, noodles);
 	noodles.motionTween = app.game.add.tween(noodles.sprite).to({ y: 50 }, noodles.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	noodles.fadeInTween = app.game.add.tween(noodles.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
+	noodles.rotateTween = app.game.add.tween(noodles.sprite).to({ angle: 20 }, noodles.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	noodles.motionTween.onComplete.addOnce(killIng, this);
 
 	noodles.sound = pop;

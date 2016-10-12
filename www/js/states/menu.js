@@ -33,7 +33,7 @@
         if (!imageSize) imageSize = '';
 
         if (window.devicePixelRatio == 2) {
-            imageSize = 'X2';
+            //imageSize = 'X2';
         } else if (window.devicePixelRatio >= 3) {
             imageSize = 'LG';
         }

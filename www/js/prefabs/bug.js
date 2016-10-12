@@ -2,6 +2,7 @@ var bug = {};
 
 bug.worth = -1;
 bug.bonus = 0;
+bug.type = 'bad';
 
 bug.spawn = function() {
 	if (gameOver) {

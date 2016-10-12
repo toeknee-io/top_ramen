@@ -2,6 +2,7 @@ var chicken = {};
 
 chicken.worth = 4;
 chicken.bonus = 3;
+chicken.type = 'good';
 
 chicken.spawn = function() {
 	if (gameOver) {
@@ -16,6 +17,7 @@ chicken.spawn = function() {
 	chicken.sprite.events.onInputDown.add(collect, chicken);
 	chicken.motionTween = app.game.add.tween(chicken.sprite).to({ y: app.game.world.height * .20 }, chicken.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	chicken.fadeInTween = app.game.add.tween(chicken.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
+	chicken.rotateTween = app.game.add.tween(chicken.sprite).to({ angle: 30 }, chicken.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	chicken.motionTween.onComplete.addOnce(killIng, this);
 
 	chicken.sound = pop;

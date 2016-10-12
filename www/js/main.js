@@ -9,7 +9,6 @@ app.game.state.start('boot');
 
 function goHome() {
 	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-	app.game.kineticScrolling.stop();
 	app.game.state.clearCurrentState();
 	app.game.state.start('menu');
 }

@@ -12,6 +12,8 @@ var timeLeft;
 var bonusTime;
 var bonus;
 var gameOver;
+var streakNumber = 0;
+var streakText;
 
 var pop;
 
@@ -48,7 +50,7 @@ app.level.preload = function() {
 	if (!imageSize) imageSize = '';
     
 	if (window.devicePixelRatio == 2) {
-		imageSize = 'X2';
+		//imageSize = 'X2';
 	} else if (window.devicePixelRatio >= 3) {
 		imageSize = 'LG';
 	}
@@ -132,8 +134,8 @@ app.level.create = function() {
 	app.game.world.bringToTop(ings);
 
 	// Set up top light bar
-	var lights = app.game.add.sprite(0, 0 - 30 * scaleRatio, 'lights');
-	lights.x = app.game.width/2 - lights.width/2;
+	var lights = app.game.add.sprite(app.game.world.centerX, 0 - 30 * scaleRatio, 'lights');
+	lights.anchor.x = 0.5;
 
 	// Set up bottom wooden board
 	var board = app.game.add.image(0 - 40 * scaleRatio,app.game.height - 200 * scaleRatio, 'spritesheet', 'board.png');
@@ -167,25 +169,26 @@ app.level.create = function() {
 	// Splash
 	emitter = app.game.add.emitter(0,0,30);
 	emitter.makeParticles('splash');
-    emitter.gravity = 500;
+	emitter.minParticleSpeed.setTo(-1000, 1500);
+  emitter.gravity = 1000;
 
-    // Steam
-    steamEmitter = app.game.add.emitter(app.game.world.centerX,10,300);
-    steamEmitter.makeParticles('steam');
-    steamEmitter.gravity = -500;
-    steamEmitter.setRotation(0.1, 0.1);
-    steamEmitter.setAlpha(0, .4, 10000);
-    steamEmitter.setScale(0.2, .4, 0.2, .7, 4000, Phaser.Easing.easeOut);
-    steamEmitter.start(false,500,20);
-    steamEmitter.forEachAlive(function(p) {
-    	p.scale.setTo(scaleRatio,scaleRatio);
-    });
-    steamEmitter.emitX = bowl.x + bowl.width/2;
-    steamEmitter.emitY = bowl.y + 20;
+  // Steam
+  steamEmitter = app.game.add.emitter(app.game.world.centerX,10,300);
+  steamEmitter.makeParticles('steam');
+  steamEmitter.gravity = -500;
+  steamEmitter.setRotation(0.1, 0.1);
+  steamEmitter.setAlpha(0, .4, 10000);
+  steamEmitter.setScale(0.2, .4, 0.2, .7, 4000, Phaser.Easing.easeOut);
+  steamEmitter.start(false,500,20);
+  steamEmitter.forEachAlive(function(p) {
+  	p.scale.setTo(scaleRatio);
+  });
+  steamEmitter.emitX = bowl.x + bowl.width/2;
+  steamEmitter.emitY = bowl.y + 20;
 
-    // Collect Text FIX
-    bonusText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40,300), '8bit', 'BONUS!');
-    bonusText.scale.setTo(window.devicePixelRatio * 2);
+  // Collect Text
+  bonusText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40,300), '8bit', 'BONUS!');
+  bonusText.scale.setTo(window.devicePixelRatio * 2);
 	bonusText.x = app.game.world.centerX - bonusText.width/2;
 	bonusText.alpha = 0;
 	bonusFadeIn = app.game.add.tween(bonusText).to({ alpha: 1 }, 150, Phaser.Easing.easeIn, true, 0, 0, false);
@@ -193,12 +196,20 @@ app.level.create = function() {
 	bonusFadeIn.chain(bonusFadeOut);
 
 	goodText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40,300), '8bit', 'GOOD');
-    goodText.scale.setTo(window.devicePixelRatio);
+  goodText.scale.setTo(window.devicePixelRatio * 1.5);
 	goodText.x = app.game.world.centerX - goodText.width/2;
 	goodText.alpha = 0;
 	goodFadeIn = app.game.add.tween(goodText).to({ alpha: 1 }, 150, Phaser.Easing.easeIn, true, 0, 0, false);
 	goodFadeOut = app.game.add.tween(goodText).to({ alpha: 0 }, 400, Phaser.Easing.easeIn, true, 0, 0, false);
 	goodFadeIn.chain(goodFadeOut);
+
+	streakText = app.game.add.text(app.game.world.width * .80, app.game.world.height * .83, '', {
+		font: 116 * scaleRatio + 'px Baloo Paaji',
+		fill: '#FF0080',
+		align: 'right'
+	});
+	streakText.anchor.x = .5;
+	streakText.anchor.y = .5;
 
 	// FIGURE OUT WHY THEY STACK UP
 
@@ -258,8 +269,8 @@ function time() {
 function collect(ingredient) {
 	collectSound(this);
 
-	if("vibrate" in window.navigator) {
-	    window.navigator.vibrate(50);
+	if ("vibrate" in window.navigator) {
+    window.navigator.vibrate(50);
 	}
 
 	if (this.bonus == 0 && this.worth > 0 && goodFadeOut.isRunning == false) {
@@ -280,13 +291,13 @@ function collect(ingredient) {
 	}
 
 	emitter.x = this.sprite.x + this.sprite.width/2;
-    emitter.y = this.sprite.y + this.sprite.height/2;
-    emitter.start(true, 600, null, app.game.rnd.integerInRange(3,6));
-    emitter.forEachAlive(function(p) {
-    	p.scale.setTo(scaleRatio,scaleRatio);
-    	app.game.add.tween(p).to({ alpha: 0 }, 600, Phaser.Easing.easeOut, true, 0, 0, false);
-    });
-    app.game.time.events.add(600, destroyEmitter, this);
+  emitter.y = this.sprite.y + this.sprite.height/2;
+  emitter.start(true, 1000, null, app.game.rnd.integerInRange(3,6));
+  emitter.forEachAlive(function(p) {
+  	p.scale.setTo(scaleRatio * 1.5);
+  	app.game.add.tween(p).to({ alpha: 0 }, 1000, Phaser.Easing.easeOut, true, 0, 0, false);
+  });
+  app.game.time.events.add(1000, destroyEmitter, this);
 
 	score += this.worth;
 	if (!bonus) {
@@ -294,6 +305,26 @@ function collect(ingredient) {
 	}
 	destroyIng(this);
 	reSpawn(this);
+
+	if (this.type === 'good') {
+
+		streakNumber++;
+
+	} else if (this.type === 'bad') {
+
+		streakNumber = 0;
+
+	}
+
+	if (streakNumber > 2) {
+
+		streakText.text = 'STREAK\n' + streakNumber;
+
+	} else {
+
+		streakText.text = '';
+
+	}
 
 }
 

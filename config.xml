@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="com.bitsmitten.topramen.android" version="0.0.1" android-versionCode="1">
+<name>Top Ramen</name>
+<description>Make Ramen!</description>
+<author>BitSmitten Studios</author>
+<content src="index.html"/>
+<access origin="*"/>
+<allow-intent href="http://*/*"/>
+<allow-intent href="https://*/*"/>
+<allow-intent href="tel:*"/>
+<allow-intent href="sms:*"/>
+<allow-intent href="mailto:*"/>
+<allow-intent href="geo:*"/>
+<allow-intent href="market:*"/>
+<preference name="BackgroundColor" value="0x00000000"/>
+<preference name="Fullscreen" value="true"/>
+<preference name="android-minSdkVersion" value="16"/>
+<preference name="android-targetSdkVersion" value="23"/>
+<preference name="android-installLocation" value="auto"/>
+<preference name="android-signed" value="true"/>
+<preference name="debuggable" value="false"/>
+<preference name="AutoHideSplashScreen" value="false" />
+<preference name="FadeSplashScreen" value="true"/>
+<preference name="ShowSplashScreenSpinner" value="false"/>
+<preference name="SplashScreenDelay" value="0" />
+<preference name="SplashMaintainAspectRatio" value="true" />
+<preference name="SplashShowOnlyFirstTime" value="false" />
+<platform name="android">
+    <preference name="Orientation" value="portrait"/>
+    <splash src="splash.png"/>
+</platform>
+<platform name="ios">
+    <preference name="StatusBarOverlaysWebView" value="false"/>
+    <preference name="StatusBarBackgroundColor" value="#000000"/>
+    <preference name="StatusBarStyle" value="lightcontent"/>
+</platform>
+</widget>

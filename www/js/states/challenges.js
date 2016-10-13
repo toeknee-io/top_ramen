@@ -37,9 +37,6 @@ app.challenges.preload = function() {
 
 				let challenger = challenge[challenge.challenger.userId === window.localStorage.getItem('userId') ? 'challenged' : 'challenger'].identities[0];
 
-				console.log(challenge);
-				console.log(challenger);
-
 				var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
 	      app.game.load.image(challenger.externalId + 'pic', challengerPic);
 

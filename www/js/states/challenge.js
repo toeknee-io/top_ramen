@@ -98,8 +98,26 @@ function challengeFn() {
 
 			identities.forEach(function(identity) {
 
+				let rand = app.game.rnd.integerInRange(1,3);
+
+				let ramenId = 'shoyu';
+
+				if (rand === 1) {
+
+					ramenId =  'shoyu';
+
+				} else if (rand === 2) {
+
+					ramenId =  'tonkotsu';
+
+				} else if (rand === 3) {
+
+					ramenId =  'spicy_chiken';
+
+				}
+
 				if (identity.provider === provider)
-					trApi.postChallenge(identity.userId)
+					trApi.postChallenge(identity.userId, ramenId)
 						.done(function(data) {
 							challengeSentPopup(data);
 						}).fail(function(err) {
@@ -143,7 +161,7 @@ function challengeSentPopup(id) {
 function playNow() {
 
 	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-	app.game.state.start('level', true, false, this.id);
+	app.game.state.start('level', true, false, this.id, this.ramenId);
 
 }
 

@@ -9,6 +9,7 @@ app.challengeResults.init = function(challenge) {
 app.challengeResults.preload = function() {
 
 	app.game.load.image('rematch', 'assets/rematch.png');
+	app.game.load.bitmapFont('8bit', 'assets/fonts/8bit.png', 'assets/fonts/8bit.fnt' );
 
 }
 
@@ -72,13 +73,9 @@ app.challengeResults.create = function() {
 
 	}
 
-	var welcomeText = app.game.add.text(app.game.world.centerX, 300 * scaleRatio, resultText, {
-		font: 170 * scaleRatio + 'px Baloo Paaji',
-		fill: '#fff',
-		align: "center",
-	});
-
-	welcomeText.anchor.x = .5;
+	var welcomeText = app.game.add.bitmapText(app.game.world.centerX, 400 * scaleRatio, '8bit', resultText);
+			welcomeText.scale.setTo(scaleRatio * 5);
+			welcomeText.anchor.x = .5;
 
 	var yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'Your score:\n' + yourScore, {
 		font: 120 * scaleRatio + 'px Baloo Paaji',

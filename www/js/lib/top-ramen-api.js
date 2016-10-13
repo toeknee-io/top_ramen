@@ -147,7 +147,7 @@ class TopRamenApi {
 
   }
 
-  postChallenge(userId) {
+  postChallenge(userId, ramenId) {
 
     let self = this;
 
@@ -159,7 +159,7 @@ class TopRamenApi {
 
     return $.post(
       `${self.API_URL}/challenges`,
-      { challenger: { userId: challengerId }, challenged: { userId: challengedId } })
+      { challenger: { userId: challengerId }, challenged: { userId: challengedId }, ramenId: ramenId })
     .done(data => console.log(`challenge created: ${JSON.stringify(data)}`))
     .fail(err => console.error(`Failed to create challenge: ${err.responseJSON.error.message}`));
 

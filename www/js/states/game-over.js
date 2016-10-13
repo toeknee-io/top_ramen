@@ -9,7 +9,8 @@ app.gameover.init = function(score, challengeData) {
 
 app.gameover.preload = function() {
 
-
+	app.game.load.image('rematch', 'assets/rematch.png');
+	app.game.load.bitmapFont('8bit', 'assets/fonts/8bit.png', 'assets/fonts/8bit.fnt' );
 
 }
 
@@ -63,26 +64,28 @@ app.gameover.create = function() {
 
 			if (yourScore > theirScore) {
 
-				music = app.game.add.audio('win');
+				resultText = 'You won!';
+
+				//music = app.game.add.audio('win');
 
 			} else if (yourScore === theirScore) {
 
-				music = app.game.add.audio('lose');
+				resultText = 'You tied!';
+
+				//music = app.game.add.audio('lose');
 
 			} else if (yourScore < theirScore) {
 
-				music = app.game.add.audio('lose');
+				resultText = 'You lost!';
+
+				//music = app.game.add.audio('lose');
 
 			}
 
-			music.play();
+			//music.play();
 
-			var welcomeText = app.game.add.text(app.game.world.centerX, 300 * scaleRatio, resultText, {
-				font: 170 * scaleRatio + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "center",
-			});
-
+			var welcomeText = app.game.add.bitmapText(app.game.world.centerX, 300 * scaleRatio, '8bit', resultText);
+			welcomeText.scale.setTo(scaleRatio * 3);
 			welcomeText.anchor.x = .5;
 
 			var yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'Your score:\n' + yourScore, {
@@ -114,7 +117,25 @@ app.gameover.create = function() {
 
 		  rematchButton.anchor.x = .5;
 
-		} 
+		} else {
+
+			var yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'Your score:\n' + yourScore, {
+				font: 120 * scaleRatio + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "center",
+			});
+
+			yourScoreText.anchor.x = .5;
+
+			var waitingText = app.game.add.text(app.game.world.centerX, 1200 * scaleRatio, "It's your opponent's turn!", {
+				font: 90 * scaleRatio + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "center",
+			});
+
+			waitingText.anchor.x = .5;
+
+		}
 
 	} else {
 

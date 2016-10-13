@@ -8,7 +8,7 @@ chicken.spawn = function() {
 	if (gameOver) {
 		return;
 	}
-	chicken.speed = app.game.rnd.integerInRange(600,750);
+	chicken.speed = app.game.rnd.integerInRange(720,750);
 	chicken.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	chicken.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','chicken.png');
 	ings.add(chicken.sprite);

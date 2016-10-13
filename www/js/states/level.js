@@ -67,6 +67,7 @@ app.level.preload = function() {
 	app.game.load.image('dot3', 'assets/dot3.png');
 	app.game.load.image('cutting-board', 'assets/cutting-board.png');
 	app.game.load.image('greenOnions', 'assets/green-onions.png');
+	app.game.load.atlasJSONHash('stars-sheet', 'assets/particles/stars/stars.png', 'assets/particles/stars/stars.json');
 	app.game.load.atlasJSONHash('spritesheet', 'assets/spritesheet.png', 'assets/spritesheet.json');
 	app.game.load.atlasJSONHash('ings-sheet', 'assets/ings/ings.png', 'assets/ings/ings.json');
 
@@ -167,13 +168,21 @@ app.level.create = function() {
 	timeLeftText.anchor.x = 0.5;
 
 	// Splash
-	emitter = app.game.add.emitter(0,0,30);
+	emitter = app.game.add.emitter(0, 0, 20);
 	emitter.makeParticles('splash');
-	emitter.minParticleSpeed.setTo(-1000, 1500);
+	emitter.minParticleSpeed.setTo(-800, -800);
+  emitter.maxParticleSpeed.setTo(800, 800);
   emitter.gravity = 1000;
 
+  // Bonus
+	bonusEmitter = app.game.add.emitter(0,0,200);
+	bonusEmitter.makeParticles('stars-sheet', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+	bonusEmitter.minParticleSpeed.setTo(-1200, -1200);
+  bonusEmitter.maxParticleSpeed.setTo(1200, 1200);
+  bonusEmitter.gravity = 0;
+
   // Steam
-  steamEmitter = app.game.add.emitter(app.game.world.centerX,10,300);
+  /*steamEmitter = app.game.add.emitter(app.game.world.centerX,10,300);
   steamEmitter.makeParticles('steam');
   steamEmitter.gravity = -500;
   steamEmitter.setRotation(0.1, 0.1);
@@ -184,7 +193,7 @@ app.level.create = function() {
   	p.scale.setTo(scaleRatio);
   });
   steamEmitter.emitX = bowl.x + bowl.width/2;
-  steamEmitter.emitY = bowl.y + 20;
+  steamEmitter.emitY = bowl.y + 20;*/
 
   // Collect Text
   bonusText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40,300), '8bit', 'BONUS!');
@@ -235,16 +244,11 @@ app.level.create = function() {
 	app.game.time.events.add(20000, kitty.spawn, kitty);
 }
 
-app.level.update = function() {
-
-	scoreText.text = 'Score\n' + score;
-	timeLeftText.text = timeLeft;
-}
-
 // Countdown timer update
 function updateTimer() {
 	if (!gameOver) {
 		timeLeft--;
+		timeLeftText.text = timeLeft;
 	}
 }
 
@@ -269,10 +273,6 @@ function time() {
 function collect(ingredient) {
 	collectSound(this);
 
-	if ("vibrate" in window.navigator) {
-    window.navigator.vibrate(50);
-	}
-
 	if (this.bonus == 0 && this.worth > 0 && goodFadeOut.isRunning == false) {
 		goodFadeIn.start();
 		goodText.y = app.game.rnd.integerInRange(app.game.world.y + 100, app.game.world.height - 300);
@@ -290,19 +290,51 @@ function collect(ingredient) {
 		bonusText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - bonusText.width - 10);
 	}
 
-	emitter.x = this.sprite.x + this.sprite.width/2;
-  emitter.y = this.sprite.y + this.sprite.height/2;
-  emitter.start(true, 1000, null, app.game.rnd.integerInRange(3,6));
-  emitter.forEachAlive(function(p) {
-  	p.scale.setTo(scaleRatio * 1.5);
-  	app.game.add.tween(p).to({ alpha: 0 }, 1000, Phaser.Easing.easeOut, true, 0, 0, false);
-  });
-  app.game.time.events.add(1000, destroyEmitter, this);
+	if (this.bonus === 0) {
+
+		emitter.x = this.sprite.x + this.sprite.width/2;
+	  emitter.y = this.sprite.y + this.sprite.height/2;
+	  emitter.start(true, 1000, null, app.game.rnd.integerInRange(3,6));
+	  emitter.forEachAlive(function(p) {
+	  	p.scale.setTo(scaleRatio * 1.5);
+	  	app.game.add.tween(p).to({ alpha: 0 }, 1000, Phaser.Easing.easeOut, true, 0, 0, false);
+	  });
+	  app.game.time.events.add(1000, destroyEmitter, this);
+
+	  if ("vibrate" in window.navigator && this.type === 'good') {
+
+	    window.navigator.vibrate(50);
+
+		} else if ("vibrate" in window.navigator && this.type === 'bad') {
+
+			window.navigator.vibrate(200);
+
+		}
+
+	} else if (this.bonus > 0) {
+
+		bonusEmitter.x = this.sprite.x + this.sprite.width/2;
+	  bonusEmitter.y = this.sprite.y + this.sprite.height/2;
+	  bonusEmitter.start(true, 1000, null, 20);
+	  bonusEmitter.forEachAlive(function(p) {
+	  	p.scale.setTo(scaleRatio);
+	  	app.game.add.tween(p).to({ alpha: 0 }, 1000, Phaser.Easing.easeOut, true, 0, 0, false);
+	  });
+	  app.game.time.events.add(1000, destroyEmitter, this);
+
+	  if ("vibrate" in window.navigator) {
+	    window.navigator.vibrate(250);
+		}
+
+	}
 
 	score += this.worth;
 	if (!bonus) {
 		bonusTime += this.bonus;
 	}
+
+	scoreText.text = 'Score\n' + score;
+
 	destroyIng(this);
 	reSpawn(this);
 

@@ -28,6 +28,9 @@
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         }
     },
     "dependent_plugins": {}

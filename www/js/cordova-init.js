@@ -22,7 +22,8 @@
 
         cordovaApp.push = PushNotification.init({
           "android": {
-            "senderID": "184977555503"
+            "senderID": "184977555503",
+            "forceShow": true
           },
           "ios": {
             "sound": true,

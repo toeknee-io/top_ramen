@@ -5,3 +5,4 @@ www/prepros.cfg
 .jshintrc
 top-ramen-game.sublime-*
 .cordova.config.android.xml
+.plugin-modifications.java

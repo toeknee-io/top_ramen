@@ -7,9 +7,6 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-crosswalk-webview": {
-            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
-        },
         "cordova-plugin-device": {
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },

@@ -306,15 +306,15 @@ public class SplashScreen extends CordovaPlugin {
                 }
 
                 // Create and show the dialog
-                splashDialog = new Dialog(context, android.R.style.Theme_Translucent_NoTitleBar);
+                splashDialog = new Dialog(context, android.R.style.Theme_DeviceDefault_NoActionBar_Fullscreen);
 
                 int uiOptions = splashDialog.getWindow().getDecorView().getSystemUiVisibility()
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_FULLSCREEN;
 
-                splashDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);       
-                
+                splashDialog.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+
                 splashDialog.setContentView(splashImageView);
                 splashDialog.setCancelable(false);
                 splashDialog.show();

@@ -116,13 +116,11 @@ function challengeFn() {
 
 				}
 
-				if (identity.provider === provider)
+				if (identity.provider === provider) {
 					trApi.postChallenge(identity.userId, ramenId)
-						.done(function(data) {
-							challengeSentPopup(data);
-						}).fail(function(err) {
-				   		console.error(`Failed because: ${err.responseJSON.error.message}`);
-				    });
+						.done(data => challengeSentPopup(data))
+						.fail(err => console.error(`Failed because: ${JSON.stringify(err)}`));
+				}
 
 			});
 

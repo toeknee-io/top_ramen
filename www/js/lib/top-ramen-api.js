@@ -37,8 +37,6 @@ class TopRamenApi {
 
     this.getAccessToken = () => { return this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN) };
 
-    this.getAccessTokenByUserId = (userId) => { return $.get(`${this.API_URL}/users/${userId || this.userId}/accessTokens?filter[order]=created%20DESC`) };
-
     this.setAccessToken = (accessToken) => {
       this.accessToken = accessToken;
       if (!accessToken) {
@@ -55,8 +53,6 @@ class TopRamenApi {
 
     if (this.accessToken)
       this.setAccessToken(this.accessToken);
-    else if (this.userId)
-      this.getAccessTokenByUserId(this.userId).done(tokens => this.setAccessToken(tokens[0].id));
 
   }
 
@@ -88,7 +84,7 @@ class TopRamenApi {
 
   getUserIdentityBySocialId(provider, externalId) {
 
-    if (!provider || !externalId || _.isEmpty(this.getUserId()))
+    if (!provider || !externalId || trApi.isLoggedIn())
       return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and userId [${this.getUserId()}]`);
 
     return $.get(`${this.API_URL}/userIdentities?filter[where][externalId]=${externalId}`)
@@ -143,31 +139,31 @@ class TopRamenApi {
       if (!this.deviceId) throw new Error('The deviceId is missing in logUserIn call.');
 
       let loginUri = `/auth/${opts.provider}`;
-      let loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${this.deviceId}&deviceType=${this.platform}`
+      let loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ?
+        loginUri : '/mobile/redirect' + loginUri)}?` +
+        `uuid=${this.deviceId}&deviceType=${this.platform}`;
 
       let iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
 
       iab.addEventListener('loadstart', event => {
 
-        let url = event.url.split('#')[0];
+        let url = event.url.split('?');
 
-        if (url === `${this.BASE_URL}/login`)
+        if (url[0] === `${this.BASE_URL}/login`)
           reject(new Error('Passport login failed.'));
 
-        if (url === `${this.BASE_URL}/mobile/redirect/auth/success`) {
-          this.getUserByDeviceId({ deviceId: this.deviceId })
-            .done(data => {
-              if (data.id) {
-                this.setUserId(data.id);
-                this.getAccessTokenByUserId(data.id).done(tokens => {
-                  this.setAccessToken(tokens[0].id);
-                  resolve(data);
-                  iab.close();
-                });
-              } else {
-                reject(new Error("No userId was returned by getUserByDeviceId call"));
-              }})
-            .fail(err => reject(new Error(`Failed to getUserByDeviceId during login with deviceId ${this.deviceId}: ${err.responseJSON.error.message}`)));
+        if (url[0] === `${this.BASE_URL}/mobile/redirect/auth/success`) {
+
+          let token = url[1].split('token=')[1].split('&id=')[0];
+          let userId = url[1].split('id=')[1].split('&')[0];
+
+          if (_.isEmpty(token) || _.isEmpty(userId)) {
+            reject(new Error("No accessToken or userId was returned from login."));
+          } else {
+            this.setAccessToken(token);
+            this.setUserId(userId);
+            resolve(iab.close());
+          }
 
         }
 
@@ -187,21 +183,18 @@ class TopRamenApi {
   }
 
   isLoggedIn() {
-    return this.isValidLoginToken(this.getUserId()) && this.isValidLoginToken(this.getAccessToken());
+    return this.isValidLoginToken(this.getAccessToken());
   }
 
   postChallenge(userId, ramenId) {
 
-    let challengerId = this.getUserId();
-    let challengedId = userId;
+    if (!this.isLoggedIn())
+      throw new Error(`User must be logged in to make postChallenge call.`);
 
-    if (!challengerId || !challengedId)
-      throw new Error(`The postChallenge call is missing challengerId [${challengerId}] or challengedId [${challengedId}].`);
-
-    return $.post(`${self.API_URL}/challenges`,
-        { challenger: { userId: challengerId }, challenged: { userId: challengedId }, ramenId: ramenId })
+    return $.post(`${this.API_URL}/challenges`,
+        { userId: userId, ramenId: ramenId })
       .done(data => console.log(`challenge created: ${JSON.stringify(data)}`))
-      .fail(err => console.error(`Failed to create challenge: ${err.responseJSON.error.message}`));
+      .fail(err => console.error(`Failed to create challenge: ${JSON.stringify(err)}`));
 
   }
 
@@ -227,7 +220,7 @@ class TopRamenApi {
     return $.ajax({
         method: 'PATCH',
         url: `${this.API_URL}/challenges/${challengeId}`,
-        data: { userId: this.getUserId(), score: score },
+        data: { score: score },
         dataType: "json"})
       .done(data => console.log(`updated challenge: ${JSON.stringify(data)}`))
       .fail(err => console.error(`Failed to patchChallenge: ${err.responseJSON.error.message}`));

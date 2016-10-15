@@ -49,6 +49,10 @@ class TopRamenApi {
       }
     };
 
+    this.isValidLoginToken = function(token) {
+      return token && !_.isEmpty(token) && token !== 'null' && token !== 'undefined';
+    };
+
     if (this.accessToken)
       this.setAccessToken(this.accessToken);
     else if (this.userId)
@@ -105,7 +109,7 @@ class TopRamenApi {
 
     this.deviceToken = opts.registrationId || this.getDeviceToken();
 
-    if (!this.deviceToken || !this.getUserId())
+    if (!this.deviceToken || !this.isLoggedIn())
       throw new Error(`The deviceToken [${this.deviceToken}] or userId [${this.getUserId()}] is missing in the postAppInstallation call`);
 
     return $.post(
@@ -123,11 +127,11 @@ class TopRamenApi {
   getAppInstallations(opts) {
     return new this.Promise((resolve, reject) => {
 
-      if (!this.getUserId()) throw new Error(`The userId [${this.getUserId()}] is missing in the getAppInstallations call`);
+      if (!this.isLoggedIn()) throw new Error(`The user must be logged in to getAppInstallations, userId [${this.getUserId()}] accessToken [${this.getAccessToken()}]`);
 
       $.get(`${this.API_URL}/users/me/installations`)
         .done(installations => resolve(installations))
-        .fail(err => reject(new Error(`Failed to getAppInstallationByDeviceToken: ${err.responseJSON.error.message}`)));
+        .fail(err => reject(err));
 
     });
   }
@@ -155,13 +159,16 @@ class TopRamenApi {
             .done(data => {
               if (data.id) {
                 this.setUserId(data.id);
-                this.getAccessTokenByUserId(data.id).done(tokens => this.setAccessToken(tokens[0].id));
-                resolve(data);
+                this.getAccessTokenByUserId(data.id).done(tokens => {
+                  this.setAccessToken(tokens[0].id);
+                  resolve(data);
+                  iab.close();
+                });
               } else {
                 reject(new Error("No userId was returned by getUserByDeviceId call"));
               }})
-            .fail(err => reject(new Error(`Failed to getUserByDeviceId during login with deviceId ${this.deviceId}: ${err.responseJSON.error.message}`)))
-            .always(() => resolve(iab.close()));
+            .fail(err => reject(new Error(`Failed to getUserByDeviceId during login with deviceId ${this.deviceId}: ${err.responseJSON.error.message}`)));
+
         }
 
       });
@@ -180,7 +187,7 @@ class TopRamenApi {
   }
 
   isLoggedIn() {
-    return this.getUserId() && !_.isEmpty(this.getUserId()) && this.getUserId() !== 'null' && this.getUserId() !== 'undefined';
+    return this.isValidLoginToken(this.getUserId()) && this.isValidLoginToken(this.getAccessToken());
   }
 
   postChallenge(userId, ramenId) {

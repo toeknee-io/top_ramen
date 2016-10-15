@@ -204,10 +204,15 @@
         trApi.logUserIn(opts)
             .then(() => {
                 app.game.state.restart();
-                trApi.getAppInstallations().then(installations =>  {
-                    let existingInstall = _.find(installations, (install) => { return install.deviceToken === trApi.getDeviceToken(); });
-                    if (_.isEmpty(existingInstall)) trApi.postAppInstallation()
-                });
+                trApi.getAppInstallations()
+                    .then(installations =>  {
+                        let existingInstall = _.find(installations, (install) => { return install.deviceToken === trApi.getDeviceToken(); });
+                        if (_.isEmpty(existingInstall)) trApi.postAppInstallation() })
+                    .catch(err => {
+                        console.error(`Failed to getAppInstallations in logUserIn ${err}`);
+                        if (!_.isEmpty(trApi.getDeviceToken()) && trApi.isLoggedIn())
+                            trApi.postAppInstallation();
+                    });
             })
             .catch(err => console.error(`logUserIn failed: ${err}`));
 

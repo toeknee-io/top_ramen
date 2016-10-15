@@ -15,7 +15,7 @@ app.boot.preload = function() {
 	app.game.load.image('home', 'assets/home.png');
 	app.game.load.image('back', 'assets/back.png');
 
-}
+};
 
 app.boot.create = function() {
 	console.log('Boot State');
@@ -48,4 +48,4 @@ app.boot.create = function() {
 
 	}, 2400)
 
-}
+};

@@ -28,7 +28,7 @@ app.challenges.preload = function() {
 
 			welcomeText.anchor.x = .5;
 
-		})
+		});
 
 	trApi.getChallengesSorted()
 		.done(function(challenges) {
@@ -40,7 +40,7 @@ app.challenges.preload = function() {
 				var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
 	      app.game.load.image(challenger.externalId + 'pic', challengerPic);
 
-			})
+			});
 
 			app.game.load.start();
 

@@ -40,7 +40,7 @@
 
         app.game.load.image('bowl', 'assets/bowl' + imageSize + '.png');
 
-        if (window.localStorage.getItem('userId')) {
+        if (trApi.isLoggedIn()) {
 
             trApi.getUserSocial()
                 .done(function(data) {
@@ -83,7 +83,7 @@
         var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
         var challengesButton = app.game.add.button(0, 0, 'challenges_button', challenges);
 
-        let isLoggedIn = window.localStorage.getItem('userId') ? true : false;
+        let isLoggedIn = trApi.isLoggedIn();
 
         challengeButton.alpha = isLoggedIn ? 1 : .4;
         challengesButton.alpha = isLoggedIn ? 1 : .4;
@@ -100,7 +100,7 @@
         buttonGroup.add(challengesButton);
         buttonGroup.add(fb);
 
-        buttonGroup.y = title.bottom + 70 * scaleRatio; 
+        buttonGroup.y = title.bottom + 70 * scaleRatio;
 
         var buttonSpacer = 0;
 
@@ -135,9 +135,9 @@
     }
 
     function challenge() {
-      if (window.localStorage.getItem('userId')) {
+        if (trApi.isLoggedIn()) {
           app.game.state.start('challenge');
-			} else {
+		} else {
 				var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
 					notLogged.destroy();
 				});
@@ -146,11 +146,11 @@
 				notLogged.anchor.x = .5;
 				notLogged.y = app.game.world.centerY;
 				notLogged.anchor.y = .5;
-			}
+		}
     }
 
     function challenges() {
-        if (window.localStorage.getItem('userId')) {
+        if (trApi.isLoggedIn()) {
             app.game.state.start('challenges');
         } else {
             var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
@@ -167,12 +167,11 @@
     function options() {
 
     	let options = app.game.add.button(0, 0, 'options_menu', () => {
-            console.log('opts pushed');
             window.trApi.cordovaPush.unregister(
                 () => console.log('successfully unregistered from push notifications'),
                 err => console.error(`err while unregistering from push notifications ${err}`)
             );
-            window.localStorage.removeItem('registrationId');
+            trApi.setDeviceToken(null);
 		});
 
 		options.scale.setTo(scaleRatio);
@@ -188,7 +187,9 @@
     }
 
     function logout() {
-        trApi.logUserOut();
+        trApi.logUserOut()
+            .then(() => app.game.state.restart())
+            .catch(err => console.error(`Logout failed ${err}`));
     }
 
     function regsLogin() {
@@ -204,6 +205,14 @@
         opts.provider = provider;
 
         trApi.logUserIn(opts)
+            .then(() => {
+                app.game.state.restart();
+                trApi.getAppInstallations().then(installations =>  {
+                    let existingInstall = _.find(installations, (install) => { return install.deviceToken === trApi.getDeviceToken(); });
+                    if (_.isEmpty(existingInstall)) trApi.postAppInstallation()
+                });
+            })
+            .catch(err => console.error(`logUserIn failed: ${err}`));
 
     }
 

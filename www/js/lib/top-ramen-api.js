@@ -1,17 +1,15 @@
 function __getOpts(opts) {
-
   if (!opts || typeof opts !== 'object')
     return {};
   else
     return opts;
-
 }
 
 class TopRamenApi {
 
   constructor(opts) {
 
-    if (!window.jQuery || !window.cordova || !window._)
+    if (!window.jQuery || !window.cordova || !window._ || !window.Promise)
       throw new Error("Stuff's missing!");
 
     opts = __getOpts(opts);
@@ -21,193 +19,218 @@ class TopRamenApi {
     this.BASE_URL = 'http://www.toeknee.io:3000';
     this.API_URL = `${this.BASE_URL}/api`;
 
+    this.ITEM_KEY_USER_ID = 'userId';
+    this.ITEM_KEY_ACCESS_TOKEN = 'accessToken';
+    this.ITEM_KEY_DEVICE_TOKEN = 'registrationId';
+
     this.storage = window.localStorage;
     this.session = window.sessionStorage;
     this.device = window.device;
-
-    this.userId = opts.userId || this.storage.getItem('userId');
+    this.Promise = window.Promise;
 
     this.deviceId = this.device.uuid;
     this.platform = (opts.platform || this.device.platform).toLowerCase();
 
-    this.pushRegId = opts.pushRegId || this.storage.getItem('registrationId');
+    this.userId = opts.userId || this.storage.getItem(this.ITEM_KEY_USER_ID);
+    this.accessToken = opts.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
+    this.deviceToken = opts.deviceToken || this.storage.getItem(this.ITEM_KEY_DEVICE_TOKEN);
+
+    this.getAccessToken = () => { return this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN) };
+
+    this.getAccessTokenByUserId = (userId) => { return $.get(`${this.API_URL}/users/${userId || this.userId}/accessTokens?filter[order]=created%20DESC`) };
+
+    this.setAccessToken = (accessToken) => {
+      this.accessToken = accessToken;
+      if (!accessToken) {
+        this.storage.removeItem(this.ITEM_KEY_ACCESS_TOKEN);
+      } else {
+        this.storage.setItem(this.ITEM_KEY_ACCESS_TOKEN, accessToken);
+        $.ajaxSetup({ beforeSend: xhr => xhr.setRequestHeader("Authorization", this.getAccessToken()) })
+      }
+    };
+
+    if (this.accessToken)
+      this.setAccessToken(this.accessToken);
+    else if (this.userId)
+      this.getAccessTokenByUserId(this.userId).done(tokens => this.setAccessToken(tokens[0].id));
 
   }
 
+  getUserId() { return this.userId || this.storage.getItem(this.ITEM_KEY_USER_ID); }
+
+  setUserId(userId) {
+    this.userId = userId;
+    if (!userId) this.storage.removeItem(this.ITEM_KEY_USER_ID);
+    else this.storage.setItem(this.ITEM_KEY_USER_ID, userId);
+  }
+
+  getDeviceToken() { return this.deviceToken || this.storage.getItem(this.ITEM_KEY_DEVICE_TOKEN); }
+
+  setDeviceToken(deviceToken) {
+    this.deviceToken = deviceToken;
+    if (!deviceToken) this.storage.removeItem(this.ITEM_KEY_DEVICE_TOKEN);
+    this.storage.setItem(this.ITEM_KEY_DEVICE_TOKEN, deviceToken);
+  }
+
   getUserByDeviceId(opts) {
-
-    opts = __getOpts(opts);
-
-    let deviceId = opts.deviceId || this.deviceId;
-
-    return $.get(`${this.API_URL}/devices/findOne?filter[where][deviceId]=${deviceId}`)
-      .done(data => { if (data && data.userId) this.userId = data.userId; })
+    if (!this.deviceId) throw new Error('Cannot getUserByDeviceId without deviceId');
+    return $.get(`${this.API_URL}/devices/${this.deviceId}/user`)
       .fail(err => console.error(`Failed to get userId using deviceId [${deviceId}] : ${err.responseJSON.error.message}`));
-
   }
 
   getUserIdentityBySocialId(provider, externalId) {
 
-    let userId = this.storage.getItem('userId');
-
-    if (!provider || !externalId || _.isEmpty(userId))
-      return console.error(`The externalId ${externalId} and provider ${provider} must be provided, and the userId must be in localStorage [${userId}] to make the getUserIdentityBySocialId call`);
+    if (!provider || !externalId || _.isEmpty(this.getUserId()))
+      return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and userId [${this.getUserId()}]`);
 
     return $.get(`${this.API_URL}/userIdentities?filter[where][externalId]=${externalId}`)
-      .fail(err => console.error(`Failed to get getUserIdentityBySocialId because: ${err.responseJSON.error.message}`));
+      .fail(err => console.error(`Failed to getUserIdentityBySocialId: ${err.responseJSON.error.message}`));
 
   }
 
   getUserSocial() {
-    if (_.isEmpty(this.storage.getItem('userId')))
-      return console.error(`The userId must be in localStorage [${userId}] to make getUserSocial call`);
-    return $.get(`${this.API_URL}/users/social/${this.userId}`)
-      .fail(err => console.error(`Failed to get getUserSocial because: ${err.responseJSON.error.message}`));
+    if (!this.isLoggedIn())
+      return console.error(`The user must be logged in to make the getUserSocial call.`);
+    return $.get(`${this.API_URL}/users/social/me`)
+      .fail(err => console.error(`Failed to get getUserSocial because: ${err}`));
   }
 
   postAppInstallation(opts) {
 
-    let self = this;
-
     opts = __getOpts(opts);
 
-    let deviceToken = opts.registrationId || self.storage.getItem('registrationId');
-    let userId = opts.userId || self.userId || self.storage.getItem('userId');
+    this.deviceToken = opts.registrationId || this.getDeviceToken();
 
-    if (!deviceToken || !userId)
-      throw new Error(`The deviceToken [${deviceToken}] or userId [${userId}] is missing in the postAppInstallation call`);
+    if (!this.deviceToken || !this.getUserId())
+      throw new Error(`The deviceToken [${this.deviceToken}] or userId [${this.getUserId()}] is missing in the postAppInstallation call`);
 
     return $.post(
-        `${this.API_URL}/installations`,
+      `${this.API_URL}/users/me/installations`,
         {
-            "appId": `${self.APP_NAME}.${opts.platform || self.platform}`,
-            "deviceToken": deviceToken,
-            "deviceType": opts.platform || self.platform,
-            "status": opts.status || "Active",
-            "userId": userId
-        }
-      ).done(function(msg) {
-          console.log(`pushRegId saved to server: ${JSON.stringify(msg)}`);
-      }).fail(function(err) {
-          console.error(`Failed to save pushRegId to server: ${err.responseJSON.error.message}`);
-      });
+          "appId": `${this.APP_NAME}.${opts.platform || this.platform}`,
+          "deviceToken": this.deviceToken,
+          "deviceType": opts.platform || this.platform,
+          "status": opts.status || "active"
+        })
+      .fail(err => console.error(`Failed to postAppInstallation: ${err.responseJSON.error.message}`));
 
+  }
+
+  getAppInstallations(opts) {
+    return new this.Promise((resolve, reject) => {
+
+      if (!this.getUserId()) throw new Error(`The userId [${this.getUserId()}] is missing in the getAppInstallations call`);
+
+      $.get(`${this.API_URL}/users/me/installations`)
+        .done(installations => resolve(installations))
+        .fail(err => reject(new Error(`Failed to getAppInstallationByDeviceToken: ${err.responseJSON.error.message}`)));
+
+    });
   }
 
   logUserIn(opts) {
+    return new this.Promise((resolve, reject) => {
 
-    if (!this.deviceId) throw new Error('The deviceId is missing in logUserIn call');
+      if (!opts) throw new Error('No options provided to logUserIn.');
+      if (!this.deviceId) throw new Error('The deviceId is missing in logUserIn call.');
 
-    opts = __getOpts(opts);
+      let loginUri = `/auth/${opts.provider}`;
+      let loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${this.deviceId}&deviceType=${this.platform}`
 
-    let loginUri = `/auth/${opts.provider}`;
-    let loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ? loginUri : '/mobile/redirect' + loginUri)}?uuid=${this.deviceId}&deviceType=${this.platform}`
+      let iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
 
-    let iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
+      iab.addEventListener('loadstart', event => {
 
-    iab.addEventListener('loadstart', event => {
+        let url = event.url.split('#')[0];
 
-      if (~event.url.indexOf('/login')) {
-        console.error('Login flow failed');
-        //this.logUserOut();
-        //iab.close();
-      }
+        if (url === `${this.BASE_URL}/login`)
+          reject(new Error('Passport login failed.'));
 
-      if (~event.url.indexOf('/mobile/redirect/auth/success')) {
-        this.getUserByDeviceId({ deviceId: this.deviceId })
-          .done(data => {
-            if (data.userId) {
-              this.storage.setItem('userId', data.userId);
-              this.userId = data.userId;
-            } else {
-              this.logUserOut();
-              throw new Error("No userId was returned by getUserByDeviceId call");
-            }
-            app.game.state.restart();
-          })
-          .fail(err => console.error(`Failed to getUserByDeviceId during login with deviceId ${this.deviceId}: ${err.responseJSON.error.message}`))
-          .always(() => iab.close());
-      }
+        if (url === `${this.BASE_URL}/mobile/redirect/auth/success`) {
+          this.getUserByDeviceId({ deviceId: this.deviceId })
+            .done(data => {
+              if (data.id) {
+                this.setUserId(data.id);
+                this.getAccessTokenByUserId(data.id).done(tokens => this.setAccessToken(tokens[0].id));
+                resolve(data);
+              } else {
+                reject(new Error("No userId was returned by getUserByDeviceId call"));
+              }})
+            .fail(err => reject(new Error(`Failed to getUserByDeviceId during login with deviceId ${this.deviceId}: ${err.responseJSON.error.message}`)))
+            .always(() => resolve(iab.close()));
+        }
 
+      });
     });
-
   }
 
   logUserOut() {
+    return new this.Promise((resolve, reject) => {
+      $.post(`${this.API_URL}/auth/logout`)
+        .done(() => {
+          this.setAccessToken(null);
+          this.setUserId(null);
+          resolve(); })
+        .fail(err => reject(err))
+    });
+  }
 
-    return $.post(`${this.API_URL}/auth/logout`)
-      .fail(err => console.error(`Log out API error: ${err.responseJSON.error.message}`))
-      .always(() => {
-
-        this.storage.clear();
-
-        app.game.state.restart();
-
-      });
-
+  isLoggedIn() {
+    return this.getUserId() && !_.isEmpty(this.getUserId()) && this.getUserId() !== 'null' && this.getUserId() !== 'undefined';
   }
 
   postChallenge(userId) {
 
-    let self = this;
-
-    let challengerId = self.userId || self.storage.getItem('userId');
+    let challengerId = this.getUserId();
     let challengedId = userId;
 
     if (!challengerId || !challengedId)
-      throw new Error('Missing challenger or someone to challenge in sendChallenge call');
+      throw new Error(`The postChallenge call is missing challengerId [${challengerId}] or challengedId [${challengedId}].`);
 
     return $.post(
-      `${self.API_URL}/challenges`,
-      { challenger: { userId: challengerId }, challenged: { userId: challengedId } })
-    .done(data => console.log(`challenge created: ${JSON.stringify(data)}`))
-    .fail(err => console.error(`Failed to create challenge: ${err.responseJSON.error.message}`));
+        `${this.API_URL}/challenges`,
+        { challenger: { userId: challengerId }, challenged: { userId: challengedId } })
+      .done(data => console.log(`challenge created: ${JSON.stringify(data)}`))
+      .fail(err => console.error(`Failed to create challenge: ${err.responseJSON.error.message}`));
 
   }
 
   getChallenges() {
-
-    let self = this;
-
-    if (!self.userId)
-      throw new Error('Missing userId in getChallenges call');
-
-    return $.get(`${self.API_URL}/challenges?filter[where][or][0][challenged.userId]=${self.userId}&filter[where][or][1][challenger.userId]=${self.userId}`)
+    if (!this.isLoggedIn()) throw new Error('User must be logged in to getChallenges.');
+    return $.get(
+        `${this.API_URL}/challenges?filter[where][or][0][challenged.userId]=${this.getUserId()}&` +
+        `filter[where][or][1][challenger.userId]=${this.getUserId()}`)
       .fail((err) => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
-
   }
 
   getChallengesSorted() {
-
-    let self = this;
-
-    if (!self.userId)
-      throw new Error('Missing userId in getChallenges call');
-
-    return $.get(`${self.API_URL}/challenges/sort/${self.userId}`)
+    if (!this.isLoggedIn()) throw new Error('User must be logged in to getChallengesSorted.');
+    return $.get(`${this.API_URL}/challenges/sort/me`)
       .fail(err => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
-
   }
 
   patchChallenge(challengeId, score) {
 
-    let self = this;
-
     if (!challengeId || !score)
-      throw new Error(`Missing challengeId [${challengeId}] or score [${score}] in patchChallenge call`);
+      throw new Error(`Missing challengeId [${challengeId}] or score [${score}] in patchChallenge call.`);
 
     return $.ajax({
-      method: 'PATCH',
-      url: `${self.API_URL}/challenges/${challengeId}`,
-      data: { userId: self.userId, score: score },
-      dataType: "json"
-    }).done(function(data) {
-      console.log(`updated challenge: ${JSON.stringify(data)}`);
-      //app.game.state.start('game-over', true, false, score, data);
-    }).fail(function(err) {
-      console.error(`Failed to update challenge: ${err.responseJSON.error.message}`);
-    });
+        method: 'PATCH',
+        url: `${this.API_URL}/challenges/${challengeId}`,
+        data: { userId: this.getUserId(), score: score },
+        dataType: "json"})
+      .done(data => console.log(`updated challenge: ${JSON.stringify(data)}`))
+      .fail(err => console.error(`Failed to patchChallenge: ${err.responseJSON.error.message}`));
 
+  }
+
+  getScores() {
+    return new this.Promise((resolve, reject) => {
+      if (!this.isLoggedIn()) return reject(new Error('User must be logged in to getScores.'));
+      $.get(`${this.API_URL}/users/me/scores`)
+        .done(scores => resolve(scores))
+        .fail(err => reject(new Error(`Failed to getScores: ${err.responseJSON.error.message}`)));
+    });
   }
 
 }

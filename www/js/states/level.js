@@ -30,12 +30,21 @@ var steamEmitter;
 // Groups
 var ings;
 
-app.level.init = function(challengeId) {
+app.level.init = function(challengeId, ramenId) {
 
 	app.level.challengeId = false;
+	app.level.ramenId = false;
 
 	if (challengeId) {
+
 		app.level.challengeId = challengeId;
+
+	}
+
+	if (ramenId) {
+
+		app.level.ramenId = ramenId;
+
 	}
 	
 }

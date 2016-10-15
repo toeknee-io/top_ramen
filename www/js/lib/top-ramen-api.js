@@ -179,7 +179,7 @@ class TopRamenApi {
     return this.getUserId() && !_.isEmpty(this.getUserId()) && this.getUserId() !== 'null' && this.getUserId() !== 'undefined';
   }
 
-  postChallenge(userId) {
+  postChallenge(userId, ramenId) {
 
     let challengerId = this.getUserId();
     let challengedId = userId;
@@ -187,9 +187,8 @@ class TopRamenApi {
     if (!challengerId || !challengedId)
       throw new Error(`The postChallenge call is missing challengerId [${challengerId}] or challengedId [${challengedId}].`);
 
-    return $.post(
-        `${this.API_URL}/challenges`,
-        { challenger: { userId: challengerId }, challenged: { userId: challengedId } })
+    return $.post(`${self.API_URL}/challenges`,
+        { challenger: { userId: challengerId }, challenged: { userId: challengedId }, ramenId: ramenId })
       .done(data => console.log(`challenge created: ${JSON.stringify(data)}`))
       .fail(err => console.error(`Failed to create challenge: ${err.responseJSON.error.message}`));
 

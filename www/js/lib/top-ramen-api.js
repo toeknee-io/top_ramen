@@ -72,6 +72,10 @@ class TopRamenApi {
     this.storage.setItem(this.ITEM_KEY_DEVICE_TOKEN, deviceToken);
   }
 
+  setCordovaApp(cordovaApp) {
+    this.cordovaApp = cordovaApp;
+  }
+
   getUserByDeviceId(opts) {
     if (!this.deviceId) throw new Error('Cannot getUserByDeviceId without deviceId');
     return $.get(`${this.API_URL}/devices/${this.deviceId}/user`)

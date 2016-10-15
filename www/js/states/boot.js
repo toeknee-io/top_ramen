@@ -4,6 +4,8 @@ app.boot.preload = function() {
 
 	//app.game.load.audio('menu', 'assets/sounds/menu.ogg' );
 	//app.game.load.audio('lvl', 'assets/sounds/orlvl.ogg' );
+	app.game.load.image('bg', 'assets/bg4.jpg');
+
 	app.game.load.audio('pop', 'assets/sounds/pop.ogg' );
 	app.game.load.audio('lose', 'assets/sounds/lose.ogg' );
 
@@ -35,11 +37,15 @@ app.boot.create = function() {
 
 		}
 
-		setTimeout(function() {
-			app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
-			app.game.state.start('menu');
-		}, 1000)
+		if (!app.bootCreateCallback || typeof app.bootCreateCallback !== 'function') {
+			setTimeout(function() {
+				app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+				app.game.state.start('menu');
+			}, 1000);
+		} else {
+			app.bootCreateCallback();
+		}
 
-	}, 2400)	
+	}, 2400)
 
 }

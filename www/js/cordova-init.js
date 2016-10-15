@@ -8,7 +8,7 @@
         this.bindEvents();
       },
 
-      bindEvents: () => { document.addEventListener('deviceready', this.onDeviceReady, false); },
+      bindEvents: function() { document.addEventListener('deviceready', this.onDeviceReady, false); },
 
       onDeviceReady: function() {
 
@@ -42,11 +42,11 @@
 
         });
 
-        cordovaApp.push.on('error', err => console.error(`Push error: ${err}`));
+        cordovaApp.push.on('error', function(err) { console.error(`Push error: ${err}`) });
 
-        cordovaApp.push.on('notification', data => console.log(`received push notification: #{JSON.stringify(data)}`));
+        cordovaApp.push.on('notification', function(data) { console.log(data); });
 
-        window.trApi.cordovaPush = cordovaApp.push;
+        trApi.setCordovaApp(cordovaApp);
 
       }
 

@@ -1,6 +1,3 @@
-/* jshint browser: true, jquery: true, devel: true */
-/* globals cordova, app, Phaser, scaleRatio */
-
 (function() {
 
     "use strict";

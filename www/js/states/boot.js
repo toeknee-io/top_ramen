@@ -1,4 +1,6 @@
-app.boot = {}
+'use strict';
+
+app.boot = {};
 
 app.boot.preload = function() {
 
@@ -16,29 +18,10 @@ app.boot.preload = function() {
 	app.game.load.image('home', 'assets/home.png');
 	app.game.load.image('back', 'assets/back.png');
 
-	if (trApi.isLoggedIn()) {
-
-	  trApi.getUserSocial()
-	    .done(function(data) {
-
-	      app.game.load.image('myPic', data.facebook.picture);
-	      data.facebook.friends.forEach(function(friend) {
-
-	          app.game.load.image(friend.id + 'pic', 'https://graph.facebook.com/' + friend.id + '/picture?type=large');
-
-	      })
-
-	      app.game.load.onLoadComplete.addOnce(loadComplete, this);
-
-	    	app.game.load.start();
-
-	    });
-
-  } else {
-
-  	app.game.load.onLoadComplete.addOnce(loadComplete, this);
-
-  }
+	trApi.loadSocialImages().then(() => {
+		app.game.load.onLoadComplete.addOnce(loadComplete, this);
+		app.game.load.start();
+	});
 
 };
 
@@ -61,13 +44,14 @@ function loadComplete() {
 
 	}
 
-	if (!app.bootCreateCallback || typeof app.bootCreateCallback !== 'function') {
+	if (app.bootCreateCallback && typeof app.bootCreateCallback === 'function') {
+		console.log(`bootCreateCallback: ${app.bootCreateCallback}`);
+		app.bootCreateCallback();
+	} else {
 		setTimeout(function() {
 			app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
 			app.game.state.start('menu');
 		}, 1000);
-	} else {
-		app.bootCreateCallback();
 	}
-	
+
 }

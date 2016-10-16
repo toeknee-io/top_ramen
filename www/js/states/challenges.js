@@ -50,7 +50,7 @@ function displayChallenges() {
 		var userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
 
 	}
-	
+
 	userPic.scale.setTo(.8 * scaleRatio);
 	userPic.x = app.game.world.centerX;
 	userPic.anchor.x = .5;
@@ -122,13 +122,16 @@ function displayChallenges() {
 
       var butt = app.game.add.button(0, picY, 'item');
 
-      if (app.game.cache.checkImageKey(challenger.externalId + 'pic')) {
+      let buttPic;
+      let picKey = `${challenger.externalId}pic`;
 
-      	var buttPic = app.game.add.image(30, 30, 'challenger.externalId + 'pic'');
+      if (app.game.cache.checkImageKey(picKey)) {
+
+        buttPic = app.game.add.image(30, 30, picKey);
 
       } else {
 
-      	var buttPic = app.game.add.image(30, 30, 'chef');
+        buttPic = app.game.add.image(30, 30, 'chef');
 
       }
 

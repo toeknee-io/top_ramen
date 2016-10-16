@@ -259,11 +259,8 @@ class TopRamenApi {
 
         if (!app.game.cache.checkImageKey('myPic')) {
           this.getUserSocial()
-            .done(data => {
-              app.game.load.image('myPic', data.facebook.picture);
-              app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
-            })
-          .fail(err => reject(err));
+            .done(data => app.game.load.image('myPic', data.facebook.picture))
+            .fail(err => reject(err));
         }
 
         this.getChallengesSorted()

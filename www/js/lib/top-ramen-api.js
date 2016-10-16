@@ -86,8 +86,8 @@ class TopRamenApi {
 
   getUserIdentityBySocialId(provider, externalId) {
 
-    if (!provider || !externalId || trApi.isLoggedIn())
-      return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and userId [${this.getUserId()}]`);
+    if (!provider || !externalId || !trApi.isLoggedIn())
+      return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`);
 
     return $.get(`${this.API_URL}/userIdentities?filter[where][externalId]=${externalId}`)
       .fail(err => console.error(`Failed to getUserIdentityBySocialId: ${err.responseJSON.error.message}`));

@@ -33,14 +33,23 @@ app.challenges.preload = function() {
 	trApi.getChallengesSorted()
 		.done(function(challenges) {
 
-			challenges.open.forEach(function(challenge) {
+		  Object.keys(challenges).forEach(function(key) {
 
-				let challenger = challenge[challenge.challenger.userId === window.localStorage.getItem('userId') ? 'challenged' : 'challenger'].identities[0];
+        for (let prop in challenges[key]) {
 
-				var challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
-	      app.game.load.image(challenger.externalId + 'pic', challengerPic);
+          let challenge = challenges[key][prop];
 
-			});
+      		let challenger = challenge[challenge.challenger.userId === trApi.getUserId() ? 'challenged' : 'challenger'].identities[0];
+          let picKey = challenger.externalId + 'pic', challengerPic;
+
+          if (!app.game.cache.checkImageKey(picKey)) {
+            let challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
+            app.game.load.image(challenger.externalId + 'pic', challengerPic);
+          }
+
+        };
+
+      });
 
 			app.game.load.start();
 
@@ -50,7 +59,7 @@ app.challenges.preload = function() {
 
 			}
 
-		})
+		});
 
 }
 
@@ -74,14 +83,12 @@ function displayChallenges(challenges) {
 	userPic.x = app.game.world.centerX;
 	userPic.anchor.x = .5;
 
-	var storedUserId = window.localStorage.getItem('userId');
+	var storedUserId = trApi.getUserId();
 
 	var challengerGroup1 = app.game.add.group();
 	var challengerGroup2 = app.game.add.group();
 
 	var picY = 0;
-
-	var status;
 
 	var openGames = app.game.add.text(app.game.world.centerX, 530 * scaleRatio, 'Open Challenges', {
 		font: 90 * scaleRatio + 'px Baloo Paaji',
@@ -103,85 +110,90 @@ function displayChallenges(challenges) {
 
 	challengerGroup1.y = openGames.y + 200 * scaleRatio;
 
-	challenges.open.forEach(function(challenge) {
+  function processOpen(challenge) {
 
-			if (challenge.status === "new") {
+    let status;
 
-				status = 'Open';
+		if (challenge.status === "new") {
 
-			} else if (challenge.challenger.userId === storedUserId) {
+			status = 'Open';
 
-				if (challenge.challenger.score === null) {
+		} else if (challenge.challenger.userId === storedUserId) {
 
-					status = 'Your Turn';
+			if (challenge.challenger.score === null) {
 
-				} else if (challenge.challenged.score === null) {
+				status = 'Your Turn';
 
-					status = 'Their Turn';
+			} else if (challenge.challenged.score === null) {
 
-				}
-
-			} else if (challenge.challenged.userId === storedUserId) {
-
-				if (challenge.challenged.score === null) {
-
-					status = 'Your Turn';
-
-				} else if (challenge.challenger.score === null) {
-
-					status = 'Their Turn';
-
-				}
+				status = 'Their Turn';
 
 			}
 
-			let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
+		} else if (challenge.challenged.userId === storedUserId) {
 
-      var butt = app.game.add.button(0, picY, 'item');
-      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
-      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
-        font: 60 + 'px Baloo Paaji',
-        fill: '#fff',
-        align: "right",
-      } );
+			if (challenge.challenged.score === null) {
 
-      var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
-        font: 40 + 'px Baloo Paaji',
-        fill: '#fff',
-        align: "right",
-      } );
+				status = 'Your Turn';
 
-      butt.onInputDown.add(function() {
+			} else if (challenge.challenger.score === null) {
 
-      	var yLoc = app.game.world.y;
+				status = 'Their Turn';
 
-    		butt.onInputUp.add(function() {
+			}
 
-    			if (yLoc === app.game.world.y) {
+		}
 
-    				challengeStart(this);
+		let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
-    			}
+    var butt = app.game.add.button(0, picY, 'item');
+    var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+    var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
+      font: 60 + 'px Baloo Paaji',
+      fill: '#fff',
+      align: "right",
+    } );
 
-    		}, challenge);
+    var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
+      font: 40 + 'px Baloo Paaji',
+      fill: '#fff',
+      align: "right",
+    } );
 
-      });
+    butt.onInputDown.add(function() {
 
-      butt.scale.setTo(.8 * scaleRatio);
-      butt.centerX = app.game.world.centerX;
+    	var yLoc = app.game.world.y;
 
-      butt.addChild(buttText);
-      butt.addChild(buttPic);
+  		butt.onInputUp.add(function() {
 
-      butt.addChild(buttStatus);
+  			if (yLoc === app.game.world.y) {
 
-      buttPic.scale.setTo(.8);
+  				challengeStart(this);
 
-      challengerGroup1.add(butt);
+  			}
 
-      picY += 200 * scaleRatio;
+  		}, challenge);
 
-	});
+    });
+
+    butt.scale.setTo(.8 * scaleRatio);
+    butt.centerX = app.game.world.centerX;
+
+    butt.addChild(buttText);
+    butt.addChild(buttPic);
+
+    butt.addChild(buttStatus);
+
+    buttPic.scale.setTo(.8);
+
+    challengerGroup1.add(butt);
+
+    picY += 200 * scaleRatio;
+
+  };
+
+  challenges.new.forEach(processOpen);
+  challenges.started.forEach(processOpen);
 
 	challengerGroup2.y = challengerGroup1.height + 900 * scaleRatio;
 
@@ -189,79 +201,77 @@ function displayChallenges(challenges) {
 
 	challenges.finished.forEach(function(challenge) {
 
-		if (challenge.status === "finished") {
+    let status;
 
-			if (challenge.challenger.userId === storedUserId) {
+  	if (challenge.challenger.userId === storedUserId) {
 
-				var opponent = challenge.challenged.userId;
+  		var opponent = challenge.challenged.userId;
 
-			} else {
+  	} else {
 
-				var opponent = challenge.challenger.userId;
+  		var opponent = challenge.challenger.userId;
 
-			}
+  	}
 
-			if (challenge.winner === storedUserId) {
+  	if (challenge.winner === storedUserId) {
 
-				status = 'You Won!';
+  		status = 'You Won!';
 
-			} else if (challenge.winner === "tied") {
+  	} else if (challenge.winner === "tied") {
 
-				status = 'Tied';
+  		status = 'Tied';
 
-			} else {
+  	} else {
 
-				status = 'You Lost';
+  		status = 'You Lost';
 
-			}
+  	}
 
-			let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
+  	let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
-      var butt = app.game.add.button(0, pic2Y, 'item');
-      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
-      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
-        font: 60 + 'px Baloo Paaji',
-        fill: '#fff',
-        align: "right",
-      } );
+    var butt = app.game.add.button(0, pic2Y, 'item');
+    var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+    var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
+      font: 60 + 'px Baloo Paaji',
+      fill: '#fff',
+      align: "right",
+    } );
 
-      var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
-        font: 40 + 'px Baloo Paaji',
-        fill: '#fff',
-        align: "right",
-      } );
+    var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
+      font: 40 + 'px Baloo Paaji',
+      fill: '#fff',
+      align: "right",
+    } );
 
-      butt.onInputDown.add(function() {
+    butt.onInputDown.add(function() {
 
-      	var yLoc = app.game.world.y;
+    	var yLoc = app.game.world.y;
 
-    		butt.onInputUp.add(function() {
+  		butt.onInputUp.add(function() {
 
-    			if (yLoc === app.game.world.y) {
+  			if (yLoc === app.game.world.y) {
 
-    				challengeStart(this);
+  				challengeStart(this);
 
-    			}
+  			}
 
-    		}, challenge);
+  		}, challenge);
 
-      });
+    });
 
-      butt.scale.setTo(.8 * scaleRatio);
-      butt.centerX = app.game.world.centerX;
+    butt.scale.setTo(.8 * scaleRatio);
+    butt.centerX = app.game.world.centerX;
 
-      butt.addChild(buttText);
-      butt.addChild(buttPic);
+    butt.addChild(buttText);
+    butt.addChild(buttPic);
 
-      butt.addChild(buttStatus);
+    butt.addChild(buttStatus);
 
-      buttPic.scale.setTo(.8);
+    buttPic.scale.setTo(.8);
 
-      challengerGroup2.add(butt);
+    challengerGroup2.add(butt);
 
-      pic2Y += 200 * scaleRatio;
-
-		}
+    pic2Y += 200 * scaleRatio;
 
 	});
 

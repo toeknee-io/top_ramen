@@ -1,3 +1,5 @@
+'user strict';
+
 app.level = {};
 
 var score;
@@ -12,7 +14,7 @@ var timeLeft;
 var bonusTime;
 var bonus;
 var gameOver;
-var streakNumber = 0;
+let streakNumber;
 var streakText;
 
 var pop;
@@ -46,18 +48,18 @@ app.level.init = function(challengeId, ramenId) {
 		app.level.ramenId = ramenId;
 
 	}
-	
+
 }
 
 app.level.preload = function() {
 	console.log('Level Sate');
 
 	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-    
+
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 	if (!imageSize) imageSize = '';
-    
+
 	if (window.devicePixelRatio == 2) {
 		//imageSize = 'X2';
 	} else if (window.devicePixelRatio >= 3) {
@@ -86,6 +88,8 @@ app.level.preload = function() {
 	rightBounds = app.game.world.width * .83;
 	topBounds = app.game.world.height * .50;
 	bottomBounds = app.game.world.height * .80;
+
+	streakNumber = 0;
 
 }
 
@@ -287,7 +291,7 @@ function collect(ingredient) {
 		goodText.y = app.game.rnd.integerInRange(app.game.world.y + 100, app.game.world.height - 300);
 		goodText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - goodText.width - 10);
 	}
- 
+
 	if ((this.bonus > 0 && !bonus) || (this.worth < 0) && bonusFadeOut.isRunning == false) {
 		if (this.worth < 0) {
 			bonusText.text = 'BAD!';
@@ -402,7 +406,7 @@ function endGame() {
 	ings.callAll('destroy');
 	console.log("End of Game");
 	$.post(
-	    "http://www.toeknee.io:3000/api/users/" + window.localStorage.getItem("userId") + "/scores",
+	    "http://www.toeknee.io:3000/api/users/me/scores",
 	    { "score": score }
 	);
 
@@ -422,7 +426,7 @@ function endGame() {
 	} else {
 
 		app.game.state.start('game-over', true, false, score, challengeData);
-		
+
 	}
-    
+
 }

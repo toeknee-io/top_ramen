@@ -7,6 +7,7 @@ app.boot.preload = function() {
 	//app.game.load.audio('menu', 'assets/sounds/menu.ogg' );
 	//app.game.load.audio('lvl', 'assets/sounds/orlvl.ogg' );
 	app.game.load.image('bg', 'assets/bg4.jpg');
+	app.game.load.image('chef', 'assets/chef-holder.png');
 
 	app.game.load.audio('pop', 'assets/sounds/pop.ogg' );
 	app.game.load.audio('lose', 'assets/sounds/lose.ogg' );

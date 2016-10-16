@@ -41,7 +41,16 @@ function displayChallenges() {
 
 	let challenges = this;
 
-	var userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
+	if (app.game.cache.checkImageKey('myPic')) {
+
+		var userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
+
+	} else {
+
+		var userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
+
+	}
+	
 	userPic.scale.setTo(.8 * scaleRatio);
 	userPic.x = app.game.world.centerX;
 	userPic.anchor.x = .5;
@@ -112,7 +121,18 @@ function displayChallenges() {
   		let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
       var butt = app.game.add.button(0, picY, 'item');
-      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+
+      if (app.game.cache.checkImageKey(challenger.externalId + 'pic')) {
+
+      	var buttPic = app.game.add.image(30, 30, 'challenger.externalId + 'pic'');
+
+      } else {
+
+      	var buttPic = app.game.add.image(30, 30, 'chef');
+
+      }
+
+
       var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
         font: 60 + 'px Baloo Paaji',
         fill: '#fff',

@@ -1,3 +1,5 @@
+'use strict';
+
 function __getOpts(opts) {
   if (!opts || typeof opts !== 'object')
     return {};
@@ -35,7 +37,7 @@ class TopRamenApi {
     this.accessToken = opts.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
     this.deviceToken = opts.deviceToken || this.storage.getItem(this.ITEM_KEY_DEVICE_TOKEN);
 
-    this.getAccessToken = () => { return this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN) };
+    this.getAccessToken = () => this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
 
     this.setAccessToken = (accessToken) => {
       this.accessToken = accessToken;
@@ -43,7 +45,7 @@ class TopRamenApi {
         this.storage.removeItem(this.ITEM_KEY_ACCESS_TOKEN);
       } else {
         this.storage.setItem(this.ITEM_KEY_ACCESS_TOKEN, accessToken);
-        $.ajaxSetup({ beforeSend: xhr => xhr.setRequestHeader("Authorization", this.getAccessToken()) })
+        $.ajaxSetup({ beforeSend: xhr => xhr.setRequestHeader("Authorization", this.getAccessToken()) });
       }
     };
 
@@ -78,10 +80,10 @@ class TopRamenApi {
 
   getCordovaApp() { return this.cordovaApp; }
 
-  getUserByDeviceId(opts) {
+  getUserByDeviceId() {
     if (!this.deviceId) throw new Error('Cannot getUserByDeviceId without deviceId');
     return $.get(`${this.API_URL}/devices/${this.deviceId}/user`)
-      .fail(err => console.error(`Failed to get userId using deviceId [${deviceId}] : ${err.responseJSON.error.message}`));
+      .fail(err => console.error(`Failed to get userId using deviceId [${this.deviceId}] : ${err.responseJSON.error.message}`));
   }
 
   getUserIdentityBySocialId(provider, externalId) {
@@ -122,7 +124,7 @@ class TopRamenApi {
 
   }
 
-  getAppInstallations(opts) {
+  getAppInstallations() {
     return new this.Promise((resolve, reject) => {
 
       if (!this.isLoggedIn()) throw new Error(`The user must be logged in to getAppInstallations, userId [${this.getUserId()}] accessToken [${this.getAccessToken()}]`);
@@ -181,7 +183,7 @@ class TopRamenApi {
           this.setAccessToken(null);
           this.setUserId(null);
           resolve(); })
-        .fail(err => reject(err))
+        .fail(err => reject(err));
     });
   }
 
@@ -247,6 +249,68 @@ class TopRamenApi {
       $.get(`${this.API_URL}/users/me/scores`)
         .done(scores => resolve(scores))
         .fail(err => reject(new Error(`Failed to getScores: ${err.responseJSON.error.message}`)));
+    });
+  }
+
+  loadSocialImages() {
+    return new this.Promise((resolve, reject) => {
+
+      if (this.isLoggedIn()) {
+
+        this.getUserSocial()
+        .done(data => {
+
+          app.game.load.image('myPic', data.facebook.picture);
+          app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
+
+          this.getChallengesSorted()
+            .done((challenges) => {
+
+              let challengesTotal = 0;
+              let challengesDone = 0;
+
+              let challengeKeys = Object.keys(challenges);
+              let keyCount = 0;
+
+              challengeKeys.forEach((key) => {
+
+                challengesTotal += challenges[key].length;
+
+                challenges[key].forEach((challenge) => {
+
+                  let result = _.attempt(() => {
+
+                    let identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
+                    let picKey = `${identity.externalId}pic`;
+
+                    if (!app.game.cache.checkImageKey(picKey))
+                      app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
+
+                  });
+
+                  if (_.isError(result)) console.error(result);
+
+                  challengesDone++;
+
+                });
+
+                if (++keyCount === challengeKeys.length && challengesDone === challengesTotal) {
+                  console.log('loadSocialImages finished');
+                  resolve();
+                }
+
+              });
+
+          });
+
+        })
+        .fail(err => reject(err));
+
+      } else {
+        console.log(`skipping loadSocialImages because isLoggedIn [${this.isLoggedIn()}]`);
+        resolve();
+      }
+
     });
   }
 

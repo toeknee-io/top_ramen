@@ -1,4 +1,6 @@
-app.boot = {}
+'use strict';
+
+app.boot = {};
 
 app.boot.preload = function() {
 
@@ -29,6 +31,11 @@ app.boot.create = function() {
 
 	app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
 
+	trApi.loadSocialImages().then(() => finishBoot());
+
+};
+
+function finishBoot() {
 	setTimeout(function() {
 
 		if (navigator.splashscreen) {
@@ -37,15 +44,16 @@ app.boot.create = function() {
 
 		}
 
-		if (!app.bootCreateCallback || typeof app.bootCreateCallback !== 'function') {
+		console.log(`bootCreateCallback: ${String.valueOf(app.bootCreateCallback)}`);
+
+		if (typeof app.bootCreateCallback === 'function') {
+			app.bootCreateCallback();
+		} else {
 			setTimeout(function() {
 				app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
 				app.game.state.start('menu');
-			}, 1000);
-		} else {
-			app.bootCreateCallback();
+			}, 500);
 		}
 
-	}, 2400)
-
-};
+	}, 1200);
+}

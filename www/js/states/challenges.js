@@ -19,44 +19,44 @@ app.challenges.preload = function() {
 
 
   trApi.getUserSocial()
-		.done(function(data) {
+	.done(function(data) {
 
-			app.game.load.image('myPic', data.facebook.picture);
-      app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
+		app.game.load.image('myPic', data.facebook.picture);
+    app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
 
-			var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
-				font: 50 * scaleRatio + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "right",
-			});
+		var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
+			font: 50 * scaleRatio + 'px Baloo Paaji',
+			fill: '#fff',
+			align: "right",
+		});
 
-			welcomeText.anchor.x = .5;
+		welcomeText.anchor.x = 0.5;
 
-    	trApi.getChallengesSorted()
-    		.done(function(challenges) {
+  	trApi.getChallengesSorted()
+  		.done(function(challenges) {
 
-    		  Object.keys(challenges).forEach(function(key) {
+  		  Object.keys(challenges).forEach(function(key) {
 
-            for (let prop in challenges[key]) {
+          for (let prop in challenges[key]) {
 
-              let challenge = challenges[key][prop];
-          		let challenger = challenge[challenge.challenger.userId === trApi.getUserId() ? 'challenged' : 'challenger'].identities[0];
-              let picKey = `${challenger.externalId}pic`;
+            let challenge = challenges[key][prop];
+        		let challenger = challenge[challenge.challenger.userId === trApi.getUserId() ? 'challenged' : 'challenger'].identities[0];
+            let picKey = `${challenger.externalId}pic`;
 
-              if (!app.game.cache.checkImageKey(picKey))
-                app.game.load.image(picKey, `https://graph.facebook.com/${challenger.externalId}/picture?type=large`);
+            if (!app.game.cache.checkImageKey(picKey))
+              app.game.load.image(picKey, `https://graph.facebook.com/${challenger.externalId}/picture?type=large`);
 
-            };
+          };
 
-          });
+        });
 
-          app.game.load.onLoadComplete.add(displayChallenges, challenges);
+        app.game.load.onLoadComplete.add(displayChallenges, challenges);
 
-          app.game.load.start();
-
-      });
+        app.game.load.start();
 
     });
+
+  });
 
 };
 

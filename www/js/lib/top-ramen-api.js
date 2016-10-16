@@ -257,54 +257,55 @@ class TopRamenApi {
 
       if (this.isLoggedIn()) {
 
-        this.getUserSocial()
-        .done(data => {
+        if (!app.game.cache.checkImageKey('myPic')) {
+          this.getUserSocial()
+            .done(data => {
+              app.game.load.image('myPic', data.facebook.picture);
+              app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
+            })
+          .fail(err => reject(err));
+        }
 
-          app.game.load.image('myPic', data.facebook.picture);
-          app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
+        this.getChallengesSorted()
+          .done((challenges) => {
 
-          this.getChallengesSorted()
-            .done((challenges) => {
+            let challengesTotal = 0;
+            let challengesDone = 0;
 
-              let challengesTotal = 0;
-              let challengesDone = 0;
+            let challengeKeys = Object.keys(challenges);
+            let keyCount = 0;
 
-              let challengeKeys = Object.keys(challenges);
-              let keyCount = 0;
+            challengeKeys.forEach((key) => {
 
-              challengeKeys.forEach((key) => {
+              challengesTotal += challenges[key].length;
 
-                challengesTotal += challenges[key].length;
+              challenges[key].forEach((challenge) => {
 
-                challenges[key].forEach((challenge) => {
+                let result = _.attempt(() => {
 
-                  let result = _.attempt(() => {
+                  let identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
+                  let picKey = `${identity.externalId}pic`;
 
-                    let identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
-                    let picKey = `${identity.externalId}pic`;
-
-                    if (!app.game.cache.checkImageKey(picKey))
-                      app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
-
-                  });
-
-                  if (_.isError(result)) console.error(result);
-
-                  challengesDone++;
+                  if (!app.game.cache.checkImageKey(picKey))
+                    app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
 
                 });
 
-                if (++keyCount === challengeKeys.length && challengesDone === challengesTotal) {
-                  console.log('loadSocialImages finished');
-                  resolve(challenges);
-                }
+                if (_.isError(result)) console.error(result);
+
+                challengesDone++;
 
               });
 
-          });
+              if (++keyCount === challengeKeys.length && challengesDone === challengesTotal) {
+                console.log('loadSocialImages finished');
+                resolve(challenges);
+              }
 
-        })
-        .fail(err => reject(err));
+            });
+
+          })
+          .fail(err => reject(err));
 
       } else {
         console.log(`loadSocialImages skipped because isLoggedIn [${this.isLoggedIn()}]`);

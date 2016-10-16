@@ -76,6 +76,8 @@ class TopRamenApi {
     this.cordovaApp = cordovaApp;
   }
 
+  getCordovaApp() { return this.cordovaApp; }
+
   getUserByDeviceId(opts) {
     if (!this.deviceId) throw new Error('Cannot getUserByDeviceId without deviceId');
     return $.get(`${this.API_URL}/devices/${this.deviceId}/user`)
@@ -168,6 +170,7 @@ class TopRamenApi {
         }
 
       });
+
     });
   }
 
@@ -221,10 +224,21 @@ class TopRamenApi {
         method: 'PATCH',
         url: `${this.API_URL}/challenges/${challengeId}`,
         data: { score: score },
-        dataType: "json"})
+        dataType: 'json'})
       .done(data => console.log(`updated challenge: ${JSON.stringify(data)}`))
       .fail(err => console.error(`Failed to patchChallenge: ${err.responseJSON.error.message}`));
 
+  }
+
+  declineChallenge(challenge) {
+    challenge.status = 'declined';
+    return $.ajax({
+        method: 'PATCH',
+        url: `${this.API_URL}/challenges/${challenge.id}`,
+        data: challenge,
+        dataType: 'json'})
+      .done(data => console.log(`declined challenge: ${JSON.stringify(data)}`))
+      .fail(err => console.error(`Failed to patchChallenge: ${err.responseJSON.error.message}`));
   }
 
   getScores() {

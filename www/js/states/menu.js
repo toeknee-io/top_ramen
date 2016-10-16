@@ -164,7 +164,7 @@
     function options() {
 
     	let options = app.game.add.button(0, 0, 'options_menu', () => {
-            window.trApi.cordovaPush.unregister(
+            window.trApi.getCordovaApp().push.unregister(
                 () => console.log('successfully unregistered from push notifications'),
                 err => console.error(`err while unregistering from push notifications ${err}`)
             );

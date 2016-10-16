@@ -58,10 +58,19 @@ app.challenge.create = function() {
 
 function displayFriends() {
 
-	var userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
-			userPic.scale.setTo(.8 * scaleRatio);
-			userPic.x = app.game.world.centerX;
-			userPic.anchor.x = .5;
+	if (app.game.cache.checkImageKey('myPic')) {
+
+		var userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
+
+	} else {
+
+		var userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
+
+	}
+
+	userPic.scale.setTo(.8 * scaleRatio);
+	userPic.x = app.game.world.centerX;
+	userPic.anchor.x = .5;
 
 	var picY = 500 * scaleRatio;
 
@@ -86,7 +95,16 @@ function displayFriends() {
 			butt.scale.setTo(.8 * scaleRatio);
 			butt.centerX = app.game.world.centerX;
 
-			var buttPic = app.game.add.image(30, 30, friend.id + 'pic');
+			if (app.game.cache.checkImageKey(friend.id + 'pic')) {
+
+				var buttPic = app.game.add.image(30, 30, friend.id + 'pic');
+
+			} else {
+
+				var buttPic = app.game.add.image(30, 30, 'chef');
+
+			}
+
 			var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
 				font: 60 + 'px Baloo Paaji',
 				fill: '#fff',

@@ -58,13 +58,15 @@ app.challenge.create = function() {
 
 function displayFriends() {
 
+	let userPic;
+
 	if (app.game.cache.checkImageKey('myPic')) {
 
-		var userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
+		userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
 
 	} else {
 
-		var userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
+		userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
 
 	}
 
@@ -95,13 +97,15 @@ function displayFriends() {
 			butt.scale.setTo(.8 * scaleRatio);
 			butt.centerX = app.game.world.centerX;
 
+			let buttPic;
+
 			if (app.game.cache.checkImageKey(friend.id + 'pic')) {
 
-				var buttPic = app.game.add.image(30, 30, friend.id + 'pic');
+				buttPic = app.game.add.image(30, 30, friend.id + 'pic');
 
 			} else {
 
-				var buttPic = app.game.add.image(30, 30, 'chef');
+				buttPic = app.game.add.image(30, 30, 'chef');
 
 			}
 

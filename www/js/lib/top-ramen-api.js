@@ -98,7 +98,7 @@ class TopRamenApi {
     if (!this.isLoggedIn())
       return console.error(`The user must be logged in to make the getUserSocial call.`);
     return $.get(`${this.API_URL}/users/social/me`)
-      .fail(err => console.error(`Failed to get getUserSocial because: ${err}`));
+      .fail(err => console.error(err));
   }
 
   postAppInstallation(opts) {

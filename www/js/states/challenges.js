@@ -15,10 +15,12 @@ app.challenges.preload = function() {
 
   app.game.kineticScrolling.start();
 
+
   trApi.getUserSocial()
 		.done(function(data) {
 
 			app.game.load.image('myPic', data.facebook.picture);
+      app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
 
 			var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
 				font: 50 * scaleRatio + 'px Baloo Paaji',
@@ -28,40 +30,39 @@ app.challenges.preload = function() {
 
 			welcomeText.anchor.x = .5;
 
-		});
+    	trApi.getChallengesSorted()
+    		.done(function(challenges) {
 
-	trApi.getChallengesSorted()
-		.done(function(challenges) {
+    		  Object.keys(challenges).forEach(function(key) {
 
-		  Object.keys(challenges).forEach(function(key) {
+            chalLength += challenges[key].length;
 
-        for (let prop in challenges[key]) {
+            for (let prop in challenges[key]) {
 
-          let challenge = challenges[key][prop];
+              let challenge = challenges[key][prop];
+          		let challenger = challenge[challenge.challenger.userId === trApi.getUserId() ? 'challenged' : 'challenger'].identities[0];
+              let picKey = `${challenger.externalId}pic`;
 
-      		let challenger = challenge[challenge.challenger.userId === trApi.getUserId() ? 'challenged' : 'challenger'].identities[0];
-          let picKey = challenger.externalId + 'pic', challengerPic;
+              if (!app.game.cache.checkImageKey(picKey))
+                app.game.load.image(picKey, `https://graph.facebook.com/${challenger.externalId}/picture?type=large`);
 
-          if (!app.game.cache.checkImageKey(picKey)) {
-            let challengerPic = 'https://graph.facebook.com/' + challenger.externalId + '/picture?type=large';
-            app.game.load.image(challenger.externalId + 'pic', challengerPic);
+            };
+
+          });
+
+          app.game.load.start();
+
+          if (app.game.state.current === "challenges") {
+
+            displayChallenges(challenges);
+
           }
-
-        };
 
       });
 
-			app.game.load.start();
+    });
 
-			if (app.game.state.current === "challenges") {
-
-				displayChallenges(challenges);
-
-			}
-
-		});
-
-}
+};
 
 app.challenges.create = function() {
 
@@ -112,83 +113,89 @@ function displayChallenges(challenges) {
 
   function processOpen(challenge) {
 
-    let status;
+    try {
 
-		if (challenge.status === "new") {
+      let status;
 
-			status = 'Open';
+  		if (challenge.status === "new") {
 
-		} else if (challenge.challenger.userId === storedUserId) {
+  			status = 'Open';
 
-			if (challenge.challenger.score === null) {
+  		} else if (challenge.challenger.userId === storedUserId) {
 
-				status = 'Your Turn';
+  			if (challenge.challenger.score === null) {
 
-			} else if (challenge.challenged.score === null) {
+  				status = 'Your Turn';
 
-				status = 'Their Turn';
+  			} else if (challenge.challenged.score === null) {
 
-			}
-
-		} else if (challenge.challenged.userId === storedUserId) {
-
-			if (challenge.challenged.score === null) {
-
-				status = 'Your Turn';
-
-			} else if (challenge.challenger.score === null) {
-
-				status = 'Their Turn';
-
-			}
-
-		}
-
-		let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
-
-    var butt = app.game.add.button(0, picY, 'item');
-    var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
-    var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
-      font: 60 + 'px Baloo Paaji',
-      fill: '#fff',
-      align: "right",
-    } );
-
-    var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
-      font: 40 + 'px Baloo Paaji',
-      fill: '#fff',
-      align: "right",
-    } );
-
-    butt.onInputDown.add(function() {
-
-    	var yLoc = app.game.world.y;
-
-  		butt.onInputUp.add(function() {
-
-  			if (yLoc === app.game.world.y) {
-
-  				challengeStart(this);
+  				status = 'Their Turn';
 
   			}
 
-  		}, challenge);
+  		} else if (challenge.challenged.userId === storedUserId) {
 
-    });
+  			if (challenge.challenged.score === null) {
 
-    butt.scale.setTo(.8 * scaleRatio);
-    butt.centerX = app.game.world.centerX;
+  				status = 'Your Turn';
 
-    butt.addChild(buttText);
-    butt.addChild(buttPic);
+  			} else if (challenge.challenger.score === null) {
 
-    butt.addChild(buttStatus);
+  				status = 'Their Turn';
 
-    buttPic.scale.setTo(.8);
+  			}
 
-    challengerGroup1.add(butt);
+  		}
 
-    picY += 200 * scaleRatio;
+  		let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
+
+      var butt = app.game.add.button(0, picY, 'item');
+      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
+        font: 60 + 'px Baloo Paaji',
+        fill: '#fff',
+        align: "right",
+      } );
+
+      var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
+        font: 40 + 'px Baloo Paaji',
+        fill: '#fff',
+        align: "right",
+      } );
+
+      butt.onInputDown.add(function() {
+
+      	var yLoc = app.game.world.y;
+
+    		butt.onInputUp.add(function() {
+
+    			if (yLoc === app.game.world.y) {
+
+    				challengeStart(this);
+
+    			}
+
+    		}, challenge);
+
+      });
+
+      butt.scale.setTo(.8 * scaleRatio);
+      butt.centerX = app.game.world.centerX;
+
+      butt.addChild(buttText);
+      butt.addChild(buttPic);
+
+      butt.addChild(buttStatus);
+
+      buttPic.scale.setTo(.8);
+
+      challengerGroup1.add(butt);
+
+      picY += 200 * scaleRatio;
+
+    } catch (err) {
+      console.error(err);
+    }
 
   };
 
@@ -201,77 +208,83 @@ function displayChallenges(challenges) {
 
 	challenges.finished.forEach(function(challenge) {
 
-    let status;
+    try {
 
-  	if (challenge.challenger.userId === storedUserId) {
+      let status;
 
-  		var opponent = challenge.challenged.userId;
+    	if (challenge.challenger.userId === storedUserId) {
 
-  	} else {
+    		var opponent = challenge.challenged.userId;
 
-  		var opponent = challenge.challenger.userId;
+    	} else {
 
-  	}
+    		var opponent = challenge.challenger.userId;
 
-  	if (challenge.winner === storedUserId) {
+    	}
 
-  		status = 'You Won!';
+    	if (challenge.winner === storedUserId) {
 
-  	} else if (challenge.winner === "tied") {
+    		status = 'You Won!';
 
-  		status = 'Tied';
+    	} else if (challenge.winner === "tied") {
 
-  	} else {
+    		status = 'Tied';
 
-  		status = 'You Lost';
+    	} else {
 
-  	}
+    		status = 'You Lost';
 
-  	let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
+    	}
 
-    var butt = app.game.add.button(0, pic2Y, 'item');
-    var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
-    var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
-      font: 60 + 'px Baloo Paaji',
-      fill: '#fff',
-      align: "right",
-    } );
+    	let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
-    var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
-      font: 40 + 'px Baloo Paaji',
-      fill: '#fff',
-      align: "right",
-    } );
+      var butt = app.game.add.button(0, pic2Y, 'item');
+      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+      var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
+        font: 60 + 'px Baloo Paaji',
+        fill: '#fff',
+        align: "right",
+      } );
 
-    butt.onInputDown.add(function() {
+      var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
+        font: 40 + 'px Baloo Paaji',
+        fill: '#fff',
+        align: "right",
+      } );
 
-    	var yLoc = app.game.world.y;
+      butt.onInputDown.add(function() {
 
-  		butt.onInputUp.add(function() {
+      	var yLoc = app.game.world.y;
 
-  			if (yLoc === app.game.world.y) {
+    		butt.onInputUp.add(function() {
 
-  				challengeStart(this);
+    			if (yLoc === app.game.world.y) {
 
-  			}
+    				challengeStart(this);
 
-  		}, challenge);
+    			}
 
-    });
+    		}, challenge);
 
-    butt.scale.setTo(.8 * scaleRatio);
-    butt.centerX = app.game.world.centerX;
+      });
 
-    butt.addChild(buttText);
-    butt.addChild(buttPic);
+      butt.scale.setTo(.8 * scaleRatio);
+      butt.centerX = app.game.world.centerX;
 
-    butt.addChild(buttStatus);
+      butt.addChild(buttText);
+      butt.addChild(buttPic);
 
-    buttPic.scale.setTo(.8);
+      butt.addChild(buttStatus);
 
-    challengerGroup2.add(butt);
+      buttPic.scale.setTo(.8);
 
-    pic2Y += 200 * scaleRatio;
+      challengerGroup2.add(butt);
+
+      pic2Y += 200 * scaleRatio;
+
+    } catch (err) {
+      console.error(err);
+    }
 
 	});
 

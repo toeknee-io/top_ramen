@@ -40,18 +40,19 @@ app.challenges.create = function() {
 function displayChallenges() {
 
 	let challenges = this;
+  let userPic;
 
 	if (app.game.cache.checkImageKey('myPic')) {
 
-		var userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
+		userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
 
 	} else {
 
-		var userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
+		userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
 
 	}
 
-	userPic.scale.setTo(.8 * scaleRatio);
+	userPic.scale.setTo(0.8 * scaleRatio);
 	userPic.x = app.game.world.centerX;
 	userPic.anchor.x = .5;
 
@@ -134,7 +135,6 @@ function displayChallenges() {
         buttPic = app.game.add.image(30, 30, 'chef');
 
       }
-
 
       var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
         font: 60 + 'px Baloo Paaji',

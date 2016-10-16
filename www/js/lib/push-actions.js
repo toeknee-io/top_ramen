@@ -10,6 +10,7 @@
     declineChallenge: function(data) {
       window.trApi.declineChallenge(data.additionalData.challenge);
       console.log(data);
+      navigator.app.exitApp();
     }
   };
 

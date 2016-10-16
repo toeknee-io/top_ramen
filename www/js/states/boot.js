@@ -17,9 +17,15 @@ app.boot.preload = function() {
 	app.game.load.image('home', 'assets/home.png');
 	app.game.load.image('back', 'assets/back.png');
 
+	trApi.loadSocialImages().then(() => {
+		app.game.load.onLoadComplete.addOnce(loadComplete, this);
+		app.game.load.start();
+	});
+
 };
 
-app.boot.create = function() {
+function loadComplete() {
+
 	console.log('Boot State');
 
 	app.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -31,29 +37,20 @@ app.boot.create = function() {
 
 	app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
 
-	trApi.loadSocialImages().then(() => finishBoot());
+	if (navigator.splashscreen) {
 
-};
+		navigator.splashscreen.hide();
 
-function finishBoot() {
-	setTimeout(function() {
+	}
 
-		if (navigator.splashscreen) {
+	if (app.bootCreateCallback && typeof app.bootCreateCallback === 'function') {
+		console.log(`bootCreateCallback: ${app.bootCreateCallback}`);
+		app.bootCreateCallback();
+	} else {
+		setTimeout(function() {
+			app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+			app.game.state.start('menu');
+		}, 1000);
+	}
 
-			navigator.splashscreen.hide();
-
-		}
-
-		console.log(`bootCreateCallback: ${String.valueOf(app.bootCreateCallback)}`);
-
-		if (typeof app.bootCreateCallback === 'function') {
-			app.bootCreateCallback();
-		} else {
-			setTimeout(function() {
-				app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
-				app.game.state.start('menu');
-			}, 500);
-		}
-
-	}, 1200);
 }

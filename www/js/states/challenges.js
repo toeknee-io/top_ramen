@@ -17,45 +17,9 @@ app.challenges.preload = function() {
 
   app.game.kineticScrolling.start();
 
-
-  trApi.getUserSocial()
-	.done(function(data) {
-
-		app.game.load.image('myPic', data.facebook.picture);
-    app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
-
-		var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
-			font: 50 * scaleRatio + 'px Baloo Paaji',
-			fill: '#fff',
-			align: "right",
-		});
-
-		welcomeText.anchor.x = 0.5;
-
-  	trApi.getChallengesSorted()
-  		.done(function(challenges) {
-
-  		  Object.keys(challenges).forEach(function(key) {
-
-          for (let prop in challenges[key]) {
-
-            let challenge = challenges[key][prop];
-        		let challenger = challenge[challenge.challenger.userId === trApi.getUserId() ? 'challenged' : 'challenger'].identities[0];
-            let picKey = `${challenger.externalId}pic`;
-
-            if (!app.game.cache.checkImageKey(picKey))
-              app.game.load.image(picKey, `https://graph.facebook.com/${challenger.externalId}/picture?type=large`);
-
-          };
-
-        });
-
-        app.game.load.onLoadComplete.add(displayChallenges, challenges);
-
-        app.game.load.start();
-
-    });
-
+  trApi.loadSocialImages().then((challenges) => {
+    app.game.load.onLoadComplete.addOnce(displayChallenges, challenges);
+    app.game.load.start();
   });
 
 };
@@ -195,7 +159,7 @@ function displayChallenges() {
       console.error(err);
     }
 
-  };
+  }
 
   challenges.new.forEach(processOpen);
   challenges.started.forEach(processOpen);
@@ -209,14 +173,15 @@ function displayChallenges() {
     try {
 
       let status;
+      let opponent;
 
     	if (challenge.challenger.userId === storedUserId) {
 
-    		var opponent = challenge.challenged.userId;
+    	 opponent = challenge.challenged.userId;
 
     	} else {
 
-    		var opponent = challenge.challenger.userId;
+    	 opponent = challenge.challenger.userId;
 
     	}
 

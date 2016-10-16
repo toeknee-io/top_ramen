@@ -296,7 +296,7 @@ class TopRamenApi {
 
                 if (++keyCount === challengeKeys.length && challengesDone === challengesTotal) {
                   console.log('loadSocialImages finished');
-                  resolve();
+                  resolve(challenges);
                 }
 
               });
@@ -307,7 +307,7 @@ class TopRamenApi {
         .fail(err => reject(err));
 
       } else {
-        console.log(`skipping loadSocialImages because isLoggedIn [${this.isLoggedIn()}]`);
+        console.log(`loadSocialImages skipped because isLoggedIn [${this.isLoggedIn()}]`);
         resolve();
       }
 

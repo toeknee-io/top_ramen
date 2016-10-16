@@ -35,7 +35,7 @@ app.challenges.preload = function() {
 
     		  Object.keys(challenges).forEach(function(key) {
 
-            chalLength += challenges[key].length;
+            //chalLength += challenges[key].length;
 
             for (let prop in challenges[key]) {
 
@@ -50,13 +50,9 @@ app.challenges.preload = function() {
 
           });
 
+          app.game.load.onLoadComplete.add(displayChallenges, challenges);
+
           app.game.load.start();
-
-          if (app.game.state.current === "challenges") {
-
-            displayChallenges(challenges);
-
-          }
 
       });
 
@@ -77,7 +73,9 @@ app.challenges.create = function() {
 
 };
 
-function displayChallenges(challenges) {
+function displayChallenges() {
+
+	let challenges = this;
 
 	var userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
 	userPic.scale.setTo(.8 * scaleRatio);

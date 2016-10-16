@@ -1,4 +1,6 @@
-app.challenges = {}
+'use strict';
+
+app.challenges = {};
 
 app.challenges.preload = function() {
 
@@ -34,8 +36,6 @@ app.challenges.preload = function() {
     		.done(function(challenges) {
 
     		  Object.keys(challenges).forEach(function(key) {
-
-            //chalLength += challenges[key].length;
 
             for (let prop in challenges[key]) {
 

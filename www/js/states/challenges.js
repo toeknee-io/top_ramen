@@ -225,7 +225,20 @@ function displayChallenges() {
     	let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
       var butt = app.game.add.button(0, pic2Y, 'item');
-      var buttPic = app.game.add.image(30, 30, challenger.externalId + 'pic');
+
+      let buttPic;
+      let picKey = `${challenger.externalId}pic`;
+
+      if (app.game.cache.checkImageKey(picKey)) {
+
+        buttPic = app.game.add.image(30, 30, picKey);
+
+      } else {
+
+        buttPic = app.game.add.image(30, 30, 'chef');
+
+      }
+      
       var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
         font: 60 + 'px Baloo Paaji',
         fill: '#fff',

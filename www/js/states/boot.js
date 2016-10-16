@@ -15,9 +15,34 @@ app.boot.preload = function() {
 	app.game.load.image('home', 'assets/home.png');
 	app.game.load.image('back', 'assets/back.png');
 
+	if (trApi.isLoggedIn()) {
+
+	  trApi.getUserSocial()
+	    .done(function(data) {
+
+	      app.game.load.image('myPic', data.facebook.picture);
+	      data.facebook.friends.forEach(function(friend) {
+
+	          app.game.load.image(friend.id + 'pic', 'https://graph.facebook.com/' + friend.id + '/picture?type=large');
+
+	      })
+
+	      app.game.load.onLoadComplete.addOnce(loadComplete, this);
+
+	    	app.game.load.start();
+
+	    });
+
+  } else {
+
+  	app.game.load.onLoadComplete.addOnce(loadComplete, this);
+
+  }
+
 };
 
-app.boot.create = function() {
+function loadComplete() {
+
 	console.log('Boot State');
 
 	app.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -29,23 +54,19 @@ app.boot.create = function() {
 
 	app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
 
-	setTimeout(function() {
+	if (navigator.splashscreen) {
 
-		if (navigator.splashscreen) {
+		navigator.splashscreen.hide();
 
-			navigator.splashscreen.hide();
+	}
 
-		}
-
-		if (!app.bootCreateCallback || typeof app.bootCreateCallback !== 'function') {
-			setTimeout(function() {
-				app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
-				app.game.state.start('menu');
-			}, 1000);
-		} else {
-			app.bootCreateCallback();
-		}
-
-	}, 2400)
-
-};
+	if (!app.bootCreateCallback || typeof app.bootCreateCallback !== 'function') {
+		setTimeout(function() {
+			app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+			app.game.state.start('menu');
+		}, 1000);
+	} else {
+		app.bootCreateCallback();
+	}
+	
+}

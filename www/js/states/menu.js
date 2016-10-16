@@ -37,25 +37,6 @@
 
         app.game.load.image('bowl', 'assets/bowl' + imageSize + '.png');
 
-        if (trApi.isLoggedIn()) {
-
-            trApi.getUserSocial()
-                .done(function(data) {
-
-                    app.game.load.image('myPic', data.facebook.picture);
-                    app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
-                    data.facebook.friends.forEach(function(friend) {
-
-                        app.game.load.image(friend.id + 'pic', 'https://graph.facebook.com/' + friend.id + '/picture?type=large');
-
-                    })
-
-                  app.game.load.start();
-
-                });
-
-        }
-
     };
 
     app.menu.create = function() {

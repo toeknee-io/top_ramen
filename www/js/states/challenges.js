@@ -22,7 +22,6 @@ app.challenges.preload = function() {
 		.done(function(data) {
 
 			app.game.load.image('myPic', data.facebook.picture);
-      app.game.load.image(`${data.facebook.externalId}pic`, data.facebook.picture);
 
 			var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
 				font: 50 * scaleRatio + 'px Baloo Paaji',
@@ -50,7 +49,7 @@ app.challenges.preload = function() {
 
           });
 
-          app.game.load.onLoadComplete.add(displayChallenges, challenges);
+          app.game.load.onLoadComplete.addOnce(displayChallenges, challenges);
 
           app.game.load.start();
 

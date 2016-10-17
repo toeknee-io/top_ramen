@@ -19,7 +19,7 @@
       if (!window.jQuery || !window.cordova || !window._ || !window.Promise)
         throw new Error("Stuff's missing!");
 
-      opts = __getOpts(opts);
+      opts = window.__getOpts(opts);
 
       this.APP_NAME = 'com.bitsmitten.topramen';
 
@@ -110,7 +110,7 @@
 
     postAppInstallation(opts) {
 
-      opts = __getOpts(opts);
+      opts = window.__getOpts(opts);
 
       this.deviceToken = opts.registrationId || this.getDeviceToken();
 
@@ -331,6 +331,6 @@
       });
     }
 
-  }
+  };
 
 })();

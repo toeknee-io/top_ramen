@@ -3,8 +3,9 @@
   'use strict';
 
   window.pushActions = {
-    startGameStateChallenges: function(data) {
+    acceptChallenge: function(data) {
       window.app.bootCreateCallback = function() { app.game.state.start('challenges'); };
+      window.trApi.patchChallenge(data.additionalData.challenge.id, null, 'accepted');
       console.log(data);
     },
     declineChallenge: function(data) {

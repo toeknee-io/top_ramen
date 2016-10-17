@@ -2,6 +2,11 @@
 
     'use strict';
 
+    let onBackKeyDown = (e) => {
+      e.preventDefault();
+      window.goBack();
+    };
+
     let cordovaApp = {
 
       initialize: function() {
@@ -12,7 +17,9 @@
 
       onDeviceReady: function() {
 
-        window.trApi = new TopRamenApi();
+        document.addEventListener("backbutton", onBackKeyDown, false);
+
+        window.trApi = new window.TopRamenApi();
 
         cordovaApp.push = PushNotification.init({
           "android": {
@@ -42,9 +49,9 @@
 
         });
 
-        cordovaApp.push.on('error', function(err) { console.error(`Push error: ${err}`) });
+        cordovaApp.push.on('error', err => console.error(err));
 
-        cordovaApp.push.on('notification', function(data) { console.log(data); });
+        cordovaApp.push.on('notification', (data) => console.log(data));
 
         trApi.setCordovaApp(cordovaApp);
 

@@ -109,7 +109,26 @@
 
     function quickPlay() {
     	//menuSong.stop();
-        app.game.state.start('level');
+
+        let rand = app.game.rnd.integerInRange(1,3);
+
+        let ramenId = 'shoyu';
+
+        if (rand === 1) {
+
+            ramenId =  'shoyu';
+
+        } else if (rand === 2) {
+
+            ramenId =  'tonkotsu';
+
+        } else if (rand === 3) {
+
+            ramenId =  'spicy_chicken';
+
+        }
+
+        app.game.state.start('level', true, false, false, ramenId);
     }
 
     function challenge() {

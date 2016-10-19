@@ -157,7 +157,7 @@ function challengeFn() {
 
 				} else if (rand === 3) {
 
-					ramenId =  'spicy_chiken';
+					ramenId =  'spicy_chicken';
 
 				}
 

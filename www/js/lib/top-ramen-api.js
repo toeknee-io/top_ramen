@@ -313,10 +313,8 @@
 
                 });
 
-                if (++keyCount === challengeKeys.length && challengesDone === challengesTotal) {
-                  console.log('loadSocialImages finished');
+                if (++keyCount === challengeKeys.length && challengesDone === challengesTotal)
                   resolve(challenges);
-                }
 
               });
 
@@ -324,8 +322,9 @@
             .fail(err => reject(err));
 
         } else {
-          console.log(`loadSocialImages skipped because isLoggedIn [${this.isLoggedIn()}]`);
+
           resolve();
+
         }
 
       });

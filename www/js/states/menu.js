@@ -176,7 +176,7 @@
 
     function login(provider, opts) {
 
-        opts = __getOpts(opts);
+        opts = window.__getOpts(opts);
 
         if (typeof opts.iab !== 'string') opts.iab = 'location=no,zoom=no';
 
@@ -188,7 +188,8 @@
             trApi.getAppInstallations()
                 .then(installations =>  {
                     let existingInstall = _.find(installations, (install) => { return install.deviceToken === trApi.getDeviceToken(); });
-                    if (_.isEmpty(existingInstall)) trApi.postAppInstallation() })
+                    if (_.isEmpty(existingInstall)) trApi.postAppInstallation();
+                })
                 .catch(err => {
                     console.error(`Failed to getAppInstallations in logUserIn ${err}`);
                     if (!_.isEmpty(trApi.getDeviceToken()) && trApi.isLoggedIn())

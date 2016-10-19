@@ -1,4 +1,4 @@
-(function() {
+(function(app) {
 
   'use strict';
 
@@ -10,31 +10,43 @@
   app.game.state.add('game-over', app.gameover);
   app.game.state.add('challengeResults', app.challengeResults);
 
-  app.game.state.onStateChange.add((newState, oldState) => app.__prevState = oldState);
+  app.game.state.onStateChange.add((newState, oldState) => {
 
-  function goToState(state) {
+    window.__stateHistory.push(newState);
+
+    if (oldState && oldState !== 'level')
+      window.__prevState = oldState;
+
+  });
+
+  window.goToState = function (state) {
+
+    state = state || 'menu';
+
     app.game.world.setBounds(0, 0, app.game.width, app.game.height);
     app.game.state.clearCurrentState();
     app.game.state.start(state);
-  }
 
-  window.goHome = () => goToState('menu');
+  };
 
-  window.goBack = () => {
+  window.goBack = function() {
 
-    let currState = app.game.state.current;
+    if (app.game.state.current === 'menu')
+      return;
 
-    if (_.isEmpty(app.__prevState) || _.isEmpty(currState) ||
-      currState === 'menu' || currState === 'boot') {
-      navigator.app.exitApp();
-    } else if (app.__prevState === 'level') {
-      goHome();
-    } else {
-      goToState(app.__prevState);
-    }
+    let state = app.game.state.current !== window.__prevState ?
+      window.__prevState : 'menu';
+
+    window.goToState(state);
+
+  };
+
+  window.goHome = function() {
+
+    window.goToState('menu');
 
   };
 
   app.game.state.start('boot');
 
-})();
+})(window.app);

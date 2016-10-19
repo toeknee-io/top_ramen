@@ -33,14 +33,14 @@ pork.spawn = function() {
 		return;
 	}
 
-	pork.speed = app.game.rnd.integerInRange(720,750);
+	pork.speed = app.game.rnd.integerInRange(900,1200);
 	pork.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	pork.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	pork.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
 	pork.sprite.events.onInputDown.add(collect, pork);
 
-	pork.motionTween = app.game.add.tween(pork.sprite).to({ y: app.game.world.height * .20 }, pork.speed, Phaser.Easing.easeIn, true, 0, 0, false);
+	pork.motionTween = app.game.add.tween(pork.sprite).to({ y: 50 }, pork.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	pork.fadeInTween = app.game.add.tween(pork.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	pork.rotateTween = app.game.add.tween(pork.sprite).to({ angle: 30 }, pork.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	pork.motionTween.onComplete.addOnce(destroyIng, this);

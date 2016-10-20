@@ -140,9 +140,9 @@
 				});
 				notLogged.scale.setTo(scaleRatio);
 				notLogged.x = app.game.world.centerX;
-				notLogged.anchor.x = .5;
+				notLogged.anchor.x = 0.5;
 				notLogged.y = app.game.world.centerY;
-				notLogged.anchor.y = .5;
+				notLogged.anchor.y = 0.5;
 		}
     }
 
@@ -150,14 +150,15 @@
         if (trApi.isLoggedIn()) {
             app.game.state.start('challenges');
         } else {
-            var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
-                notLogged.destroy();
-            });
+
+            let notLogged = app.game.add.button(0, 0, 'not_logged', () => notLogged.destroy());
+
             notLogged.scale.setTo(scaleRatio);
             notLogged.x = app.game.world.centerX;
-            notLogged.anchor.x = .5;
+            notLogged.anchor.x = 0.5;
             notLogged.y = app.game.world.centerY;
-            notLogged.anchor.y = .5;
+            notLogged.anchor.y = 0.5;
+
         }
     }
 
@@ -195,7 +196,7 @@
 
     function login(provider, opts) {
 
-        opts = __getOpts(opts);
+        opts = window.__getOpts(opts);
 
         if (typeof opts.iab !== 'string') opts.iab = 'location=no,zoom=no';
 
@@ -207,7 +208,8 @@
             trApi.getAppInstallations()
                 .then(installations =>  {
                     let existingInstall = _.find(installations, (install) => { return install.deviceToken === trApi.getDeviceToken(); });
-                    if (_.isEmpty(existingInstall)) trApi.postAppInstallation() })
+                    if (_.isEmpty(existingInstall)) trApi.postAppInstallation();
+                })
                 .catch(err => {
                     console.error(`Failed to getAppInstallations in logUserIn ${err}`);
                     if (!_.isEmpty(trApi.getDeviceToken()) && trApi.isLoggedIn())

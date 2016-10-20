@@ -1,5 +1,6 @@
 (function() {
-'use strict';
+
+  'use strict';
 
   app.challenges = {};
 
@@ -33,7 +34,7 @@
   	bg.scale.setTo(scaleRatio * 2.05);
   	bg.fixedToCamera = true;
 
-  	var homeButton = app.game.add.button(30, 30, 'home', goHome);
+  	var homeButton = app.game.add.button(30, 30, 'home', window.goHome);
   	homeButton.scale.setTo(scaleRatio);
 
   };

@@ -1,10 +1,23 @@
 var noodles = {};
 
-noodles.worth = 1;
-noodles.bonus = 0;
-noodles.type = 'good';
+noodles.init = function() {
+
+	noodles.worth = 1;
+	noodles.bonus = 0;
+	noodles.type = 'good';
+	noodles.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','noodles.png');
+	noodles.sprite.scale.setTo(scaleRatio, scaleRatio);
+	noodles.sprite.alpha = 0;
+	noodles.sound = pop;
+
+	ings.add(noodles.sprite);
+
+	noodles.spawn();
+
+}
 
 noodles.spawn = function() {
+
 	if (gameOver) {
 		return;
 	}
@@ -16,19 +29,14 @@ noodles.spawn = function() {
 	}
 
 	noodles.spawnTime = app.game.rnd.integerInRange(1000,5000);
-	noodles.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','noodles.png');
-	noodles.sprite.alpha = 0;
-	noodles.sprite.scale.setTo(scaleRatio, scaleRatio);
-	ings.add(noodles.sprite);
+	noodles.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
+	noodles.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
+
 	noodles.sprite.events.onInputDown.add(collect, noodles);
+	
 	noodles.motionTween = app.game.add.tween(noodles.sprite).to({ y: 50 }, noodles.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	noodles.fadeInTween = app.game.add.tween(noodles.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	noodles.rotateTween = app.game.add.tween(noodles.sprite).to({ angle: 20 }, noodles.speed, Phaser.Easing.easeIn, true, 0, 0, false);
-	noodles.motionTween.onComplete.addOnce(killIng, this);
+	noodles.motionTween.onComplete.addOnce(destroyIng, this);
 
-	noodles.sound = pop;
-}
-
-noodles.fadeOutTween = function() {
-	app.game.add.tween(noodles.sprite).to({ alpha: 0 }, 100, Phaser.Easing.easeIn, true, 0, 0, false);
 }

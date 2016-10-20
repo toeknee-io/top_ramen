@@ -109,7 +109,26 @@
 
     function quickPlay() {
     	//menuSong.stop();
-        app.game.state.start('level');
+
+        let rand = app.game.rnd.integerInRange(1,3);
+
+        let ramenId = 'shoyu';
+
+        if (rand === 1) {
+
+            ramenId =  'shoyu';
+
+        } else if (rand === 2) {
+
+            ramenId =  'tonkotsu';
+
+        } else if (rand === 3) {
+
+            ramenId =  'spicy_chicken';
+
+        }
+
+        app.game.state.start('level', true, false, false, ramenId);
     }
 
     function challenge() {
@@ -121,9 +140,9 @@
 				});
 				notLogged.scale.setTo(scaleRatio);
 				notLogged.x = app.game.world.centerX;
-				notLogged.anchor.x = .5;
+				notLogged.anchor.x = 0.5;
 				notLogged.y = app.game.world.centerY;
-				notLogged.anchor.y = .5;
+				notLogged.anchor.y = 0.5;
 		}
     }
 
@@ -131,14 +150,15 @@
         if (trApi.isLoggedIn()) {
             app.game.state.start('challenges');
         } else {
-            var notLogged = app.game.add.button(0, 0, 'not_logged', function() {
-                notLogged.destroy();
-            });
+
+            let notLogged = app.game.add.button(0, 0, 'not_logged', () => notLogged.destroy());
+
             notLogged.scale.setTo(scaleRatio);
             notLogged.x = app.game.world.centerX;
-            notLogged.anchor.x = .5;
+            notLogged.anchor.x = 0.5;
             notLogged.y = app.game.world.centerY;
-            notLogged.anchor.y = .5;
+            notLogged.anchor.y = 0.5;
+
         }
     }
 

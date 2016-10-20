@@ -31,8 +31,12 @@
 
   window.goBack = function() {
 
-    if (app.game.state.current === 'menu')
-      return;
+    if (app.game.state.current === 'menu') {
+      if (window.confirm('Exit Top Ramen?'))
+        navigator.app.exitApp();
+      else
+        return;
+    }
 
     let state = app.game.state.current !== window.__prevState ?
       window.__prevState : 'menu';

@@ -23,9 +23,9 @@ greenOnions.spawn = function() {
 	}
 
 	if (timeLeft < 20) {
-		greenOnions.speed = app.game.rnd.integerInRange(700, 1000);
+		greenOnions.speed = app.game.rnd.integerInRange(900, 1000);
 	} else {
-		greenOnions.speed = app.game.rnd.integerInRange(1000, 2000);
+		greenOnions.speed = app.game.rnd.integerInRange(1400, 2000);
 	}
 
 	greenOnions.spawnTime = app.game.rnd.integerInRange(2200,5000);

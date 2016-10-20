@@ -2,19 +2,9 @@ var sprouts = {};
 
 sprouts.init = function() {
 
-	if (this.ramenId === 'tonkotsu') {
-
-		sprouts.worth = 2;
-		sprouts.bonus = 0;
-		sprouts.type = 'good';
-
-	} else {
-
-		sprouts.worth = -1;
-		sprouts.bonus = 0;
-		sprouts.type = 'bad';
-
-	}
+	sprouts.worth = 1;
+	sprouts.bonus = 0;
+	sprouts.type = 'good';
 
 	sprouts.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','sprouts.png');
 	sprouts.sprite.scale.setTo(scaleRatio, scaleRatio);
@@ -34,9 +24,9 @@ sprouts.spawn = function() {
 	}
 
 	if (timeLeft < 20) {
-		sprouts.speed = app.game.rnd.integerInRange(700, 1000);
+		sprouts.speed = app.game.rnd.integerInRange(1000, 1400);
 	} else {
-		sprouts.speed = app.game.rnd.integerInRange(1000, 2000);
+		sprouts.speed = app.game.rnd.integerInRange(1600, 2400);
 	}
 
 	sprouts.spawnTime = app.game.rnd.integerInRange(2000,5500);

@@ -20,7 +20,7 @@ egg.spawn = function() {
 	if (gameOver) {
 		return;
 	}
-	egg.speed = app.game.rnd.integerInRange(600,750);
+	egg.speed = app.game.rnd.integerInRange(900,1350);
 	egg.spawnTime = app.game.rnd.integerInRange(7000,12000);
 	egg.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	egg.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);

@@ -33,7 +33,7 @@ pork.spawn = function() {
 		return;
 	}
 
-	pork.speed = app.game.rnd.integerInRange(900,1200);
+	pork.speed = app.game.rnd.integerInRange(1000,1500);
 	pork.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	pork.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	pork.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);

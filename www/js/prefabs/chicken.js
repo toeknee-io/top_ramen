@@ -33,7 +33,7 @@ chicken.spawn = function() {
 		return;
 	}
 
-	chicken.speed = app.game.rnd.integerInRange(900,1200);
+	chicken.speed = app.game.rnd.integerInRange(1000,1500);
 	chicken.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	chicken.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	chicken.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);

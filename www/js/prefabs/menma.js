@@ -4,7 +4,7 @@ menma.init = function() {
 
 	if (this.ramenId !== 'spicy_chicken') {
 
-		menma.worth = 2;
+		menma.worth = 1;
 		menma.bonus = 0;
 		menma.type = 'good';
 
@@ -34,9 +34,9 @@ menma.spawn = function() {
 	}
 
 	if (timeLeft < 20) {
-		menma.speed = app.game.rnd.integerInRange(700, 1000);
+		menma.speed = app.game.rnd.integerInRange(1000, 1400);
 	} else {
-		menma.speed = app.game.rnd.integerInRange(1000, 2000);
+		menma.speed = app.game.rnd.integerInRange(1600, 2400);
 	}
 
 	menma.spawnTime = app.game.rnd.integerInRange(2000,5500);

@@ -5,14 +5,20 @@ corn.init = function() {
 	if (this.ramenId === 'tonkotsu') {
 
 		corn.worth = 2;
-		corn.bonus = 0;
+		corn.bonus = 1;
 		corn.type = 'good';
 
-	} else {
+	} else if (this.ramenId === 'shoyu') {
 
 		corn.worth = -1;
 		corn.bonus = 0;
 		corn.type = 'bad';
+
+	} else {
+
+		corn.worth = 2;
+		corn.bonus = 0;
+		corn.type = 'good';
 
 	}
 
@@ -34,9 +40,9 @@ corn.spawn = function() {
 	}
 
 	if (timeLeft < 20) {
-		corn.speed = app.game.rnd.integerInRange(700, 1000);
+		corn.speed = app.game.rnd.integerInRange(1000, 1300);
 	} else {
-		corn.speed = app.game.rnd.integerInRange(1000, 2000);
+		corn.speed = app.game.rnd.integerInRange(1600, 2400);
 	}
 
 	corn.spawnTime = app.game.rnd.integerInRange(2000,5500);

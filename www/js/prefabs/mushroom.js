@@ -4,18 +4,17 @@ mushroom.init = function() {
 
 	if (this.ramenId !== 'spicy_chicken') {
 
-		mushroom.worth = -2;
+		mushroom.worth = 2;
 		mushroom.bonus = 0;
-		mushroom.type = 'bad';
 
 	} else {
 
 		mushroom.worth = 2;
 		mushroom.bonus = 1;
-		mushroom.type = 'good';
 
 	}
 
+	mushroom.type = 'good';
 	mushroom.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','mushroom.png');
 	mushroom.sprite.alpha = 0;
 	mushroom.sprite.scale.setTo(scaleRatio, scaleRatio);
@@ -33,7 +32,7 @@ mushroom.spawn = function() {
 		return;
 	}
 
-	mushroom.speed = app.game.rnd.integerInRange(720,750);
+	mushroom.speed = app.game.rnd.integerInRange(1000,2500);
 	mushroom.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	mushroom.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	mushroom.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);

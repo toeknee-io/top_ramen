@@ -42,7 +42,7 @@ kitty.spawn = function() {
 
 	kitty.sprite.loadTexture('ings-sheet','kitty' + kittyColor + '.png');
 
-	kitty.speed = app.game.rnd.integerInRange(900,1300);
+	kitty.speed = app.game.rnd.integerInRange(1300,1600);
 	kitty.spawnTime = app.game.rnd.integerInRange(5000,10000);
 	kitty.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	kitty.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);

@@ -10,7 +10,7 @@ chili.init = function() {
 
 	} else {
 
-		chili.worth = -1;
+		chili.worth = -2;
 		chili.bonus = 0;
 		chili.type = 'bad';
 
@@ -33,9 +33,9 @@ chili.spawn = function() {
 	}
 
 	if (timeLeft < 20) {
-		chili.speed = app.game.rnd.integerInRange(700, 1000);
+		chili.speed = app.game.rnd.integerInRange(1000, 1300);
 	} else {
-		chili.speed = app.game.rnd.integerInRange(1000, 2000);
+		chili.speed = app.game.rnd.integerInRange(1600, 2400);
 	}
 
 	chili.spawnTime = app.game.rnd.integerInRange(4000,6000);

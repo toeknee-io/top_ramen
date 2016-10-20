@@ -2,17 +2,17 @@ var bokchoy = {};
 
 bokchoy.init = function() {
 
-	if (this.ramenId !== 'tonkotsu') {
+	if (this.ramenId === 'shoyu') {
 
 		bokchoy.worth = 2;
-		bokchoy.bonus = 0;
+		bokchoy.bonus = 1;
 		bokchoy.type = 'good';
 
 	} else {
 
-		bokchoy.worth = -1;
+		bokchoy.worth = 1;
 		bokchoy.bonus = 0;
-		bokchoy.type = 'bad';
+		bokchoy.type = 'good';
 
 	}
 
@@ -34,9 +34,9 @@ bokchoy.spawn = function() {
 	}
 
 	if (timeLeft < 20) {
-		bokchoy.speed = app.game.rnd.integerInRange(700, 1000);
+		bokchoy.speed = app.game.rnd.integerInRange(1000, 1200);
 	} else {
-		bokchoy.speed = app.game.rnd.integerInRange(1000, 2000);
+		bokchoy.speed = app.game.rnd.integerInRange(2000, 3000);
 	}
 
 	bokchoy.spawnTime = app.game.rnd.integerInRange(2000,5500);

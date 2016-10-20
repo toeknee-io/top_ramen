@@ -2,6 +2,9 @@
 
     'use strict';
 
+    window.__stateHistory = [];
+    window.__prevState = null;
+
     let onBackKeyDown = (e) => {
       e.preventDefault();
       window.goBack();

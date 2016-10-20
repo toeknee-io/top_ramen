@@ -97,7 +97,20 @@
         chefbar.anchor.y = 1;
         chefbar.anchor.x = .5;
 
-        var optionsButton = app.game.add.button(app.game.world.centerX, chefbar.bottom, 'options_button', options);
+        let optionsGroup = app.game.add.group();
+
+        let sound = app.game.add.button(0, 500, 'sound', soundToggle);
+        let music = app.game.add.button(sound.left - 80, 500, 'music', musicToggle);
+        music.anchor.x = 1;
+        music.anchor.y = .5;
+        sound.anchor.y = .5;
+
+        optionsGroup.add(music);
+        optionsGroup.add(sound);
+        optionsGroup.x = app.game.width * .85;
+        optionsGroup.y = (app.game.height * .98) - (music.height / 2);
+
+        var optionsButton = app.game.add.button(app.game.width * .1, chefbar.bottom, 'options_button', options, optionsGroup);
         optionsButton.scale.setTo(scaleRatio);
         optionsButton.anchor.x = .5;
         optionsButton.anchor.y = .5;
@@ -164,21 +177,51 @@
 
     function options() {
 
-    	let options = app.game.add.button(0, 0, 'options_menu', () => {
+        let self = this;
+
+        if (self.children[0].y !== 0) {
+
+            app.game.add.tween(self.children[0]).to({ y: 0 }, 250, Phaser.Easing.easeIn, true, 0, 0, false);
+
+            setTimeout(function() {
+
+                app.game.add.tween(self.children[1]).to({ y: 0 }, 250, Phaser.Easing.easeIn, true, 0, 0, false);
+
+            }, 200)
+
+        } else {
+
+            app.game.add.tween(self.children[0]).to({ y: 500 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
+
+            setTimeout(function() {
+
+                app.game.add.tween(self.children[1]).to({ y: 500 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
+
+            }, 150)
+
+        }
+
+        /*let notifOff = app.game.add.button(0, 0, '', () => {
             window.trApi.getCordovaApp().push.unregister(
                 () => console.log('successfully unregistered from push notifications'),
                 err => console.error(`err while unregistering from push notifications ${err}`)
             );
             trApi.setDeviceToken(null);
-		});
-
-		options.scale.setTo(scaleRatio);
-		options.x = app.game.world.centerX;
-		options.anchor.x = .5;
-		options.y = app.game.world.centerY;
-		options.anchor.y = .5;
+        });*/
 
 	}
+
+    function soundToggle() {
+
+
+
+    }
+
+    function musicToggle() {
+
+        
+        
+    }
 
     function fbLogin() {
         login('facebook');

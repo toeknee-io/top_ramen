@@ -2,12 +2,26 @@
 
 app.boot = {};
 
+app.boot.init = function() {
+
+	if (!app.music)
+		app.music = true
+
+	if (!app.sound)
+		app.sound = true
+
+}
+
 app.boot.preload = function() {
 
 	//app.game.load.audio('menu', 'assets/sounds/menu.ogg' );
 	//app.game.load.audio('lvl', 'assets/sounds/orlvl.ogg' );
 	app.game.load.image('bg', 'assets/bg4.jpg');
+	app.game.load.image('lb_bg', 'assets/lightbox_bg.png');
+	app.game.load.image('close', 'assets/close.png');
 	app.game.load.image('chef', 'assets/chef-holder.png');
+	app.game.load.image('music', 'assets/music.png');
+	app.game.load.image('sound', 'assets/sound.png');
 
 	app.game.load.audio('pop', 'assets/sounds/pop.ogg' );
 	app.game.load.audio('lose', 'assets/sounds/lose.ogg' );
@@ -25,6 +39,12 @@ app.boot.preload = function() {
 
 };
 
+/*app.boot.create = function() {
+
+	app.game.state.start('level');
+
+}
+*/
 function loadComplete() {
 
 	console.log('Boot State');

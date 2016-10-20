@@ -18,7 +18,7 @@ pork.init = function() {
 
 	pork.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','pork.png');
 	pork.sprite.alpha = 0;
-	pork.sprite.scale.setTo(scaleRatio, scaleRatio);
+	pork.sprite.scale.setTo(scaleRatio * 1.3);
 	pork.sound = pop;
 
 	ings.add(pork.sprite);

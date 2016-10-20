@@ -16,7 +16,7 @@ kitty.init = function() {
 	kitty.type = 'bad';
 	kitty.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','kitty' + kittyColor + '.png');
 	kitty.sprite.alpha = 0;
-	kitty.sprite.scale.setTo(scaleRatio, scaleRatio);
+	kitty.sprite.scale.setTo(scaleRatio * 1.3);
 	kitty.sound = pop;
 
 	ings.add(kitty.sprite);

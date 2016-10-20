@@ -18,7 +18,7 @@ chicken.init = function() {
 
 	chicken.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','chicken.png');
 	chicken.sprite.alpha = 0;
-	chicken.sprite.scale.setTo(scaleRatio, scaleRatio);
+	chicken.sprite.scale.setTo(scaleRatio * 1.3);
 	chicken.sound = pop;
 
 	ings.add(chicken.sprite);

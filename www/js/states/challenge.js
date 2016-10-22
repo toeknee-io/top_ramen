@@ -174,15 +174,11 @@ function challengeFn() {
 
 				}
 
-				/*if (identity.provider === provider) {
+				if (identity.provider === provider) {
 					trApi.postChallenge(identity.userId, ramenId)
 						.done(data => challengeSentPopup(data))
 						.fail(err => console.error(`Failed because: ${JSON.stringify(err)}`));
-				}*/
-
-				let data;
-
-				challengerSentPopup(data);
+				}
 
 			});
 
@@ -220,8 +216,8 @@ function challengeSentPopup(id) {
 
 function playNow() {
 
-	//app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-	//app.game.state.start('level', true, false, this.id, this.ramenId);
+	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
+	app.game.state.start('level', true, false, this.id, this.ramenId);
 
 }
 

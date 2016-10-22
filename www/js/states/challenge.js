@@ -19,6 +19,7 @@ app.challenge.preload = function() {
   app.game.load.image('play_now', 'assets/play_now.png');
   app.game.load.image('yes', 'assets/yes.png');
   app.game.load.image('no', 'assets/no.png');
+  app.game.load.image('friendbar', 'assets/friendbar.png');
 
   trApi.getUserSocial()
     .done(function(data) {
@@ -58,6 +59,12 @@ app.challenge.create = function() {
 
 function displayFriends() {
 
+	var chefbar = app.game.add.image(app.game.world.centerX, app.game.world.height + 200, 'friendbar');
+  chefbar.scale.setTo(scaleRatio);
+  chefbar.fixedToCamera = true;
+  chefbar.anchor.y = 1;
+  chefbar.anchor.x = .5;
+
 	let userPic;
 
 	if (app.game.cache.checkImageKey('myPic')) {
@@ -92,43 +99,49 @@ function displayFriends() {
 
     data.facebook.friends.forEach(function(friend) {
 
-      var butt = app.game.add.button(0, picY, 'item', challengeFn, friend);
+      for (i = 0; i < 15; i++) {
 
-			butt.scale.setTo(.8 * scaleRatio);
-			butt.centerX = app.game.world.centerX;
+      	var butt = app.game.add.button(0, picY, 'item', challengeFn, friend);
 
-			let buttPic;
+				butt.scale.setTo(.8 * scaleRatio);
+				butt.centerX = app.game.world.centerX;
 
-			if (app.game.cache.checkImageKey(friend.id + 'pic')) {
+				let buttPic;
 
-				buttPic = app.game.add.image(30, 30, friend.id + 'pic');
+				if (app.game.cache.checkImageKey(friend.id + 'pic')) {
 
-			} else {
+					buttPic = app.game.add.image(30, 30, friend.id + 'pic');
 
-				buttPic = app.game.add.image(30, 30, 'chef');
+				} else {
 
-			}
+					buttPic = app.game.add.image(30, 30, 'chef');
 
-			var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
-				font: 60 + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "right",
-			} );
+				}
 
-			butt.addChild(buttText);
-			butt.addChild(buttPic);
+				var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
+					font: 60 + 'px Baloo Paaji',
+					fill: '#fff',
+					align: "right",
+				} );
 
-			buttPic.scale.setTo(.8);
+				butt.addChild(buttText);
+				butt.addChild(buttPic);
 
-			friendGroup.add(butt);
+				buttPic.scale.setTo(.8);
 
-			picY += 200 * scaleRatio;
+				friendGroup.add(butt);
+
+				picY += 200 * scaleRatio;
+
+      }
 
     })
 
-    app.game.world.setBounds(0, 0, app.game.width, friendGroup.height + 600 * scaleRatio);
+    app.game.world.setBounds(0, 0, app.game.width, friendGroup.height + 1000 * scaleRatio);
 
 	}
+
+	chefbar.bringToTop();
 
 }
 
@@ -161,11 +174,15 @@ function challengeFn() {
 
 				}
 
-				if (identity.provider === provider) {
+				/*if (identity.provider === provider) {
 					trApi.postChallenge(identity.userId, ramenId)
 						.done(data => challengeSentPopup(data))
 						.fail(err => console.error(`Failed because: ${JSON.stringify(err)}`));
-				}
+				}*/
+
+				let data;
+
+				challengerSentPopup(data);
 
 			});
 
@@ -203,8 +220,8 @@ function challengeSentPopup(id) {
 
 function playNow() {
 
-	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-	app.game.state.start('level', true, false, this.id, this.ramenId);
+	//app.game.world.setBounds(0, 0, app.game.width, app.game.height);
+	//app.game.state.start('level', true, false, this.id, this.ramenId);
 
 }
 

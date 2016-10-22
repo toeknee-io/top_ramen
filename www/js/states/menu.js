@@ -99,11 +99,34 @@
 
         let optionsGroup = app.game.add.group();
 
-        let sound = app.game.add.button(0, 500, 'sound', soundToggle);
-        let music = app.game.add.button(sound.left - 80, 500, 'music', musicToggle);
+        let sound;
+        let music;
+
+        sound = app.game.add.button(0, 500, 'sound', soundToggle, sound);
+        music = app.game.add.button(sound.left - 80, 500, 'music', musicToggle, music);
         music.anchor.x = 1;
         music.anchor.y = .5;
         sound.anchor.y = .5;
+
+        if (app.sound) {
+
+            sound.alpha = 1
+
+        } else {
+
+            sound.alpha = .4;
+
+        }
+
+        if (app.music) {
+
+            music.alpha = 1
+
+        } else {
+
+            music.alpha = .4;
+
+        }
 
         optionsGroup.add(music);
         optionsGroup.add(sound);
@@ -213,14 +236,38 @@
 
     function soundToggle() {
 
+        if (app.sound === true) {
 
+            app.sound = false;
+
+            this.alpha = .4;
+
+        } else if (app.sound === false) {
+
+            app.sound = true;
+
+            this.alpha = 1;
+
+        }
 
     }
 
     function musicToggle() {
 
-        
-        
+        if (app.music === true) {
+
+            app.music = false;
+
+            this.alpha = .4;
+
+        } else if (app.music === false) {
+
+            app.music = true;
+
+            this.alpha = 1;
+
+        }
+
     }
 
     function fbLogin() {

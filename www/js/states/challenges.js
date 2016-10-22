@@ -303,7 +303,7 @@
 
   	} else if (((challenge.challenger.userId === storedUserId) && (challenge.challenger.score === null)) || ((challenge.challenged.userId === storedUserId) && (challenge.challenged.score === null))) {
 
-  		app.game.state.start('level', true, false, challenge.id);
+  		app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
 
   	} else {
 

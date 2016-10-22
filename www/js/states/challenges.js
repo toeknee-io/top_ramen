@@ -91,9 +91,9 @@
 
         let storedUserId = trApi.getUserId();
 
-        let status;
+        let status = null;
 
-        if (challenge.status === 'started' || challenge.status === 'accepted') {
+        if (challenge.status === 'started') {
 
           if (challenge.challenger.userId === storedUserId) {
 
@@ -192,7 +192,6 @@
     }
 
     _.forEach(challenges, (chalArray, status) => {
-      console.log('status', status);
       if (status !== 'finished' && status !== 'declined')
         chalArray.forEach(processOpen);
     });
@@ -200,6 +199,9 @@
   	challengerGroup2.y = challengerGroup1.height + 900 * scaleRatio;
 
   	var pic2Y = finishedGames.y + 300;
+
+    if (!Array.isArray(challenges.finished))
+      challenges.finished = [];
 
   	challenges.finished.forEach(function(challenge) {
 

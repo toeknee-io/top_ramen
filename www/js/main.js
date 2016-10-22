@@ -34,13 +34,18 @@
   window.goBack = function() {
 
     let currState = (app.game.state.current || DEFAULT_SATE).toLowerCase();
+    let prevState = window.__prevState;
 
     if (currState === 'menu') {
 
       if (window.confirm('Exit Top Ramen?'))
         navigator.app.exitApp();
 
-    } if (currState === 'level' && app.level.__started) {
+    } else if (prevState === 'challengeResults') {
+
+      window.goToState('challenges');
+
+    } else if (currState === 'level' && app.level.__started) {
 
       app.game.pause = true;
 
@@ -53,8 +58,6 @@
         app.game.pause = false;
 
     } else {
-
-      let prevState = window.__prevState;
 
       window.goToState(currState !== prevState ? prevState : DEFAULT_SATE);
 

@@ -1,4 +1,6 @@
-app.challenge = {}
+'use strict';
+
+app.challenge = {};
 
 app.challenge.preload = function() {
 
@@ -35,7 +37,7 @@ app.challenge.preload = function() {
       	if (!app.game.cache.checkImageKey(picKey))
           app.game.load.image(friend.id + 'pic', 'https://graph.facebook.com/' + friend.id + '/picture?type=large');
 
-      })
+      });
 
       app.game.load.onLoadComplete.addOnce(displayFriends, data);
 
@@ -43,7 +45,7 @@ app.challenge.preload = function() {
 
     });
 
-}
+};
 
 app.challenge.create = function() {
 
@@ -53,10 +55,10 @@ app.challenge.create = function() {
 	bg.scale.setTo(scaleRatio * 2.05);
 	bg.fixedToCamera = true;
 
-	var homeButton = app.game.add.button(30, 30, 'home', goHome);
+	var homeButton = app.game.add.button(30, 30, 'home', window.goHome);
 	homeButton.scale.setTo(scaleRatio);
 
-}
+};
 
 function displayFriends() {
 
@@ -64,7 +66,7 @@ function displayFriends() {
   chefbar.scale.setTo(scaleRatio);
   chefbar.fixedToCamera = true;
   chefbar.anchor.y = 1;
-  chefbar.anchor.x = .5;
+  chefbar.anchor.x = 0.5;
 
 	let userPic;
 
@@ -78,9 +80,9 @@ function displayFriends() {
 
 	}
 
-	userPic.scale.setTo(.8 * scaleRatio);
+	userPic.scale.setTo(0.8 * scaleRatio);
 	userPic.x = app.game.world.centerX;
-	userPic.anchor.x = .5;
+	userPic.anchor.x = 0.5;
 
 	var picY = 500 * scaleRatio;
 
@@ -96,7 +98,7 @@ function displayFriends() {
 			align: "right",
 		});
 
-		welcomeText.anchor.x = .5;
+		welcomeText.anchor.x = 0.5;
 
     data.facebook.friends.forEach(function(friend) {
 
@@ -121,7 +123,7 @@ function displayFriends() {
 
   		});
 
-			butt.scale.setTo(.8 * scaleRatio);
+			butt.scale.setTo(0.8 * scaleRatio);
 			butt.centerX = app.game.world.centerX;
 
 			let buttPic;
@@ -145,13 +147,13 @@ function displayFriends() {
 			butt.addChild(buttText);
 			butt.addChild(buttPic);
 
-			buttPic.scale.setTo(.8);
+			buttPic.scale.setTo(0.8);
 
 			friendGroup.add(butt);
 
 			picY += 200 * scaleRatio;
 
-    })
+    });
 
     app.game.world.setBounds(0, 0, app.game.width, friendGroup.height + 1000 * scaleRatio);
 
@@ -170,33 +172,23 @@ function challengeFn(friend) {
 	trApi.getUserIdentityBySocialId(provider, friend.id)
 		.done(function(identities) {
 
-			identities.forEach(function(identity) {
+      trApi.getRamen().then(ramen => {
 
-				let rand = app.game.rnd.integerInRange(1,3);
+  			identities.forEach(function(identity) {
 
-				let ramenId = 'shoyu';
+  				let rand = app.game.rnd.integerInRange(0, ramen.length - 1);
 
-				if (rand === 1) {
+  				let ramenId = ramen[rand].id;
 
-					ramenId =  'shoyu';
+  				if (identity.provider === provider) {
+  					trApi.postChallenge(identity.userId, ramenId)
+              .then(data => challengeSentPopup(data))
+              .catch(err => console.error(`Failed because: ${JSON.stringify(err)}`));
+  				}
 
-				} else if (rand === 2) {
+  			});
 
-					ramenId =  'tonkotsu';
-
-				} else if (rand === 3) {
-
-					ramenId =  'spicy_chicken';
-
-				}
-
-				if (identity.provider === provider) {
-					trApi.postChallenge(identity.userId, ramenId)
-						.done(data => challengeSentPopup(data))
-						.fail(err => console.error(`Failed because: ${JSON.stringify(err)}`));
-				}
-
-			});
+      });
 
 		}).fail(function(err) {
    		console.error(`Failed to iterate over getUserIdentityBySocialId response because: ${err.responseJSON.error.message}`);
@@ -217,16 +209,16 @@ function challengeSentPopup(id) {
 	lb_bg.height = app.game.height;
 
 	yes.scale.setTo(scaleRatio);
-	yes.anchor.x = .5;
-	yes.anchor.y = .5;
+	yes.anchor.x = 0.5;
+	yes.anchor.y = 0.5;
 
 	sent.scale.setTo(scaleRatio);
 	sent.y = yes.y - 500;
-	sent.anchor.x = .5;
+	sent.anchor.x = 0.5;
 
 	no.scale.setTo(scaleRatio);
 	no.y = yes.y + 170;
-	no.anchor.x = .5;
+	no.anchor.x = 0.5;
 
 	btnGroup.add(lb_bg);
 	btnGroup.add(sent);

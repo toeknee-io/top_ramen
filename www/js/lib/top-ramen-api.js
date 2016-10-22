@@ -200,15 +200,16 @@
     }
 
     postChallenge(userId, ramenId) {
-
-      if (!this.isLoggedIn())
-        throw new Error(`User must be logged in to make postChallenge call.`);
-
-      return $.post(`${this.API_URL}/challenges`,
-          { userId: userId, ramenId: ramenId })
-        .done(data => console.log(`challenge created: ${JSON.stringify(data)}`))
-        .fail(err => console.error(`Failed to create challenge: ${JSON.stringify(err)}`));
-
+      return new this.Promise((resolve, reject) => {
+        if (!this.isLoggedIn())
+          throw new Error(`User must be logged in to make postChallenge call.`);
+        $.post(
+            `${this.API_URL}/challenges`,
+            { userId: userId, ramenId: ramenId, status: 'new' }
+          )
+          .done(data => resolve(data))
+          .fail(err => reject(err));
+      });
     }
 
     getChallenges() {
@@ -231,18 +232,20 @@
         let data = {};
 
         if (typeof challenge === 'string' &&
-          (typeof score === 'number' || typeof status === 'string')) {
+          (typeof score === 'number' || typeof status === 'string'))
+        {
           data.id = challenge;
           data.score = score;
           data.status = status;
         } else if ((typeof challenge === 'object' && typeof challenge.id === 'string') &&
-          (typeof challenge.score === 'number' || typeof challenge.status === 'string')) {
+          (typeof challenge.score === 'number' || typeof challenge.status === 'string'))
+        {
           data = challenge;
         } else {
           throw new Error(`Invalid arguments passed to patchChallenge: ${arguments}`);
         }
 
-        return $.ajax({
+        $.ajax({
             method: 'PATCH',
             url: `${this.API_URL}/challenges/${data.id}`,
             data: data,
@@ -271,6 +274,14 @@
         $.get(`${this.API_URL}/users/me/scores`)
           .done(scores => resolve(scores))
           .fail(err => reject(new Error(`Failed to getScores: ${err.responseJSON.error.message}`)));
+      });
+    }
+
+    getRamen() {
+      return new this.Promise((resolve, reject) => {
+        $.get(`${this.API_URL}/ramen`)
+          .done(ramen => resolve(ramen))
+          .fail(err => reject(err));
       });
     }
 
@@ -331,6 +342,16 @@
         }
 
       });
+    }
+
+    getPlayer(challenge) {
+      return challenge.challenger.userId === trApi.getUserId() ?
+        challenge.challenger : challenge.challenged;
+    }
+
+    getOpponent(challenge) {
+      return challenge.challenger.userId === trApi.getUserId() ?
+        challenge.challenged : challenge.challenger;
     }
 
   };

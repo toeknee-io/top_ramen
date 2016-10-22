@@ -93,15 +93,10 @@ app.challengeResults.create = function() {
 
 	theirScoreText.anchor.x = .5;
 
-	var rematchButton = app.game.add.button(app.game.world.centerX, 1600 * scaleRatio, 'rematch', function() {
-
+	var rematchButton = app.game.add.button(app.game.world.centerX, 1600 * scaleRatio, 'rematch', () => {
   	trApi.postChallenge(theirId)
-  		.done(function(data) {
-  			console.log('Rematch! : ' + data);
-  		}).fail(function(err) {
-	   		console.error(`Failed because: ${err.responseJSON.error.message}`);
-	    });
-
+      .then(data => console.log('Rematch! : ' + data))
+      .catch(err => console.error(`Failed because: ${err.responseJSON.error.message}`));
   });
 
   rematchButton.anchor.x = .5;

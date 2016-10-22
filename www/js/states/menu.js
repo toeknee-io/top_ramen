@@ -250,6 +250,12 @@
 
         }
 
+        window.trApi.getCordovaApp().push.unregister(
+            () => console.log('successfully unregistered from push notifications'),
+            err => console.error(`err while unregistering from push notifications ${err}`)
+        );
+        trApi.setDeviceToken(null);
+
     }
 
     function musicToggle() {

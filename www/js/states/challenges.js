@@ -12,6 +12,7 @@
 
   	app.game.kineticScrolling.configure({
       kineticMovement: true,
+      timeConstantScroll: 425,
       verticalScroll: true,
       horizontalScroll: false,
       verticalWheel: true

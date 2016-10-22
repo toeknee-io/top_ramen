@@ -8,6 +8,7 @@ app.challenge.preload = function() {
 
 	app.game.kineticScrolling.configure({
     kineticMovement: true,
+    timeConstantScroll: 425,
     verticalScroll: true,
     horizontalScroll: false,
     verticalWheel: true
@@ -99,41 +100,56 @@ function displayFriends() {
 
     data.facebook.friends.forEach(function(friend) {
 
-      for (i = 0; i < 15; i++) {
+    	var butt = app.game.add.button(0, picY, 'item');
 
-      	var butt = app.game.add.button(0, picY, 'item', challengeFn, friend);
+    	var yLoc;
 
-				butt.scale.setTo(.8 * scaleRatio);
-				butt.centerX = app.game.world.centerX;
+    	butt.onInputDown.add(function() {
 
-				let buttPic;
+      	yLoc = app.game.world.y;
 
-				if (app.game.cache.checkImageKey(friend.id + 'pic')) {
+      });
 
-					buttPic = app.game.add.image(30, 30, friend.id + 'pic');
+      butt.onInputUp.add(function() {
 
-				} else {
+  			if (yLoc === app.game.world.y) {
 
-					buttPic = app.game.add.image(30, 30, 'chef');
+  				challengeFn(friend);
+  				console.log(this);
 
-				}
+  			}
 
-				var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
-					font: 60 + 'px Baloo Paaji',
-					fill: '#fff',
-					align: "right",
-				} );
+  		});
 
-				butt.addChild(buttText);
-				butt.addChild(buttPic);
+			butt.scale.setTo(.8 * scaleRatio);
+			butt.centerX = app.game.world.centerX;
 
-				buttPic.scale.setTo(.8);
+			let buttPic;
 
-				friendGroup.add(butt);
+			if (app.game.cache.checkImageKey(friend.id + 'pic')) {
 
-				picY += 200 * scaleRatio;
+				buttPic = app.game.add.image(30, 30, friend.id + 'pic');
 
-      }
+			} else {
+
+				buttPic = app.game.add.image(30, 30, 'chef');
+
+			}
+
+			var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
+				font: 60 + 'px Baloo Paaji',
+				fill: '#fff',
+				align: "right",
+			} );
+
+			butt.addChild(buttText);
+			butt.addChild(buttPic);
+
+			buttPic.scale.setTo(.8);
+
+			friendGroup.add(butt);
+
+			picY += 200 * scaleRatio;
 
     })
 
@@ -145,13 +161,13 @@ function displayFriends() {
 
 }
 
-function challengeFn() {
+function challengeFn(friend) {
 
-	console.log('Challenged: ' + this.name);
+	console.log('Challenged: ' + friend.name);
 
 	let provider = 'facebook';
 
-	trApi.getUserIdentityBySocialId(provider, this.id)
+	trApi.getUserIdentityBySocialId(provider, friend.id)
 		.done(function(identities) {
 
 			identities.forEach(function(identity) {
@@ -190,27 +206,34 @@ function challengeFn() {
 
 function challengeSentPopup(id) {
 
-	var btnGroup = app.game.add.group();
+	let btnGroup = app.game.add.group();
 
-	var sent = app.game.add.image(0, 200, 'play_now');
-	var yes = app.game.add.button(0, 450, 'yes', playNow, id);
-	var no = app.game.add.button(0, 700, 'no', playLater, btnGroup);
+	let lb_bg = app.game.add.button(0, 0, 'lb_bg');
+	let sent = app.game.add.image(app.game.world.centerX, 0, 'play_now');
+	let yes = app.game.add.button(app.game.world.centerX, app.game.height / 2, 'yes', playNow, id);
+	let no = app.game.add.button(app.game.world.centerX, 0, 'no', playLater, btnGroup);
 
-	sent.scale.setTo(scaleRatio);
-	sent.x = app.game.world.centerX;
-	sent.anchor.x = .5;
+	lb_bg.width = app.game.width;
+	lb_bg.height = app.game.height;
 
 	yes.scale.setTo(scaleRatio);
-	yes.x = app.game.world.centerX;
 	yes.anchor.x = .5;
+	yes.anchor.y = .5;
+
+	sent.scale.setTo(scaleRatio);
+	sent.y = yes.y - 500;
+	sent.anchor.x = .5;
 
 	no.scale.setTo(scaleRatio);
-	no.x = app.game.world.centerX;
+	no.y = yes.y + 170;
 	no.anchor.x = .5;
 
+	btnGroup.add(lb_bg);
 	btnGroup.add(sent);
 	btnGroup.add(yes);
 	btnGroup.add(no);
+
+	btnGroup.fixedToCamera = true;
 
 }
 

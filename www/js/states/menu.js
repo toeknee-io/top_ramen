@@ -236,6 +236,7 @@
 
     function soundToggle() {
 
+        // jshint ignore:start
         if (app.sound === true) {
 
             app.sound = false;
@@ -249,12 +250,14 @@
             this.alpha = 1;
 
         }
+        // jshint ignore:end
+        trApi.setDeviceToken(null);
 
-        window.trApi.getCordovaApp().push.unregister(
+        trApi.getCordovaApp().push.unregister(
             () => console.log('successfully unregistered from push notifications'),
             err => console.error(`err while unregistering from push notifications ${err}`)
         );
-        trApi.setDeviceToken(null);
+
 
     }
 

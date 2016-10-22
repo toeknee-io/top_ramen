@@ -8,6 +8,8 @@
 
   	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
+    app.game.load.image('bg', 'assets/bg4.jpg');
+
   	app.game.kineticScrolling = app.game.plugins.add(Phaser.Plugin.KineticScrolling);
 
   	app.game.kineticScrolling.configure({
@@ -58,8 +60,6 @@
   	userPic.x = app.game.world.centerX;
   	userPic.anchor.x = 0.5;
 
-  	var storedUserId = trApi.getUserId();
-
   	var challengerGroup1 = app.game.add.group();
   	var challengerGroup2 = app.game.add.group();
 
@@ -89,37 +89,42 @@
 
       try {
 
+        let storedUserId = trApi.getUserId();
+
         let status;
 
-    		if (challenge.status === "new") {
+        if (challenge.status === 'started' || challenge.status === 'accepted') {
 
-    			status = 'Open';
+          if (challenge.challenger.userId === storedUserId) {
 
-    		} else if (challenge.challenger.userId === storedUserId) {
+      			if (challenge.challenger.score === null) {
 
-    			if (challenge.challenger.score === null) {
+      				status = 'Your Turn';
 
-    				status = 'Your Turn';
+      			} else if (challenge.challenged.score === null) {
 
-    			} else if (challenge.challenged.score === null) {
+      				status = 'Their Turn';
 
-    				status = 'Their Turn';
+      			}
 
-    			}
+      		} else if (challenge.challenged.userId === storedUserId) {
 
-    		} else if (challenge.challenged.userId === storedUserId) {
+      			if (challenge.challenged.score === null) {
 
-    			if (challenge.challenged.score === null) {
+      				status = 'Your Turn';
 
-    				status = 'Your Turn';
+      			} else if (challenge.challenger.score === null) {
 
-    			} else if (challenge.challenger.score === null) {
+      				status = 'Their Turn';
 
-    				status = 'Their Turn';
+      			}
 
-    			}
+      		}
 
-    		}
+        }
+
+        if (_.isEmpty(status))
+          status = _.capitalize(challenge.status);
 
     		let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
@@ -158,7 +163,7 @@
 
       			if (yLoc === app.game.world.y) {
 
-      				challengeStart(this);
+      				challengeStart(challenge);
 
       			}
 
@@ -186,8 +191,11 @@
 
     }
 
-    challenges.new.forEach(processOpen);
-    challenges.started.forEach(processOpen);
+    _.forEach(challenges, (chalArray, status) => {
+      console.log('status', status);
+      if (status !== 'finished' && status !== 'declined')
+        chalArray.forEach(processOpen);
+    });
 
   	challengerGroup2.y = challengerGroup1.height + 900 * scaleRatio;
 
@@ -197,16 +205,18 @@
 
       try {
 
+        let storedUserId = trApi.getUserId();
+
         let status;
         let opponent;
 
       	if (challenge.challenger.userId === storedUserId) {
 
-      	 opponent = challenge.challenged.userId;
+          opponent = challenge.challenged.userId;
 
       	} else {
 
-      	 opponent = challenge.challenger.userId;
+          opponent = challenge.challenger.userId;
 
       	}
 
@@ -261,7 +271,7 @@
 
       			if (yLoc === app.game.world.y) {
 
-      				challengeStart(this);
+      				challengeStart(challenge);
 
       			}
 
@@ -295,18 +305,28 @@
 
   function challengeStart(challenge) {
 
-  	var storedUserId = window.localStorage.getItem('userId');
+    let player = challenge.challenger.userId === trApi.getUserId() ?
+      'challenger' : 'challenged';
+
+    let opponent = player !== 'challenger' ?
+      'challenger' : 'challenged';
+
+    console.log(`challengeStart with challenge.id: ${challenge.id}`);
 
   	if (challenge.status === 'finished') {
 
   		app.game.world.setBounds(0, 0, app.game.width, app.game.height);
   		app.game.state.start('challengeResults', true, false, challenge);
 
-  	} else if (((challenge.challenger.userId === storedUserId) && (challenge.challenger.score === null)) || ((challenge.challenged.userId === storedUserId) && (challenge.challenged.score === null))) {
+  	} else if (challenge.status === 'declined') {
 
-  		app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
+      alert('This Challenge Was Declined!');
 
-  	} else {
+    } else if (challenge[player].score === null) {
+
+      app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
+
+  	} else if (challenge[opponent].score === null) {
 
   		alert('Waiting For Opponent!');
 

@@ -39,16 +39,33 @@
 
         cordovaApp.push.on('registration', function(data) {
 
-          if (!trApi.getDeviceToken() || trApi.getDeviceToken() !== data.registrationId) {
+          let saveRegId = true;
+          let regId = data.registrationId;
 
-            console.log(`new push registrationId ${data.registrationId}`);
+          trApi.getAppInstallations()
+            .then(installations => {
 
-            trApi.setDeviceToken(data.registrationId);
+              if (!Array.isArray(installations)) installations = [ installations ];
 
-            if (trApi.isLoggedIn())
-              trApi.postAppInstallation({ registrationId: data.registrationId, status: 'active' });
+              installations.forEach(installation => {
+                if (installation.status === 'active' && installation.deviceToken === regId)
+                  saveRegId = false;
+              });
 
-          }
+              if (saveRegId) {
+
+                console.log(`new push registrationId ${data.registrationId}`);
+
+                trApi.setDeviceToken(data.registrationId);
+
+                if (trApi.isLoggedIn())
+                  trApi.postAppInstallation({ registrationId: data.registrationId, status: 'active' });
+
+              }
+
+            })
+            .catch(err => console.error(err));
+
 
         });
 

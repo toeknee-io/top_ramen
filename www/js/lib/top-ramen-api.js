@@ -42,6 +42,9 @@
       this.accessToken = opts.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
       this.deviceToken = opts.deviceToken || this.storage.getItem(this.ITEM_KEY_DEVICE_TOKEN);
 
+      if (!this.cordovaApp)
+        this.cordovaApp = {};
+
       this.getAccessToken = () => this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
 
       this.setAccessToken = (accessToken) => {

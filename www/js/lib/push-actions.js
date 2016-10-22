@@ -3,9 +3,13 @@
   'use strict';
 
   window.pushActions = {
-    acceptChallenge: function(data) {
+    viewChallenges: function(data) {
       window.app.bootCreateCallback = function() { app.game.state.start('challenges'); };
-      window.trApi.patchChallenge(data.additionalData.challenge.id, null, 'accepted');
+      console.log(data);
+    },
+    acceptChallenge: function(data) {
+      window.trApi.patchChallenge(data.additionalData.challenge.id, null, 'accepted')
+        .then(() => this.viewChallenges());
       console.log(data);
     },
     declineChallenge: function(data) {

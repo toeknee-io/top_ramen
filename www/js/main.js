@@ -19,9 +19,11 @@
 
   });
 
+  const DEFAULT_SATE = 'menu';
+
   window.goToState = function (state) {
 
-    state = state || 'menu';
+    state = state || DEFAULT_SATE;
 
     app.game.world.setBounds(0, 0, app.game.width, app.game.height);
     app.game.state.clearCurrentState();
@@ -31,17 +33,32 @@
 
   window.goBack = function() {
 
-    if (app.game.state.current === 'menu') {
+    let currState = (app.game.state.current || DEFAULT_SATE).toLowerCase();
+
+    if (currState === 'menu') {
+
       if (window.confirm('Exit Top Ramen?'))
         navigator.app.exitApp();
+
+    } if (currState === 'level' && app.level.__started) {
+
+      app.game.pause = true;
+
+      let msg = app.level.challengeId ?
+        `Your current score of ${window.score} will be submitted for this challenge.` : '';
+
+      if (window.confirm(`Exit Level?\n\n${msg}`))
+        window.endGame();
       else
-        return;
+        app.game.pause = false;
+
+    } else {
+
+      let prevState = window.__prevState;
+
+      window.goToState(currState !== prevState ? prevState : DEFAULT_SATE);
+
     }
-
-    let state = app.game.state.current !== window.__prevState ?
-      window.__prevState : 'menu';
-
-    window.goToState(state);
 
   };
 

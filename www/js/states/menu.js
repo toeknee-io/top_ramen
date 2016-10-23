@@ -5,7 +5,13 @@
     app.menu = {};
 
     var imageSize = '';
-    var menuSong;
+
+    app.menu.init = function() {
+
+        if (!app.menuSong)
+            app.menuSong = app.game.add.audio('lose', .8, true);
+
+    }
 
     app.menu.preload = function() {
 
@@ -42,8 +48,8 @@
     app.menu.create = function() {
         console.log('Menu State');
 
-        //menuSong = app.game.add.audio('menu');
-        //menuSong.play();
+        if (!app.menuSong.isPlaying)
+            app.menuSong.play();
 
         var bg = app.game.add.image(0, 0, 'bg');
         bg.scale.setTo(2.05 * scaleRatio);
@@ -144,7 +150,10 @@
     };
 
     function quickPlay() {
-    	//menuSong.stop();
+    	
+        app.game.sound.stopAll();
+
+        buttonSound();
 
         let rand = app.game.rnd.integerInRange(1,3);
 
@@ -168,6 +177,7 @@
     }
 
     function challenge() {
+        buttonSound();
         if (trApi.isLoggedIn()) {
           app.game.state.start('challenge');
 		} else {
@@ -183,6 +193,7 @@
     }
 
     function challenges() {
+        buttonSound();
         if (trApi.isLoggedIn()) {
             app.game.state.start('challenges');
         } else {
@@ -199,6 +210,8 @@
     }
 
     function options() {
+
+        buttonSound();
 
         let self = this;
 
@@ -258,6 +271,7 @@
             err => console.error(`err while unregistering from push notifications ${err}`)
         );
 
+        buttonSound();
 
     }
 
@@ -277,20 +291,25 @@
 
         }
 
+        buttonSound();
+
     }
 
     function fbLogin() {
         login('facebook');
+        buttonSound();
     }
 
     function logout() {
         trApi.logUserOut()
             .then(() => app.game.state.restart())
             .catch(err => console.error(`Logout failed ${err}`));
+        buttonSound();
     }
 
     function regsLogin() {
     	login('local');
+        buttonSound();
     }
 
     function login(provider, opts) {

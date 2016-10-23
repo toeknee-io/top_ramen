@@ -33,6 +33,8 @@
 
   window.goBack = function() {
 
+    buttonSound();
+
     let currState = (app.game.state.current || DEFAULT_SATE).toLowerCase();
     let prevState = window.__prevState;
 
@@ -66,6 +68,8 @@
   };
 
   window.goHome = function() {
+
+    buttonSound();
 
     window.goToState('menu');
 

@@ -307,6 +307,8 @@
 
   function challengeStart(challenge) {
 
+    buttonSound();
+
     let player = challenge.challenger.userId === trApi.getUserId() ?
       'challenger' : 'challenged';
 
@@ -325,6 +327,8 @@
       alert('This Challenge Was Declined!');
 
     } else if (challenge[player].score === null) {
+
+      app.menuSong.stop();
 
       app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
 

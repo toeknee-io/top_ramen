@@ -231,6 +231,10 @@ function challengeSentPopup(id) {
 
 function playNow() {
 
+	app.game.sound.stopAll();
+
+	buttonSound();
+
 	app.game.world.setBounds(0, 0, app.game.width, app.game.height);
 	app.game.state.start('level', true, false, this.id, this.ramenId);
 

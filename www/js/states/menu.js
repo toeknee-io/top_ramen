@@ -11,6 +11,9 @@
         if (!app.menuSong)
             app.menuSong = app.game.add.audio('lose', .8, true);
 
+        if (!app.lvlSong)
+            app.lvlSong = app.game.add.audio('lvl', .8, true);
+
     }
 
     app.menu.preload = function() {
@@ -283,11 +286,17 @@
 
             this.alpha = .4;
 
+            app.menuSong.volume = 0;
+            app.lvlSong.volume = 0;
+
         } else if (app.music === false) {
 
             app.music = true;
 
             this.alpha = 1;
+
+            app.menuSong.volume = 0.8;
+            app.lvlSong.volume = 0.8;
 
         }
 

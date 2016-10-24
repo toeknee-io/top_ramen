@@ -30,6 +30,7 @@ app.boot.preload = function() {
   app.game.load.audio('cat', 'assets/sounds/cat.ogg' );
   app.game.load.audio('bad', 'assets/sounds/bad.ogg' );
   app.game.load.audio('bug', 'assets/sounds/bug.ogg' );
+  app.game.load.audio('count', 'assets/sounds/count.ogg' );
 
 	app.game.load.image('menu_bg', 'assets/6.jpg');
 	app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');

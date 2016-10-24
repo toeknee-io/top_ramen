@@ -47,7 +47,7 @@
 
       this.getAccessToken = () => this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
 
-      this.setAccessToken = (accessToken) => {
+      this.setAccessToken = accessToken => {
         this.accessToken = accessToken;
         if (!accessToken) {
           this.storage.removeItem(this.ITEM_KEY_ACCESS_TOKEN);
@@ -257,13 +257,15 @@
     }
 
     acceptChallenge(challenge) {
-      if (typeof challenge !== 'object') throw new Error(`Invalid arguments passed to acceptChallenge ${arguments}`);
+      if (typeof challenge !== 'object')
+        throw new Error(`Invalid arguments passed to acceptChallenge ${arguments}`);
       challenge.status = 'accepted';
       return this.patchChallenge(challenge);
     }
 
     declineChallenge(challenge) {
-      if (typeof challenge !== 'object') throw new Error(`Invalid arguments passed to declineChallenge ${arguments}`);
+      if (typeof challenge !== 'object')
+        throw new Error(`Invalid arguments passed to declineChallenge ${arguments}`);
       challenge.status = 'declined';
       return this.patchChallenge(challenge);
     }

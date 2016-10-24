@@ -174,7 +174,7 @@ function challengeFn(friend) {
 
       trApi.getRamen().then(ramen => {
 
-  			identities.forEach(function(identity) {
+  			identities.forEach(identity => {
 
   				let rand = app.game.rnd.integerInRange(0, ramen.length - 1);
 

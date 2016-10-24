@@ -93,35 +93,31 @@
 
         let status = null;
 
-        if (challenge.status === 'started') {
+        if (challenge.challenger.userId === storedUserId) {
 
-          if (challenge.challenger.userId === storedUserId) {
+    			if (challenge.challenger.score === null) {
 
-      			if (challenge.challenger.score === null) {
+    				status = 'Your Turn';
 
-      				status = 'Your Turn';
+    			} else if (challenge.challenged.score === null) {
 
-      			} else if (challenge.challenged.score === null) {
+    				status = 'Their Turn';
 
-      				status = 'Their Turn';
+    			}
 
-      			}
+    		} else if (challenge.challenged.userId === storedUserId) {
 
-      		} else if (challenge.challenged.userId === storedUserId) {
+    			if (challenge.challenged.score === null) {
 
-      			if (challenge.challenged.score === null) {
+    				status = 'Your Turn';
 
-      				status = 'Your Turn';
+    			} else if (challenge.challenger.score === null) {
 
-      			} else if (challenge.challenger.score === null) {
+    				status = 'Their Turn';
 
-      				status = 'Their Turn';
+    			}
 
-      			}
-
-      		}
-
-        }
+    		}
 
         if (_.isEmpty(status))
           status = _.capitalize(challenge.status);

@@ -5,12 +5,12 @@ app.boot = {};
 app.boot.init = function() {
 
 	if (!app.music)
-		app.music = true
+		app.music = true;
 
 	if (!app.sound)
-		app.sound = true
+		app.sound = true;
 
-}
+};
 
 app.boot.preload = function() {
 
@@ -76,16 +76,15 @@ function loadComplete() {
 			}, 1000);
 		}
 
-	})
+	});
 
 }
 
-function buttonSound() {
+window.buttonSounds = function() {
 
 	if (!app.buttonSound)
 		app.buttonSound = app.game.add.audio('button');
 
 	app.buttonSound.play();
 
-        
-}
+};

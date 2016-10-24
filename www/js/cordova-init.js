@@ -22,7 +22,7 @@
 
         document.addEventListener("backbutton", onBackKeyDown, false);
 
-        window.trApi = new window.TopRamenApi();
+        window.trApi = new window.TopRamenApi({ cordovaApp });
 
         cordovaApp.push = PushNotification.init({
           "android": {
@@ -45,11 +45,31 @@
           trApi.getAppInstallations()
             .then(installations => {
 
-              if (!Array.isArray(installations)) installations = [ installations ];
+              installations = _.castArray(installations);
 
               installations.forEach(installation => {
-                if (installation.status === 'active' && installation.deviceToken === regId)
-                  saveRegId = false;
+
+                if (installation.deviceToken === regId) {
+
+                  if (installation.status === 'active') {
+
+                    saveRegId = false;
+
+                  } else if (installation.status === 'unregistered') {
+
+                    console.log('unregistering push registrationId because saved installation is ded');
+
+                    trApi.getCordovaApp().push.unregister(
+                      () => console.log('successfully unregistered from push notifications'),
+                      err => console.error(`err while unregistering from push notifications ${err}`)
+                    );
+
+                     saveRegId = false;
+
+                  }
+
+                }
+
               });
 
               if (saveRegId) {

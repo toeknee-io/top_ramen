@@ -2,6 +2,8 @@ var chili = {};
 
 chili.init = function() {
 
+	chili.sound = pop;
+
 	if (this.ramenId !== 'tonkotsu') {
 
 		chili.worth = 1;
@@ -13,13 +15,13 @@ chili.init = function() {
 		chili.worth = -2;
 		chili.bonus = 0;
 		chili.type = 'bad';
+		chili.sound = app.level.bad;
 
 	}
 
 	chili.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','chili.png');
 	chili.sprite.alpha = 0;
 	chili.sprite.scale.setTo(scaleRatio, scaleRatio);
-	chili.sound = pop;
 
 	ings.add(chili.sprite);
 

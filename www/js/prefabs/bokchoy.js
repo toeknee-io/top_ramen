@@ -2,11 +2,14 @@ var bokchoy = {};
 
 bokchoy.init = function() {
 
+	bokchoy.sound = pop;
+
 	if (this.ramenId === 'shoyu') {
 
 		bokchoy.worth = 2;
 		bokchoy.bonus = 1;
 		bokchoy.type = 'good';
+		bokchoy.sound = app.level.bonus;
 
 	} else {
 
@@ -19,7 +22,6 @@ bokchoy.init = function() {
 	bokchoy.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','bokchoy.png');
 	bokchoy.sprite.scale.setTo(scaleRatio, scaleRatio);
 	bokchoy.sprite.alpha = 0;
-	bokchoy.sound = pop;
 
 	ings.add(bokchoy.sprite);
 

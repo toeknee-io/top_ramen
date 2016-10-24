@@ -2,24 +2,27 @@ var chicken = {};
 
 chicken.init = function() {
 
+	chicken.sound = pop;
+
 	if (this.ramenId !== 'spicy_chicken') {
 
 		chicken.worth = -3;
 		chicken.bonus = 0;
 		chicken.type = 'bad';
+		chicken.sound = app.level.bad;
 
 	} else {
 
 		chicken.worth = 4;
 		chicken.bonus = 3;
 		chicken.type = 'good';
+		chicken.sound = app.level.bonus;
 
 	}
 
 	chicken.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','chicken.png');
 	chicken.sprite.alpha = 0;
 	chicken.sprite.scale.setTo(scaleRatio * 1.3);
-	chicken.sound = pop;
 
 	ings.add(chicken.sprite);
 

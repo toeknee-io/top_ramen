@@ -2,17 +2,21 @@ var corn = {};
 
 corn.init = function() {
 
+	corn.sound = pop;
+
 	if (this.ramenId === 'tonkotsu') {
 
 		corn.worth = 2;
 		corn.bonus = 1;
 		corn.type = 'good';
+		corn.sound = app.level.bonus;
 
 	} else if (this.ramenId === 'shoyu') {
 
 		corn.worth = -1;
 		corn.bonus = 0;
 		corn.type = 'bad';
+		corn.sound = app.level.bad;
 
 	} else {
 
@@ -25,7 +29,6 @@ corn.init = function() {
 	corn.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','corn.png');
 	corn.sprite.scale.setTo(scaleRatio, scaleRatio);
 	corn.sprite.alpha = 0;
-	corn.sound = pop;
 
 	ings.add(corn.sprite);
 

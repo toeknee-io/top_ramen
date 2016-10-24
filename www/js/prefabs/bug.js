@@ -8,7 +8,7 @@ bug.init = function() {
 	bug.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','bug.png');
 	bug.sprite.alpha = 0;
 	bug.sprite.scale.setTo(scaleRatio, scaleRatio);
-	bug.sound = pop;
+	bug.sound = app.level.bug;
 
 	ings.add(bug.sprite);
 

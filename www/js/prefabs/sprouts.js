@@ -9,7 +9,7 @@ sprouts.init = function() {
 	sprouts.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','sprouts.png');
 	sprouts.sprite.scale.setTo(scaleRatio, scaleRatio);
 	sprouts.sprite.alpha = 0;
-	sprouts.sound = pop;
+	sprouts.sound = app.level.pop;
 
 	ings.add(sprouts.sprite);
 

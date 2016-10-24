@@ -2,7 +2,7 @@ var bokchoy = {};
 
 bokchoy.init = function() {
 
-	bokchoy.sound = pop;
+	bokchoy.sound = app.level.pop;
 
 	if (this.ramenId === 'shoyu') {
 

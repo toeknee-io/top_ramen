@@ -2,7 +2,7 @@ var mushroom = {};
 
 mushroom.init = function() {
 
-	mushroom.sound = pop;
+	mushroom.sound = app.level.pop;
 
 	if (this.ramenId !== 'spicy_chicken') {
 

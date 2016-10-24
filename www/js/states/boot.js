@@ -21,7 +21,8 @@ app.boot.preload = function() {
 	app.game.load.image('music', 'assets/music.png');
 	app.game.load.image('sound', 'assets/sound.png');
 
-	app.game.load.audio('lvl', 'assets/sounds/orlvl.ogg' );
+	app.game.load.audio('lvl', 'assets/sounds/lvl2.ogg' );
+	app.game.load.audio('drum', 'assets/sounds/drumroll.ogg' );
 	app.game.load.audio('pop', 'assets/sounds/pop.ogg' );
 	app.game.load.audio('lose', 'assets/sounds/lose.ogg' );
 	app.game.load.audio('button', 'assets/sounds/button.ogg' );
@@ -47,8 +48,8 @@ app.boot.preload = function() {
 
 	app.game.state.start('level');
 
-}
-*/
+}*/
+
 function loadComplete() {
 
 	console.log('Boot State');

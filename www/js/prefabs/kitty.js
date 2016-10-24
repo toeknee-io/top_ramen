@@ -17,7 +17,7 @@ kitty.init = function() {
 	kitty.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','kitty' + kittyColor + '.png');
 	kitty.sprite.alpha = 0;
 	kitty.sprite.scale.setTo(scaleRatio * 1.3);
-	kitty.sound = app.game.add.audio('cat', 0.7);
+	kitty.sound = app.game.add.audio('cat', 0.5);
 
 	ings.add(kitty.sprite);
 

@@ -2,8 +2,6 @@ var chicken = {};
 
 chicken.init = function() {
 
-	chicken.sound = pop;
-
 	if (this.ramenId !== 'spicy_chicken') {
 
 		chicken.worth = -3;

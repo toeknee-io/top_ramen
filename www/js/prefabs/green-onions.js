@@ -9,7 +9,7 @@ greenOnions.init = function() {
 	greenOnions.sprite.alpha = 0;
 	greenOnions.sprite.scale.setTo(scaleRatio, scaleRatio);
 
-	greenOnions.sound = pop;
+	greenOnions.sound = app.level.pop;
 
 	ings.add(greenOnions.sprite);
 

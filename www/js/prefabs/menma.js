@@ -2,7 +2,7 @@ var menma = {};
 
 menma.init = function() {
 
-	menma.sound = pop;
+	menma.sound = app.level.pop;
 
 	if (this.ramenId !== 'spicy_chicken') {
 

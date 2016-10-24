@@ -12,7 +12,7 @@
             app.menuSong = app.game.add.audio('lose', .8, true);
 
         if (!app.lvlSong)
-            app.lvlSong = app.game.add.audio('lvl', .8, true);
+            app.lvlSong = app.game.add.audio('lvl', .7, true);
 
     }
 

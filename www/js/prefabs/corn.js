@@ -2,7 +2,7 @@ var corn = {};
 
 corn.init = function() {
 
-	corn.sound = pop;
+	corn.sound = app.level.pop;
 
 	if (this.ramenId === 'tonkotsu') {
 

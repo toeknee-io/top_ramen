@@ -2,7 +2,7 @@ var chili = {};
 
 chili.init = function() {
 
-	chili.sound = pop;
+	chili.sound = app.level.pop;
 
 	if (this.ramenId !== 'tonkotsu') {
 

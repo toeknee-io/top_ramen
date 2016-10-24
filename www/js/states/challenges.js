@@ -93,31 +93,35 @@
 
         let status = null;
 
-        if (challenge.challenger.userId === storedUserId) {
+        if (challenge.status !== 'new') {
 
-    			if (challenge.challenger.score === null) {
+          if (challenge.challenger.userId === storedUserId) {
 
-    				status = 'Your Turn';
+      			if (challenge.challenger.score === null) {
 
-    			} else if (challenge.challenged.score === null) {
+      				status = 'Your Turn';
 
-    				status = 'Their Turn';
+      			} else if (challenge.challenged.score === null) {
 
-    			}
+      				status = 'Their Turn';
 
-    		} else if (challenge.challenged.userId === storedUserId) {
+      			}
 
-    			if (challenge.challenged.score === null) {
+      		} else if (challenge.challenged.userId === storedUserId) {
 
-    				status = 'Your Turn';
+      			if (challenge.challenged.score === null) {
 
-    			} else if (challenge.challenger.score === null) {
+      				status = 'Your Turn';
 
-    				status = 'Their Turn';
+      			} else if (challenge.challenger.score === null) {
 
-    			}
+      				status = 'Their Turn';
 
-    		}
+      			}
+
+      		}
+
+        }
 
         if (_.isEmpty(status))
           status = _.capitalize(challenge.status);
@@ -303,7 +307,7 @@
 
   function challengeStart(challenge) {
 
-    buttonSound();
+    window.buttonSound();
 
     let player = challenge.challenger.userId === trApi.getUserId() ?
       'challenger' : 'challenged';

@@ -25,6 +25,10 @@ app.boot.preload = function() {
 	app.game.load.audio('pop', 'assets/sounds/pop.ogg' );
 	app.game.load.audio('lose', 'assets/sounds/lose.ogg' );
 	app.game.load.audio('button', 'assets/sounds/button.ogg' );
+	app.game.load.audio('bonus', 'assets/sounds/bonus.ogg' );
+	app.game.load.audio('cat', 'assets/sounds/cat.ogg' );
+	app.game.load.audio('bad', 'assets/sounds/bad.ogg' );
+	app.game.load.audio('bug', 'assets/sounds/bug.ogg' );
 
 	app.game.load.image('menu_bg', 'assets/6.jpg');
 	app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');

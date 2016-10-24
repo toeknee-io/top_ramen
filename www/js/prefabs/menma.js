@@ -2,6 +2,8 @@ var menma = {};
 
 menma.init = function() {
 
+	menma.sound = pop;
+
 	if (this.ramenId !== 'spicy_chicken') {
 
 		menma.worth = 1;
@@ -13,13 +15,13 @@ menma.init = function() {
 		menma.worth = -1;
 		menma.bonus = 0;
 		menma.type = 'bad';
+		menma.sound = app.level.bad;
 
 	}
 
 	menma.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','menma.png');
 	menma.sprite.scale.setTo(scaleRatio, scaleRatio);
 	menma.sprite.alpha = 0;
-	menma.sound = pop;
 
 	ings.add(menma.sprite);
 

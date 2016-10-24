@@ -8,7 +8,7 @@ egg.init = function() {
 	egg.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','egg.png');
 	egg.sprite.alpha = 0;
 	egg.sprite.scale.setTo(scaleRatio * 1.3);
-	egg.sound = pop;
+	egg.sound = app.level.bonus;
 
 	ings.add(egg.sprite);
 

@@ -2,6 +2,8 @@ var mushroom = {};
 
 mushroom.init = function() {
 
+	mushroom.sound = pop;
+
 	if (this.ramenId !== 'spicy_chicken') {
 
 		mushroom.worth = 2;
@@ -11,6 +13,7 @@ mushroom.init = function() {
 
 		mushroom.worth = 2;
 		mushroom.bonus = 1;
+		mushroom.sound = app.level.bonus;
 
 	}
 
@@ -18,7 +21,6 @@ mushroom.init = function() {
 	mushroom.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','mushroom.png');
 	mushroom.sprite.alpha = 0;
 	mushroom.sprite.scale.setTo(scaleRatio, scaleRatio);
-	mushroom.sound = pop;
 
 	ings.add(mushroom.sprite);
 

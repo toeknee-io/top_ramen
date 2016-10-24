@@ -57,7 +57,7 @@
 
                   } else if (installation.status === 'unregistered') {
 
-                    console.log('unregistering push registrationId because saved installation is ded');
+                    console.log('unregistering push registrationId because saved registrationId is invalid');
 
                     trApi.getCordovaApp().push.unregister(
                       () => console.log('successfully unregistered from push notifications'),
@@ -91,9 +91,7 @@
 
         cordovaApp.push.on('error', err => console.error(err));
 
-        cordovaApp.push.on('notification', (data) => console.log(data));
-
-        trApi.setCordovaApp(cordovaApp);
+        cordovaApp.push.on('notification', data => console.log(data));
 
       }
 

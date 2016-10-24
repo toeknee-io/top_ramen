@@ -9,12 +9,12 @@
     app.menu.init = function() {
 
         if (!app.menuSong)
-            app.menuSong = app.game.add.audio('lose', .8, true);
+            app.menuSong = app.game.add.audio('lose', 0.8, true);
 
         if (!app.lvlSong)
             app.lvlSong = app.game.add.audio('lvl', .7, true);
 
-    }
+    };
 
     app.menu.preload = function() {
 
@@ -72,8 +72,8 @@
 
         let isLoggedIn = trApi.isLoggedIn();
 
-        challengeButton.alpha = isLoggedIn ? 1 : .4;
-        challengesButton.alpha = isLoggedIn ? 1 : .4;
+        challengeButton.alpha = isLoggedIn ? 1 : 0.4;
+        challengesButton.alpha = isLoggedIn ? 1 : 0.4;
 
         let btnImg = isLoggedIn ? 'fb_logout' : 'fb_login';
         let btnFn = isLoggedIn ? logout : fbLogin;
@@ -104,7 +104,7 @@
         var chefbar = app.game.add.image(app.game.world.centerX, app.game.world.height, 'chefbar');
         chefbar.scale.setTo(scaleRatio);
         chefbar.anchor.y = 1;
-        chefbar.anchor.x = .5;
+        chefbar.anchor.x = 0.5;
 
         let optionsGroup = app.game.add.group();
 
@@ -114,49 +114,49 @@
         sound = app.game.add.button(0, 500, 'sound', soundToggle, sound);
         music = app.game.add.button(sound.left - 80, 500, 'music', musicToggle, music);
         music.anchor.x = 1;
-        music.anchor.y = .5;
-        sound.anchor.y = .5;
+        music.anchor.y = 0.5;
+        sound.anchor.y = 0.5;
 
         if (app.sound) {
 
-            sound.alpha = 1
+            sound.alpha = 1;
 
         } else {
 
-            sound.alpha = .4;
+            sound.alpha = 0.4;
 
         }
 
         if (app.music) {
 
-            music.alpha = 1
+            music.alpha = 1;
 
         } else {
 
-            music.alpha = .4;
+            music.alpha = 0.4;
 
         }
 
         optionsGroup.add(music);
         optionsGroup.add(sound);
-        optionsGroup.x = app.game.width * .85;
-        optionsGroup.y = (app.game.height * .98) - (music.height / 2);
+        optionsGroup.x = app.game.width * 0.85;
+        optionsGroup.y = (app.game.height * 0.98) - (music.height / 2);
 
-        var optionsButton = app.game.add.button(app.game.width * .1, chefbar.bottom, 'options_button', options, optionsGroup);
+        var optionsButton = app.game.add.button(app.game.width * 0.1, chefbar.bottom, 'options_button', options, optionsGroup);
         optionsButton.scale.setTo(scaleRatio);
-        optionsButton.anchor.x = .5;
-        optionsButton.anchor.y = .5;
-        optionsButton.y = (app.game.world.height * .98) - optionsButton.height / 2;
+        optionsButton.anchor.x = 0.5;
+        optionsButton.anchor.y = 0.5;
+        optionsButton.y = (app.game.world.height * 0.98) - optionsButton.height / 2;
 
         var tween = this.add.tween(optionsButton).to({angle: + 360}, 3500, Phaser.Easing.Linear.None, true, 0, -1);
 
     };
 
     function quickPlay() {
-    	
+
         app.game.sound.stopAll();
 
-        buttonSound();
+        window.buttonSound();
 
         let rand = app.game.rnd.integerInRange(1,3);
 
@@ -180,7 +180,7 @@
     }
 
     function challenge() {
-        buttonSound();
+        window.buttonSound();
         if (trApi.isLoggedIn()) {
           app.game.state.start('challenge');
 		} else {
@@ -196,7 +196,7 @@
     }
 
     function challenges() {
-        buttonSound();
+        window.buttonSound();
         if (trApi.isLoggedIn()) {
             app.game.state.start('challenges');
         } else {
@@ -214,7 +214,7 @@
 
     function options() {
 
-        buttonSound();
+        window.buttonSound();
 
         let self = this;
 
@@ -226,7 +226,7 @@
 
                 app.game.add.tween(self.children[1]).to({ y: 0 }, 250, Phaser.Easing.easeIn, true, 0, 0, false);
 
-            }, 200)
+            }, 200);
 
         } else {
 
@@ -236,7 +236,7 @@
 
                 app.game.add.tween(self.children[1]).to({ y: 500 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 
-            }, 150)
+            }, 150);
 
         }
 
@@ -274,7 +274,7 @@
             err => console.error(`err while unregistering from push notifications ${err}`)
         );
 
-        buttonSound();
+        window.buttonSound();
 
     }
 
@@ -284,7 +284,7 @@
 
             app.music = false;
 
-            this.alpha = .4;
+            this.alpha = 0.4;
 
             app.menuSong.volume = 0;
             app.lvlSong.volume = 0;
@@ -300,25 +300,25 @@
 
         }
 
-        buttonSound();
+        window.buttonSound();
 
     }
 
     function fbLogin() {
         login('facebook');
-        buttonSound();
+        window.buttonSound();
     }
 
     function logout() {
         trApi.logUserOut()
             .then(() => app.game.state.restart())
             .catch(err => console.error(`Logout failed ${err}`));
-        buttonSound();
+        window.buttonSound();
     }
 
     function regsLogin() {
     	login('local');
-        buttonSound();
+        window.buttonSound();
     }
 
     function login(provider, opts) {

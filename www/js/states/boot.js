@@ -5,12 +5,12 @@ app.boot = {};
 app.boot.init = function() {
 
 	if (!app.music)
-		app.music = true
+		app.music = true;
 
 	if (!app.sound)
-		app.sound = true
+		app.sound = true;
 
-}
+};
 
 app.boot.preload = function() {
 
@@ -22,13 +22,14 @@ app.boot.preload = function() {
 	app.game.load.image('sound', 'assets/sound.png');
 
 	app.game.load.audio('lvl', 'assets/sounds/lvl2.ogg' );
+	app.game.load.audio('drum', 'assets/sounds/drumroll.ogg' );
 	app.game.load.audio('pop', 'assets/sounds/pop.ogg' );
 	app.game.load.audio('lose', 'assets/sounds/lose.ogg' );
 	app.game.load.audio('button', 'assets/sounds/button.ogg' );
 	app.game.load.audio('bonus', 'assets/sounds/bonus.ogg' );
-	app.game.load.audio('cat', 'assets/sounds/cat.ogg' );
-	app.game.load.audio('bad', 'assets/sounds/bad.ogg' );
-	app.game.load.audio('bug', 'assets/sounds/bug.ogg' );
+  app.game.load.audio('cat', 'assets/sounds/cat.ogg' );
+  app.game.load.audio('bad', 'assets/sounds/bad.ogg' );
+  app.game.load.audio('bug', 'assets/sounds/bug.ogg' );
 
 	app.game.load.image('menu_bg', 'assets/6.jpg');
 	app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
@@ -47,8 +48,8 @@ app.boot.preload = function() {
 
 	app.game.state.start('level');
 
-}
-*/
+}*/
+
 function loadComplete() {
 
 	console.log('Boot State');
@@ -80,16 +81,15 @@ function loadComplete() {
 			}, 1000);
 		}
 
-	})
+	});
 
 }
 
-function buttonSound() {
+window.buttonSound = function() {
 
 	if (!app.buttonSound)
 		app.buttonSound = app.game.add.audio('button');
 
 	app.buttonSound.play();
 
-        
-}
+};

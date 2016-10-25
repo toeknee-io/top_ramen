@@ -10,8 +10,10 @@ sprouts.init = function() {
 	sprouts.sprite.scale.setTo(scaleRatio, scaleRatio);
 	sprouts.sprite.alpha = 0;
 	sprouts.sound = app.level.pop;
+	sprouts.drunk = false;
 
 	ings.add(sprouts.sprite);
+	app.level.fabs.push(sprouts);
 
 	sprouts.spawn();
 
@@ -34,6 +36,20 @@ sprouts.spawn = function() {
 	sprouts.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
 	sprouts.sprite.events.onInputDown.add(collect, sprouts);
+
+	let sheet;
+
+	if (sprouts.drunk === true) {
+
+		sheet = 'ings-sheet-blur';
+
+	} else {
+
+		sheet = 'ings-sheet';
+
+	}
+
+	sprouts.sprite.loadTexture(sheet, 'sprouts.png');
 	
 	sprouts.motionTween = app.game.add.tween(sprouts.sprite).to({ y: 50 }, sprouts.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	sprouts.fadeInTween = app.game.add.tween(sprouts.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

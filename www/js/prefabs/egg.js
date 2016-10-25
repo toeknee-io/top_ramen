@@ -9,8 +9,10 @@ egg.init = function() {
 	egg.sprite.alpha = 0;
 	egg.sprite.scale.setTo(scaleRatio * 1.3);
 	egg.sound = app.level.bonus;
+	egg.drunk = false;
 
 	ings.add(egg.sprite);
+	app.level.fabs.push(egg);
 
 	egg.spawn();
 
@@ -26,6 +28,20 @@ egg.spawn = function() {
 	egg.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
 	egg.sprite.events.onInputDown.add(collect, egg);
+
+	let sheet;
+
+	if (egg.drunk === true) {
+
+		sheet = 'ings-sheet-blur';
+
+	} else {
+
+		sheet = 'ings-sheet';
+
+	}
+
+	egg.sprite.loadTexture(sheet, 'egg.png');
 
 	egg.motionTween = app.game.add.tween(egg.sprite).to({ y: app.game.world.height * .20 }, egg.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	egg.fadeInTween = app.game.add.tween(egg.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

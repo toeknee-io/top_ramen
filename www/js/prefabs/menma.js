@@ -12,7 +12,7 @@ menma.init = function() {
 
 	} else {
 
-		menma.worth = -1;
+		menma.worth = -2;
 		menma.bonus = 0;
 		menma.type = 'bad';
 		menma.sound = app.level.bad;
@@ -22,8 +22,10 @@ menma.init = function() {
 	menma.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','menma.png');
 	menma.sprite.scale.setTo(scaleRatio, scaleRatio);
 	menma.sprite.alpha = 0;
+	menma.drunk = false;
 
 	ings.add(menma.sprite);
+	app.level.fabs.push(menma);
 
 	menma.spawn();
 
@@ -46,6 +48,20 @@ menma.spawn = function() {
 	menma.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
 	menma.sprite.events.onInputDown.add(collect, menma);
+
+	let sheet;
+
+	if (menma.drunk === true) {
+
+		sheet = 'ings-sheet-blur';
+
+	} else {
+
+		sheet = 'ings-sheet';
+
+	}
+
+	menma.sprite.loadTexture(sheet, 'menma.png');
 	
 	menma.motionTween = app.game.add.tween(menma.sprite).to({ y: 50 }, menma.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	menma.fadeInTween = app.game.add.tween(menma.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

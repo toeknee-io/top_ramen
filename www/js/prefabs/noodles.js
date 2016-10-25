@@ -5,7 +5,7 @@ noodles.init = function() {
 	noodles.worth = 1;
 	noodles.bonus = 0;
 	noodles.type = 'good';
-	noodles.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','noodles.png');
+	//noodles.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','noodles.png');
 	noodles.sprite.scale.setTo(scaleRatio, scaleRatio);
 	noodles.sprite.alpha = 0;
 	noodles.sound = pop;

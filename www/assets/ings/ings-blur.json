@@ -1,0 +1,116 @@
+{"frames": [
+
+{
+	"filename": "bokchoy.png",
+	"frame": {"x":624,"y":622,"w":312,"h":312},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":312,"h":312},
+	"sourceSize": {"w":312,"h":312}
+},
+{
+	"filename": "bug.png",
+	"frame": {"x":624,"y":934,"w":310,"h":317},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":310,"h":317},
+	"sourceSize": {"w":310,"h":317}
+},
+{
+	"filename": "chicken.png",
+	"frame": {"x":311,"y":310,"w":311,"h":311},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":311,"h":311},
+	"sourceSize": {"w":311,"h":311}
+},
+{
+	"filename": "chili.png",
+	"frame": {"x":0,"y":1251,"w":317,"h":310},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":317,"h":310},
+	"sourceSize": {"w":317,"h":310}
+},
+{
+	"filename": "corn.png",
+	"frame": {"x":312,"y":934,"w":312,"h":312},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":312,"h":312},
+	"sourceSize": {"w":312,"h":312}
+},
+{
+	"filename": "egg.png",
+	"frame": {"x":0,"y":0,"w":239,"h":239},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":239,"h":239},
+	"sourceSize": {"w":239,"h":239}
+},
+{
+	"filename": "green-onions.png",
+	"frame": {"x":0,"y":310,"w":311,"h":310},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":311,"h":310},
+	"sourceSize": {"w":311,"h":310}
+},
+{
+	"filename": "kitty.png",
+	"frame": {"x":550,"y":0,"w":311,"h":310},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":311,"h":310},
+	"sourceSize": {"w":311,"h":310}
+},
+{
+	"filename": "kitty-brown.png",
+	"frame": {"x":239,"y":0,"w":311,"h":310},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":311,"h":310},
+	"sourceSize": {"w":311,"h":310}
+},
+{
+	"filename": "menma.png",
+	"frame": {"x":0,"y":622,"w":312,"h":312},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":312,"h":312},
+	"sourceSize": {"w":312,"h":312}
+},
+{
+	"filename": "mushroom.png",
+	"frame": {"x":312,"y":622,"w":312,"h":312},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":312,"h":312},
+	"sourceSize": {"w":312,"h":312}
+},
+{
+	"filename": "pork.png",
+	"frame": {"x":622,"y":310,"w":312,"h":312},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":312,"h":312},
+	"sourceSize": {"w":312,"h":312}
+},
+{
+	"filename": "sprouts.png",
+	"frame": {"x":0,"y":934,"w":312,"h":312},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":312,"h":312},
+	"sourceSize": {"w":312,"h":312}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ings-blur.png",
+	"format": "RGBA8888",
+	"size": {"w":936,"h":1561},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:cfb2ee38a9c4ddf69e36133db420f718:064096fd4f3f94288a1719748e0d780b:83843220f4f051249696f3cede1b4a65$"
+}
+}

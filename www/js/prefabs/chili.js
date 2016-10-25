@@ -22,8 +22,10 @@ chili.init = function() {
 	chili.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','chili.png');
 	chili.sprite.alpha = 0;
 	chili.sprite.scale.setTo(scaleRatio, scaleRatio);
+	chili.drunk = false;
 
 	ings.add(chili.sprite);
+	app.level.fabs.push(chili);
 
 	chili.spawn();
 
@@ -45,6 +47,20 @@ chili.spawn = function() {
 	chili.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
 	chili.sprite.events.onInputDown.add(collect, chili);
+
+	let sheet;
+
+	if (chili.drunk === true) {
+
+		sheet = 'ings-sheet-blur';
+
+	} else {
+
+		sheet = 'ings-sheet';
+
+	}
+
+	chili.sprite.loadTexture(sheet, 'chili.png');
 
 	chili.motionTween = app.game.add.tween(chili.sprite).to({ y: 50 }, chili.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	chili.fadeInTween = app.game.add.tween(chili.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

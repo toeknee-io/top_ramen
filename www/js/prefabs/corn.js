@@ -13,7 +13,7 @@ corn.init = function() {
 
 	} else if (this.ramenId === 'shoyu') {
 
-		corn.worth = -1;
+		corn.worth = -3;
 		corn.bonus = 0;
 		corn.type = 'bad';
 		corn.sound = app.level.bad;
@@ -29,8 +29,10 @@ corn.init = function() {
 	corn.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','corn.png');
 	corn.sprite.scale.setTo(scaleRatio, scaleRatio);
 	corn.sprite.alpha = 0;
+	corn.drunk = false;
 
 	ings.add(corn.sprite);
+	app.level.fabs.push(corn);
 
 	corn.spawn();
 
@@ -53,6 +55,20 @@ corn.spawn = function() {
 	corn.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
 	corn.sprite.events.onInputDown.add(collect, corn);
+
+	let sheet;
+
+	if (corn.drunk === true) {
+
+		sheet = 'ings-sheet-blur';
+
+	} else {
+
+		sheet = 'ings-sheet';
+
+	}
+
+	corn.sprite.loadTexture(sheet, 'corn.png');
 	
 	corn.motionTween = app.game.add.tween(corn.sprite).to({ y: 50 }, corn.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	corn.fadeInTween = app.game.add.tween(corn.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

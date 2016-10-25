@@ -33,7 +33,7 @@
 
   	console.log('Challenges State');
 
-  	var bg = app.game.add.image(0, 0, 'bg');
+  	var bg = app.game.add.image(0, 0, 'menu_bg');
   	bg.scale.setTo(scaleRatio * 2.05);
   	bg.fixedToCamera = true;
 

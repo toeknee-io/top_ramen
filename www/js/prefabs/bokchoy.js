@@ -21,9 +21,11 @@ bokchoy.init = function() {
 
 	bokchoy.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','bokchoy.png');
 	bokchoy.sprite.scale.setTo(scaleRatio, scaleRatio);
+	bokchoy.drunk = false;
 	bokchoy.sprite.alpha = 0;
 
 	ings.add(bokchoy.sprite);
+	app.level.fabs.push(bokchoy);
 
 	bokchoy.spawn();
 
@@ -46,6 +48,20 @@ bokchoy.spawn = function() {
 	bokchoy.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
 	bokchoy.sprite.events.onInputDown.add(collect, bokchoy);
+
+	let sheet;
+
+	if (bokchoy.drunk === true) {
+
+		sheet = 'ings-sheet-blur';
+
+	} else {
+
+		sheet = 'ings-sheet';
+
+	}
+
+	bokchoy.sprite.loadTexture(sheet, 'bokchoy.png');
 	
 	bokchoy.motionTween = app.game.add.tween(bokchoy.sprite).to({ y: 50 }, bokchoy.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	bokchoy.fadeInTween = app.game.add.tween(bokchoy.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

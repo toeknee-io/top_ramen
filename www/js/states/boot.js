@@ -14,7 +14,7 @@ app.boot.init = function() {
 
 app.boot.preload = function() {
 
-	app.game.load.image('bg', 'assets/bg4.jpg');
+	app.game.load.image('menu_bg', 'assets/bg4.jpg');
 	app.game.load.image('lb_bg', 'assets/lightbox_bg.png');
 	app.game.load.image('close', 'assets/close.png');
 	app.game.load.image('chef', 'assets/chef-holder.png');
@@ -31,8 +31,8 @@ app.boot.preload = function() {
   app.game.load.audio('bad', 'assets/sounds/bad.ogg' );
   app.game.load.audio('bug', 'assets/sounds/bug.ogg' );
   app.game.load.audio('count', 'assets/sounds/count.ogg' );
+  app.game.load.audio('sake', 'assets/sounds/sake.ogg' );
 
-	app.game.load.image('menu_bg', 'assets/6.jpg');
 	app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
 	app.game.load.image('item', 'assets/item_bg.png');
 	app.game.load.image('home', 'assets/home.png');

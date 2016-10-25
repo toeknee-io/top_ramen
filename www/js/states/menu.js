@@ -23,7 +23,6 @@
         app.game.load.image('title', 'assets/title.png');
         app.game.load.image('title2', 'assets/title2.png');
         app.game.load.image('chefbar', 'assets/chefbar.png');
-        app.game.load.image('bg', 'assets/bg4.jpg');
 
         app.game.load.image('play_button','assets/button_play2.png');
         app.game.load.image('challenge_button','assets/button_challenge2.png');
@@ -54,7 +53,7 @@
         if (!app.menuSong.isPlaying)
             app.menuSong.play();
 
-        var bg = app.game.add.image(0, 0, 'bg');
+        var bg = app.game.add.image(0, 0, 'menu_bg');
         bg.scale.setTo(2.05 * scaleRatio);
 
         var title = app.game.add.image(app.game.world.centerX, 160 * scaleRatio, 'title2');

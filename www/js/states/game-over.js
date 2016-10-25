@@ -9,13 +9,6 @@ app.gameover.init = function(score, challengeData) {
 
 };
 
-app.gameover.preload = function() {
-
-	app.game.load.image('rematch', 'assets/rematch.png');
-	app.game.load.bitmapFont('8bit', 'assets/fonts/8bit.png', 'assets/fonts/8bit.fnt' );
-
-};
-
 app.gameover.create = function() {
 
 	console.log('Game Over State');
@@ -70,19 +63,19 @@ app.gameover.create = function() {
 
 			if (yourScore > theirScore) {
 
-				resultText = 'You won!';
+				resultText = 'you won!';
 
 				//music = app.game.add.audio('win');
 
 			} else if (yourScore === theirScore) {
 
-				resultText = 'You tied!';
+				resultText = 'you tied!';
 
 				//music = app.game.add.audio('lose');
 
 			} else if (yourScore < theirScore) {
 
-				resultText = 'You lost!';
+				resultText = 'you lost!';
 
 				//music = app.game.add.audio('lose');
 
@@ -90,24 +83,19 @@ app.gameover.create = function() {
 
 			//music.play();
 
-			welcomeText = app.game.add.bitmapText(app.game.world.centerX, 300 * scaleRatio, '8bit', resultText);
-			welcomeText.scale.setTo(scaleRatio * 3);
+			welcomeText = app.game.add.bitmapText(app.game.world.centerX, 300 * scaleRatio, 'fnt-orange', resultText);
+			welcomeText.scale.setTo(scaleRatio * 5);
+			welcomeText.align = 'center';
 			welcomeText.anchor.x = 0.5;
 
-			yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'Your score:\n' + yourScore, {
-				font: 120 * scaleRatio + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "center",
-			});
-
+			yourScoreText = app.game.add.bitmapText(app.game.world.centerX, 800 * scaleRatio, 'fnt', 'your score:\n' + yourScore);
+			yourScoreText.scale.setTo(scaleRatio * 3);
+			yourScoreText.align = 'center';
 			yourScoreText.anchor.x = 0.5;
 
-			var theirScoreText = app.game.add.text(app.game.world.centerX, 1200 * scaleRatio, 'Their score:\n' + theirScore, {
-				font: 120 * scaleRatio + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "center",
-			});
-
+			var theirScoreText = app.game.add.bitmapText(app.game.world.centerX, 1200 * scaleRatio, 'fnt', 'their score:\n' + theirScore);
+			theirScoreText.scale.setTo(scaleRatio * 3);
+			theirScoreText.align = 'center';
 			theirScoreText.anchor.x = 0.5;
 
 			var rematchButton = app.game.add.button(app.game.world.centerX, 1600 * scaleRatio, 'rematch', function() {
@@ -122,32 +110,23 @@ app.gameover.create = function() {
 
 		} else {
 
-			yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'Your score:\n' + yourScore, {
-				font: 120 * scaleRatio + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "center",
-			});
-
+			yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'fnt', 'your score:\n' + yourScore);
+			yourScoreText.scale.setTo(scaleRatio * 3);
+			yourScoreText.align = 'center';
 			yourScoreText.anchor.x = 0.5;
 
-			var waitingText = app.game.add.text(app.game.world.centerX, 1200 * scaleRatio, "It's your opponent's turn!", {
-				font: 90 * scaleRatio + 'px Baloo Paaji',
-				fill: '#fff',
-				align: "center",
-			});
-
+			var waitingText = app.game.add.text(app.game.world.centerX, 1200 * scaleRatio, 'fnt-orange', "it's your opponent's turn!");
+			waitingText.scale.setTo(scaleRatio * 2);
+			waitingText.align = 'center';
 			waitingText.anchor.x = 0.5;
 
 		}
 
 	} else {
 
-		welcomeText = app.game.add.text(app.game.world.centerX, 300 * scaleRatio, 'Your Score\n' + app.gameover.score + '!', {
-			font: 120 * scaleRatio + 'px Baloo Paaji',
-			fill: '#fff',
-			align: "center",
-		});
-
+		welcomeText = app.game.add.bitmapText(app.game.world.centerX, 300 * scaleRatio, 'fnt-orange', 'your score\n' + app.gameover.score + '!');
+		welcomeText.scale.setTo(scaleRatio * 5);
+		welcomeText.align = 'center';
 		welcomeText.anchor.x = 0.5;
 
 	}

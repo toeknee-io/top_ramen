@@ -6,13 +6,6 @@ app.challengeResults.init = function(challenge) {
 
 }
 
-app.challengeResults.preload = function() {
-
-	app.game.load.image('rematch', 'assets/rematch.png');
-	app.game.load.bitmapFont('8bit', 'assets/fonts/8bit.png', 'assets/fonts/8bit.fnt' );
-
-}
-
 app.challengeResults.create = function() {
 
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -37,15 +30,15 @@ app.challengeResults.create = function() {
 
 	if (app.challengeResults.challengeData.winner === window.localStorage.userId) {
 
-		resultText = 'You won!';
+		resultText = 'you won!';
 
 	} else if (app.challengeResults.challengeData.winner === "tied") {
 
-		resultText = 'Tied!';
+		resultText = 'tied!';
 
 	} else {
 
-		resultText = 'You lost';
+		resultText = 'you lost';
 
 	}
 
@@ -73,27 +66,21 @@ app.challengeResults.create = function() {
 
 	}
 
-	var welcomeText = app.game.add.bitmapText(app.game.world.centerX, 400 * scaleRatio, '8bit', resultText);
+	var welcomeText = app.game.add.bitmapText(app.game.world.centerX, 400 * scaleRatio, 'fnt-orange', resultText);
 			welcomeText.scale.setTo(scaleRatio * 5);
 			welcomeText.anchor.x = .5;
 
-	var yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'Your score:\n' + yourScore, {
-		font: 120 * scaleRatio + 'px Baloo Paaji',
-		fill: '#fff',
-		align: "center",
-	});
-
+	var yourScoreText = app.game.add.bitmapText(app.game.world.centerX, 800 * scaleRatio, 'fnt', 'your score:\n' + yourScore);
+	yourScoreText.align = 'center';
+	yourScoreText.scale.setTo(scaleRatio * 3);
 	yourScoreText.anchor.x = .5;
 
-	var theirScoreText = app.game.add.text(app.game.world.centerX, 1200 * scaleRatio, 'Their score:\n' + theirScore, {
-		font: 120 * scaleRatio + 'px Baloo Paaji',
-		fill: '#fff',
-		align: "center",
-	});
-
+	var theirScoreText = app.game.add.bitmapText(app.game.world.centerX, 1200 * scaleRatio, 'fnt', 'their score:\n' + theirScore);
+	theirScoreText.align = 'center';
+	theirScoreText.scale.setTo(scaleRatio * 3);
 	theirScoreText.anchor.x = .5;
 
-	var rematchButton = app.game.add.button(app.game.world.centerX, 1600 * scaleRatio, 'rematch', () => {
+	var rematchButton = app.game.add.button(app.game.world.centerX, 1700 * scaleRatio, 'rematch', () => {
   	trApi.postChallenge(theirId)
       .then(data => console.log('Rematch! : ' + data))
       .catch(err => console.error(`Failed because: ${err.responseJSON.error.message}`));

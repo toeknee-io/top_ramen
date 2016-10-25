@@ -20,6 +20,9 @@ app.boot.preload = function() {
 	app.game.load.image('chef', 'assets/chef-holder.png');
 	app.game.load.image('music', 'assets/music.png');
 	app.game.load.image('sound', 'assets/sound.png');
+	app.game.load.image('spicy_chicken-menu', 'assets/spicy_chicken.png');
+	app.game.load.image('shoyu-menu', 'assets/shoyu.png');
+	app.game.load.image('tonkotsu-menu', 'assets/tonkotsu.png');
 
 	app.game.load.audio('lvl', 'assets/sounds/lvl2.ogg' );
 	app.game.load.audio('drum', 'assets/sounds/drumroll.ogg' );
@@ -34,9 +37,13 @@ app.boot.preload = function() {
   app.game.load.audio('sake', 'assets/sounds/sake.ogg' );
 
 	app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
+	app.game.load.image('rematch', 'assets/rematch.png');
 	app.game.load.image('item', 'assets/item_bg.png');
 	app.game.load.image('home', 'assets/home.png');
 	app.game.load.image('back', 'assets/back.png');
+
+	app.game.load.bitmapFont('fnt', 'assets/fonts/font.png', 'assets/fonts/font.fnt' );
+	app.game.load.bitmapFont('fnt-orange', 'assets/fonts/font-orange.png', 'assets/fonts/font-orange.fnt' );
 
 	trApi.loadSocialImages().then(() => {
 		app.game.load.onLoadComplete.addOnce(loadComplete, this);

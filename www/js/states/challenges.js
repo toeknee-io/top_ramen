@@ -44,7 +44,7 @@
 
   function displayChallenges(challenges) {
 
-    let userPic;
+    /*let userPic;
 
   	if (app.game.cache.checkImageKey('myPic')) {
 
@@ -60,22 +60,20 @@
   	userPic.x = app.game.world.centerX;
   	userPic.anchor.x = 0.5;
 
+    */
+
   	var challengerGroup1 = app.game.add.group();
   	var challengerGroup2 = app.game.add.group();
 
   	var picY = 0;
 
-  	var openGames = app.game.add.text(app.game.world.centerX, 530 * scaleRatio, 'Open Challenges', {
-  		font: 90 * scaleRatio + 'px Baloo Paaji',
-  		fill: '#fff',
-  		align: "center",
-  	});
+  	var openGames = app.game.add.bitmapText(app.game.world.centerX, 230 * scaleRatio, 'fnt', 'open\nchallenges');
+    openGames.align = 'center';
+    openGames.scale.setTo(scaleRatio * 3);
 
-  	var finishedGames = app.game.add.text(app.game.world.centerX, 0, 'Completed Challenges', {
-  		font: 90 * scaleRatio + 'px Baloo Paaji',
-  		fill: '#fff',
-  		align: "center",
-  	});
+  	var finishedGames = app.game.add.bitmapText(app.game.world.centerX, 0, 'fnt', 'completed\nchallenges');
+    finishedGames.align = 'center';
+    finishedGames.scale.setTo(scaleRatio * 3);
 
   	challengerGroup2.add(finishedGames);
 
@@ -83,7 +81,7 @@
 
   	finishedGames.anchor.x = 0.5;
 
-  	challengerGroup1.y = openGames.y + 200 * scaleRatio;
+  	challengerGroup1.y = openGames.y + 400 * scaleRatio;
 
     function processOpen(challenge) {
 
@@ -144,13 +142,13 @@
         }
 
         var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
-          font: 60 + 'px Baloo Paaji',
+          font: 'bold 60px Arial',
           fill: '#fff',
           align: "right",
         } );
 
         var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
-          font: 40 + 'px Baloo Paaji',
+          font: 'bold 40px Arial',
           fill: '#fff',
           align: "right",
         } );
@@ -196,9 +194,9 @@
         chalArray.forEach(processOpen);
     });
 
-  	challengerGroup2.y = challengerGroup1.height + 900 * scaleRatio;
+  	challengerGroup2.y = challengerGroup1.height + 800 * scaleRatio;
 
-  	var pic2Y = finishedGames.y + 300;
+  	var pic2Y = finishedGames.y + 400 * scaleRatio;
 
     if (!Array.isArray(challenges.finished))
       challenges.finished = [];
@@ -254,13 +252,13 @@
         }
 
         var buttText = app.game.add.text(buttPic.width + 20, 30, challenger.profile.displayName, {
-          font: 60 + 'px Baloo Paaji',
+          font: 'bold 60px Arial',
           fill: '#fff',
           align: "right",
         } );
 
         var buttStatus = app.game.add.text(buttPic.width + 20, 120, status, {
-          font: 40 + 'px Baloo Paaji',
+          font: 'bold 40px Arial',
           fill: '#fff',
           align: "right",
         } );

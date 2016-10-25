@@ -68,7 +68,7 @@ function displayFriends() {
   chefbar.anchor.y = 1;
   chefbar.anchor.x = 0.5;
 
-	let userPic;
+	/*let userPic;
 
 	if (app.game.cache.checkImageKey('myPic')) {
 
@@ -84,7 +84,9 @@ function displayFriends() {
 	userPic.x = app.game.world.centerX;
 	userPic.anchor.x = 0.5;
 
-	var picY = 500 * scaleRatio;
+	*/
+
+	var picY = 450 * scaleRatio;
 
 	var friendGroup = app.game.add.group();
 
@@ -92,12 +94,14 @@ function displayFriends() {
 
 	if (app.game.state.current === "challenge") {
 
-		var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
+		/*var welcomeText = app.game.add.text(app.game.world.centerX, 160 * scaleRatio, 'Hi, ' + data.facebook.displayName + '!', {
 			font: 50 * scaleRatio + 'px Baloo Paaji',
 			fill: '#fff',
 			align: "right",
-		});
+		});*/
 
+		var welcomeText = app.game.add.bitmapText(app.game.world.centerX, 240 * scaleRatio, 'fnt', 'your friends');
+		welcomeText.scale.setTo(scaleRatio * 3);
 		welcomeText.anchor.x = 0.5;
 
     data.facebook.friends.forEach(function(friend) {
@@ -139,7 +143,7 @@ function displayFriends() {
 			}
 
 			var buttText = app.game.add.text(buttPic.width + 20, 30, friend.name, {
-				font: 60 + 'px Baloo Paaji',
+				font: 'bold 60px Baloo Paaji',
 				fill: '#fff',
 				align: "right",
 			} );

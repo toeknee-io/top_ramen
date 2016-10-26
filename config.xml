@@ -25,6 +25,7 @@
 <preference name="SplashScreenDelay" value="0" />
 <preference name="SplashMaintainAspectRatio" value="true" />
 <preference name="SplashShowOnlyFirstTime" value="true" />
+<icon src="icon.png" />
 <platform name="android">
     <preference name="Orientation" value="portrait"/>
     <splash src="splash.png"/>

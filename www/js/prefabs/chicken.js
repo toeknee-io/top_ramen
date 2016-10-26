@@ -5,7 +5,7 @@ chicken.init = function() {
 	if (this.ramenId !== 'spicy_chicken') {
 
 		chicken.worth = -5;
-		chicken.bonus = 0;
+		chicken.bonus = -3;
 		chicken.type = 'bad';
 		chicken.sound = app.level.bad;
 

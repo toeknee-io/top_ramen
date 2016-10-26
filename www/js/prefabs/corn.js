@@ -14,7 +14,7 @@ corn.init = function() {
 	} else if (this.ramenId === 'shoyu') {
 
 		corn.worth = -3;
-		corn.bonus = 0;
+		corn.bonus = -1;
 		corn.type = 'bad';
 		corn.sound = app.level.bad;
 

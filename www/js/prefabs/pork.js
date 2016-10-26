@@ -14,7 +14,7 @@ pork.init = function() {
 	} else {
 
 		pork.worth = -5;
-		pork.bonus = 0;
+		pork.bonus = -3;
 		pork.type = 'bad';
 
 	}

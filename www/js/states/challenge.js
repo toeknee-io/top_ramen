@@ -18,10 +18,6 @@ app.challenge.preload = function() {
 
   app.game.kineticScrolling.start();
 
-  app.game.load.image('sent', 'assets/challenge_sent.png');
-  app.game.load.image('play_now', 'assets/play_now.png');
-  app.game.load.image('yes', 'assets/yes.png');
-  app.game.load.image('no', 'assets/no.png');
   app.game.load.image('friendbar', 'assets/friendbar.png');
 
   trApi.getUserSocial()
@@ -55,7 +51,8 @@ app.challenge.create = function() {
 	bg.scale.setTo(scaleRatio * 2.05);
 	bg.fixedToCamera = true;
 
-	var homeButton = app.game.add.button(30, 30, 'home', window.goHome);
+	var homeButton = app.game.add.button(30, 30, '', window.goHome);
+	homeButton.loadTexture('main', 'home');
 	homeButton.scale.setTo(scaleRatio);
 
 };
@@ -106,7 +103,8 @@ function displayFriends() {
 
     data.facebook.friends.forEach(function(friend) {
 
-    	var butt = app.game.add.button(0, picY, 'item');
+    	var butt = app.game.add.button(0, picY);
+    	butt.loadTexture('main', 'item_bg');
 
     	var yLoc;
 
@@ -138,7 +136,7 @@ function displayFriends() {
 
 			} else {
 
-				buttPic = app.game.add.image(30, 30, 'chef');
+				buttPic = app.game.add.image(30, 30, 'main', 'chef-holder');
 
 			}
 
@@ -204,10 +202,17 @@ function challengeSentPopup(id) {
 
 	let btnGroup = app.game.add.group();
 
-	let lb_bg = app.game.add.button(0, 0, 'lb_bg');
-	let sent = app.game.add.image(app.game.world.centerX, 0, 'play_now');
-	let yes = app.game.add.button(app.game.world.centerX, app.game.height / 2, 'yes', playNow, id);
-	let no = app.game.add.button(app.game.world.centerX, 0, 'no', playLater, btnGroup);
+	let lb_bg = app.game.add.button(0, 0);
+	lb_bg.loadTexture('main', 'lightbox_bg');
+
+	let sent = app.game.add.image(app.game.world.centerX, 0);
+	sent.loadTexture('main', 'play_now');
+
+	let yes = app.game.add.button(app.game.world.centerX, app.game.height / 2, '', playNow, id);
+	yes.loadTexture('main', 'yes');
+
+	let no = app.game.add.button(app.game.world.centerX, 0, '', playLater, btnGroup);
+	no.loadTexture('main', 'no');
 
 	lb_bg.width = app.game.width;
 	lb_bg.height = app.game.height;

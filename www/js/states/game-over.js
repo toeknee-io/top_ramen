@@ -23,8 +23,8 @@ app.gameover.create = function() {
   bg.y = app.game.world.centerY;
   bg.anchor.y = 0.5;
 
-  var homeButton = app.game.add.button(30, 30, 'home', window.goHome);
-
+  var homeButton = app.game.add.button(30, 30, '', window.goHome);
+  homeButton.loadTexture('main', 'home');
 	homeButton.scale.setTo(scaleRatio);
 
 	var welcomeText;
@@ -98,14 +98,14 @@ app.gameover.create = function() {
 			theirScoreText.align = 'center';
 			theirScoreText.anchor.x = 0.5;
 
-			var rematchButton = app.game.add.button(app.game.world.centerX, 1600 * scaleRatio, 'rematch', function() {
+			var rematchButton = app.game.add.button(app.game.world.centerX, 1600 * scaleRatio, '', function() {
 
 		  	trApi.postChallenge(theirId)
 		  		.then(data => console.log(`Rematch! : ${data}`))
 		  		.catch(err => console.error(`Failed because: ${err.responseJSON.error.message}`));
 
 		  });
-
+			rematchButton.loadTexture('main', 'rematch');
 		  rematchButton.anchor.x = 0.5;
 
 		} else {

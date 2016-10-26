@@ -1,0 +1,164 @@
+{"frames": [
+
+{
+	"filename": "back",
+	"frame": {"x":0,"y":0,"w":358,"h":93},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":93},
+	"sourceSize": {"w":358,"h":93}
+},
+{
+	"filename": "button_challenge2",
+	"frame": {"x":358,"y":0,"w":684,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":684,"h":120},
+	"sourceSize": {"w":684,"h":120}
+},
+{
+	"filename": "button_challenges2",
+	"frame": {"x":1042,"y":0,"w":746,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":746,"h":120},
+	"sourceSize": {"w":746,"h":120}
+},
+{
+	"filename": "button_play2",
+	"frame": {"x":0,"y":120,"w":625,"h":120},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":625,"h":120},
+	"sourceSize": {"w":625,"h":120}
+},
+{
+	"filename": "chef-holder",
+	"frame": {"x":625,"y":120,"w":224,"h":215},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":224,"h":215},
+	"sourceSize": {"w":224,"h":215}
+},
+{
+	"filename": "close",
+	"frame": {"x":849,"y":120,"w":246,"h":247},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":246,"h":247},
+	"sourceSize": {"w":246,"h":247}
+},
+{
+	"filename": "cog",
+	"frame": {"x":1095,"y":120,"w":135,"h":133},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":135,"h":133},
+	"sourceSize": {"w":135,"h":133}
+},
+{
+	"filename": "fb_login2",
+	"frame": {"x":1230,"y":120,"w":506,"h":135},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":506,"h":135},
+	"sourceSize": {"w":506,"h":135}
+},
+{
+	"filename": "fb_logout2",
+	"frame": {"x":0,"y":367,"w":506,"h":135},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":506,"h":135},
+	"sourceSize": {"w":506,"h":135}
+},
+{
+	"filename": "home",
+	"frame": {"x":506,"y":367,"w":358,"h":93},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":93},
+	"sourceSize": {"w":358,"h":93}
+},
+{
+	"filename": "item_bg",
+	"frame": {"x":864,"y":367,"w":962,"h":219},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":962,"h":219},
+	"sourceSize": {"w":962,"h":219}
+},
+{
+	"filename": "lightbox_bg",
+	"frame": {"x":1826,"y":367,"w":20,"h":20},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
+	"sourceSize": {"w":20,"h":20}
+},
+{
+	"filename": "music",
+	"frame": {"x":0,"y":586,"w":132,"h":133},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":132,"h":133},
+	"sourceSize": {"w":132,"h":133}
+},
+{
+	"filename": "no",
+	"frame": {"x":132,"y":586,"w":506,"h":135},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":506,"h":135},
+	"sourceSize": {"w":506,"h":135}
+},
+{
+	"filename": "play_now",
+	"frame": {"x":638,"y":586,"w":953,"h":293},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":953,"h":293},
+	"sourceSize": {"w":953,"h":293}
+},
+{
+	"filename": "rematch",
+	"frame": {"x":1591,"y":586,"w":358,"h":93},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":93},
+	"sourceSize": {"w":358,"h":93}
+},
+{
+	"filename": "sound",
+	"frame": {"x":0,"y":879,"w":136,"h":132},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":136,"h":132},
+	"sourceSize": {"w":136,"h":132}
+},
+{
+	"filename": "title2",
+	"frame": {"x":136,"y":879,"w":1119,"h":247},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1119,"h":247},
+	"sourceSize": {"w":1119,"h":247}
+},
+{
+	"filename": "yes",
+	"frame": {"x":1255,"y":879,"w":506,"h":135},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":506,"h":135},
+	"sourceSize": {"w":506,"h":135}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "main.png",
+	"format": "RGBA8888",
+	"size": {"w":1949,"h":1126},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:5424dc40ceb0e28d3603c165deacd214:cb06c62c2a0978c9c69b21e774f494cc:03f91ab73e0f4667800419161e658c40$"
+}
+}

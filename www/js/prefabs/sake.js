@@ -9,8 +9,8 @@ sake.init = function() {
 	sake.sprite.scale.setTo(scaleRatio * 1.3);
 	sake.sprite.alpha = 0;
 	sake.sound = app.game.add.audio('sake');
-	sake.text = app.game.add.image(app.game.world.centerX, 400, 'sakebomb');
-	sake.text.scale.setTo(scaleRatio * 1.5);
+	sake.text = app.game.add.bitmapText(app.game.world.centerX , 400, 'fnt', 'sake bomb!');
+	sake.text.scale.setTo(scaleRatio * 6);
 	sake.text.anchor.x = .5;
 	sake.text.alpha = 0;
 

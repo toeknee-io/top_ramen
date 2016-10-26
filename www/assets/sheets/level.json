@@ -1,0 +1,60 @@
+{"frames": [
+
+{
+	"filename": "bowlLG",
+	"frame": {"x":619,"y":633,"w":720,"h":542},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":720,"h":542},
+	"sourceSize": {"w":720,"h":542}
+},
+{
+	"filename": "cutting-board",
+	"frame": {"x":0,"y":633,"w":619,"h":662},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":619,"h":662},
+	"sourceSize": {"w":619,"h":662}
+},
+{
+	"filename": "shoyu",
+	"frame": {"x":28,"y":0,"w":560,"h":633},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":560,"h":633},
+	"sourceSize": {"w":560,"h":633}
+},
+{
+	"filename": "spicy_chicken",
+	"frame": {"x":588,"y":0,"w":560,"h":633},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":560,"h":633},
+	"sourceSize": {"w":560,"h":633}
+},
+{
+	"filename": "splash",
+	"frame": {"x":0,"y":0,"w":28,"h":28},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":28},
+	"sourceSize": {"w":28,"h":28}
+},
+{
+	"filename": "tonkotsu",
+	"frame": {"x":1148,"y":0,"w":560,"h":633},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":560,"h":633},
+	"sourceSize": {"w":560,"h":633}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "level.png",
+	"format": "RGBA8888",
+	"size": {"w":1708,"h":1295},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4f458cfa167451bc6c9bf1da03862218:b61a3bdb8e76adf6315dbad43fa9ff07:131701cb6c4e8d84a5be75f0cc65185d$"
+}
+}

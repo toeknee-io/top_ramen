@@ -8,8 +8,6 @@
 
   	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    app.game.load.image('bg', 'assets/bg4.jpg');
-
   	app.game.kineticScrolling = app.game.plugins.add(Phaser.Plugin.KineticScrolling);
 
   	app.game.kineticScrolling.configure({
@@ -37,7 +35,8 @@
   	bg.scale.setTo(scaleRatio * 2.05);
   	bg.fixedToCamera = true;
 
-  	var homeButton = app.game.add.button(30, 30, 'home', window.goHome);
+  	var homeButton = app.game.add.button(30, 30, '', window.goHome);
+    homeButton.loadTexture('main', 'home');
   	homeButton.scale.setTo(scaleRatio);
 
   };
@@ -126,7 +125,8 @@
 
     		let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
-        var butt = app.game.add.button(0, picY, 'item');
+        var butt = app.game.add.button(0, picY);
+        butt.loadTexture('main', 'item_bg');
 
         let buttPic;
         let picKey = `${challenger.externalId}pic`;
@@ -137,7 +137,7 @@
 
         } else {
 
-          buttPic = app.game.add.image(30, 30, 'chef');
+          buttPic = app.game.add.image(30, 30, 'main', 'chef-holder');
 
         }
 
@@ -236,7 +236,8 @@
 
       	let challenger = challenge[challenge.challenger.userId === storedUserId ? 'challenged' : 'challenger'].identities[0];
 
-        var butt = app.game.add.button(0, pic2Y, 'item');
+        var butt = app.game.add.button(0, pic2Y);
+        butt.loadTexture('main', 'item_bg');
 
         let buttPic;
         let picKey = `${challenger.externalId}pic`;
@@ -247,7 +248,7 @@
 
         } else {
 
-          buttPic = app.game.add.image(30, 30, 'chef');
+          buttPic = app.game.add.image(30, 30, 'main', 'chef-holder');
 
         }
 

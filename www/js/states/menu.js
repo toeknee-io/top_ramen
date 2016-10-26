@@ -20,20 +20,8 @@
 
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-        app.game.load.image('title', 'assets/title.png');
-        app.game.load.image('title2', 'assets/title2.png');
         app.game.load.image('chefbar', 'assets/chefbar.png');
-
-        app.game.load.image('play_button','assets/button_play2.png');
-        app.game.load.image('challenge_button','assets/button_challenge2.png');
-        app.game.load.image('challenges_button','assets/button_challenges2.png');
-        app.game.load.image('options_button','assets/cog.png');
-        app.game.load.image('options_menu','assets/options_menu.png');
-        //app.game.load.image('login_button','assets/button_login.png');
         app.game.load.image('not_logged','assets/not_logged.png');
-
-        app.game.load.image('fb_login','assets/fb_login2.png');
-        app.game.load.image('fb_logout','assets/fb_logout2.png');
 
         if (!imageSize) imageSize = '';
 
@@ -42,8 +30,6 @@
         } else if (window.devicePixelRatio >= 3) {
             imageSize = 'LG';
         }
-
-        app.game.load.image('bowl', 'assets/bowl' + imageSize + '.png');
 
     };
 
@@ -56,28 +42,31 @@
         var bg = app.game.add.image(0, 0, 'menu_bg');
         bg.scale.setTo(2.05 * scaleRatio);
 
-        var title = app.game.add.image(app.game.world.centerX, 160 * scaleRatio, 'title2');
+        var title = app.game.add.image(app.game.world.centerX, 160 * scaleRatio, 'main', 'title2');
         title.anchor.x = 0.5;
         title.scale.setTo(scaleRatio);
 
-        //var bowl = app.game.add.image(app.game.world.centerX,app.game.world.height * .24, 'bowl');
-        //bowl.anchor.x = 0.5;
-
         var buttonGroup = app.game.add.group();
 
-        var playButton = app.game.add.button(0, 0, 'play_button', quickPlay);
-        var challengeButton = app.game.add.button(0, 0, 'challenge_button', challenge);
-        var challengesButton = app.game.add.button(0, 0, 'challenges_button', challenges);
+        var playButton = app.game.add.button(0, 0, '', quickPlay);
+        playButton.loadTexture('main', 'button_play2');
+
+        var challengeButton = app.game.add.button(0, 0, '', challenge);
+        challengeButton.loadTexture('main', 'button_challenge2');
+
+        var challengesButton = app.game.add.button(0, 0, '', challenges);
+        challengesButton.loadTexture('main', 'button_challenges2');
 
         let isLoggedIn = trApi.isLoggedIn();
 
         challengeButton.alpha = isLoggedIn ? 1 : 0.4;
         challengesButton.alpha = isLoggedIn ? 1 : 0.4;
 
-        let btnImg = isLoggedIn ? 'fb_logout' : 'fb_login';
+        let btnImg = isLoggedIn ? 'fb_logout2' : 'fb_login2';
         let btnFn = isLoggedIn ? logout : fbLogin;
 
-        let fb = app.game.add.button(0, 0, btnImg, btnFn);
+        let fb = app.game.add.button(0, 0, '', btnFn);
+        fb.loadTexture('main', btnImg);
 
         //var regs = app.game.add.button(0, 0, 'login_button', regsLogin);
 
@@ -110,8 +99,14 @@
         let sound;
         let music;
 
-        sound = app.game.add.button(0, 500, 'sound', soundToggle, sound);
-        music = app.game.add.button(sound.left - 80, 500, 'music', musicToggle, music);
+        sound = app.game.add.button(0, 500, '', soundToggle, sound);
+        sound.loadTexture('main', 'sound');
+
+        music = app.game.add.button(sound.left - 80 * scaleRatio, 500, '', musicToggle, music);
+        music.loadTexture('main', 'music');
+
+        sound.scale.setTo(scaleRatio);
+        music.scale.setTo(scaleRatio);
         music.anchor.x = 1;
         music.anchor.y = 0.5;
         sound.anchor.y = 0.5;
@@ -141,7 +136,8 @@
         optionsGroup.x = app.game.width * 0.85;
         optionsGroup.y = (app.game.height * 0.98) - (music.height / 2);
 
-        var optionsButton = app.game.add.button(app.game.width * 0.1, chefbar.bottom, 'options_button', options, optionsGroup);
+        var optionsButton = app.game.add.button(app.game.width * 0.1, chefbar.bottom, '', options, optionsGroup);
+        optionsButton.loadTexture('main', 'cog');
         optionsButton.scale.setTo(scaleRatio);
         optionsButton.anchor.x = 0.5;
         optionsButton.anchor.y = 0.5;
@@ -238,14 +234,6 @@
             }, 150);
 
         }
-
-        /*let notifOff = app.game.add.button(0, 0, '', () => {
-            window.trApi.getCordovaApp().push.unregister(
-                () => console.log('successfully unregistered from push notifications'),
-                err => console.error(`err while unregistering from push notifications ${err}`)
-            );
-            trApi.setDeviceToken(null);
-        });*/
 
 	}
 

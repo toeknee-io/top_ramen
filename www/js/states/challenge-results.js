@@ -18,12 +18,8 @@ app.challengeResults.create = function() {
   bg.y = app.game.world.centerY;
   bg.anchor.y = .5;
 
-  var backButton = app.game.add.button(30, 30, 'back', function() {
-
-  	app.game.state.start('challenges');
-
-  });
-
+  var backButton = app.game.add.button(30, 30, '', window.goBack);
+  backButton.loadTexture('main', 'back');
 	backButton.scale.setTo(scaleRatio);
 
 	var resultText = '';
@@ -80,12 +76,12 @@ app.challengeResults.create = function() {
 	theirScoreText.scale.setTo(scaleRatio * 3);
 	theirScoreText.anchor.x = .5;
 
-	var rematchButton = app.game.add.button(app.game.world.centerX, 1700 * scaleRatio, 'rematch', () => {
+	var rematchButton = app.game.add.button(app.game.world.centerX, 1700 * scaleRatio, '', () => {
   	trApi.postChallenge(theirId)
       .then(data => console.log('Rematch! : ' + data))
       .catch(err => console.error(`Failed because: ${err.responseJSON.error.message}`));
   });
-
+  rematchButton.loadTexture('main', 'rematch');
   rematchButton.anchor.x = .5;
 
 }

@@ -5,6 +5,5 @@ window.app = {
 	game: new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.CANVAS, 'play_area')
 };
 
-//window.innerWidth * window.devicePixelRatio
-//window.innerHeight * window.devicePixelRatio
-window.scaleRatio = window.devicePixelRatio / 3;
+window.scaleRatio = window.devicePixelRatio / 3.5;
+console.log('Device Pixel Ratio: ' + window.devicePixelRatio);

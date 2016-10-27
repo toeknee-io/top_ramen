@@ -345,16 +345,6 @@
       });
     }
 
-    getPlayer(challenge) {
-      return challenge.challenger.userId === trApi.getUserId() ?
-        challenge.challenger : challenge.challenged;
-    }
-
-    getOpponent(challenge) {
-      return challenge.challenger.userId === trApi.getUserId() ?
-        challenge.challenged : challenge.challenger;
-    }
-
   };
 
 })();

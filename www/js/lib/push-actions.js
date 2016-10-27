@@ -10,7 +10,7 @@
     },
     challengeRematch: function(data) {
       console.log(data);
-      let userId = trApi.getOpponent(data.additionalData.challenge).userId;
+      let userId = trApi.getChallengeOpponent(data.additionalData.challenge).userId;
       trApi.postChallenge(userId).catch(err => console.error(err));
     },
     declineChallenge: function(data) {

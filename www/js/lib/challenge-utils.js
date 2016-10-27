@@ -29,7 +29,7 @@
         });
     }
 
-    static getButtonDisplayStatus(challenge) {
+    static getButtonStatusText(challenge) {
 
       let userScore = ChallengeUtils.getUser(challenge).score;
       let opponent = ChallengeUtils.getOpponent(challenge);
@@ -39,45 +39,17 @@
           'Not Started' : (_.isNil(userScore) ? 'Your Turn' : 'Their Turn');
       else
         return challenge.winner === 'tied' ? 'Tied' :
-                  (userScore > opponent.score ? 'You Won!' :
-                    opponent.score > userScore ? 'You Lost' : 'wtf?!');
+          (userScore > opponent.score ? 'You Won!' :
+            opponent.score > userScore ? 'You Lost' : 'wtf?!');
 
     }
 
-    static getButtonPicture(picKey) {
-
+    static addButtonPicture(picKey) {
       return app.game.cache.checkImageKey(picKey) ?
         app.game.add.image(30, 30, picKey) : app.game.add.image(30, 30, 'main', 'chef-holder');
-
     }
 
-    static addChallengeButton(challenge, challengerGroup, picY) {
-
-      if (_.isNil(challenge))
-        return;
-
-      try {
-
-        let picKey = `${ChallengeUtils.getOpponent(challenge).identities[0].externalId}pic`;
-
-        challengerGroup.add(
-          ChallengeUtils.configureButton(
-            challenge, picY,
-            ChallengeUtils.getButtonPicture(picKey),
-            ChallengeUtils.getButtonDisplayStatus(challenge))
-        );
-
-        picY += 200 * scaleRatio;
-
-        return picY;
-
-      } catch (err) {
-        console.error('Error addOpenChallengeButton: %O ', err);
-      }
-
-    }
-
-    static getButtonText(width, displayName) {
+    static addButtonOpponentText(width, displayName) {
       return app.game.add.text(width + 20, 30, displayName, {
         font: 'bold 60px Arial',
         fill: '#fff',
@@ -85,7 +57,7 @@
       });
     }
 
-    static getButtonStatus(width, status) {
+    static addButtonStatusText(width, status) {
       return app.game.add.text(width + 20, 120, status, {
         font: 'bold 40px Arial',
         fill: '#fff',
@@ -93,7 +65,7 @@
       });
     }
 
-    static configureButton(challenge, picY, buttPic, status) {
+    static configureButton(challenge, picY) {
 
       let butt = app.game.add.button(0, picY);
 
@@ -118,17 +90,40 @@
       butt.scale.setTo(0.8 * scaleRatio);
       butt.centerX = app.game.world.centerX;
 
-      let buttText = ChallengeUtils.getButtonText(buttPic.width, ChallengeUtils.getOpponent(challenge).identities[0].profile.displayName);
-      let buttStatus = ChallengeUtils.getButtonStatus(buttPic.width, status);
+      let opponent = ChallengeUtils.getOpponent(challenge);
 
-      butt.addChild(buttText);
+      let picKey = `${opponent.identities[0].externalId}pic`;
+      let buttPic = ChallengeUtils.addButtonPicture(picKey);
+
+      let opponentTxt = opponent.identities[0].profile.displayName;
+      let statusTxt = ChallengeUtils.getButtonStatusText(challenge);
+
       butt.addChild(buttPic);
-
-      butt.addChild(buttStatus);
+      butt.addChild(ChallengeUtils.addButtonOpponentText(buttPic.width, opponentTxt));
+      butt.addChild(ChallengeUtils.addButtonStatusText(buttPic.width, statusTxt));
 
       buttPic.scale.setTo(0.8);
 
       return butt;
+
+    }
+
+    static addChallengeButton(challenge, chalGroup, picY) {
+
+      if (_.isNil(challenge))
+        return;
+
+      try {
+
+        chalGroup.add(ChallengeUtils.configureButton(challenge, picY));
+
+        picY += 200 * scaleRatio;
+
+        return picY;
+
+      } catch (err) {
+        console.error('Error addChallengeButton: %O ', err);
+      }
 
     }
 

@@ -43,26 +43,6 @@
 
   function displayChallenges(challenges) {
 
-    /*
-
-    let userPic;
-
-  	if (app.game.cache.checkImageKey('myPic')) {
-
-  		userPic = app.game.add.image(0, 260 * scaleRatio, 'myPic');
-
-  	} else {
-
-  		userPic = app.game.add.image(0, 260 * scaleRatio, 'chef');
-
-  	}
-
-  	userPic.scale.setTo(0.8 * scaleRatio);
-  	userPic.x = app.game.world.centerX;
-  	userPic.anchor.x = 0.5;
-
-    */
-
   	let openGroupTitle = app.game.add.bitmapText(app.game.world.centerX, 230 * scaleRatio, 'fnt', 'open\nchallenges');
   	let finishedGroupTitle = app.game.add.bitmapText(app.game.world.centerX, 0, 'fnt', 'completed\nchallenges');
 

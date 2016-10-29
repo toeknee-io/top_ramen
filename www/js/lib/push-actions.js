@@ -1,5 +1,3 @@
-/* eslint no-console: "off" */
-
 (function pushAcionsIife() {
   const trApi = window.trApi;
   const app = window.app;

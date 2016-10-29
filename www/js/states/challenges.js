@@ -1,5 +1,3 @@
-/* eslint no-console: "off" */
-
 (function challengesIife() {
   const app = window.app;
   const scaleRatio = window.scaleRatio;

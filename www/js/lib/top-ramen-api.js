@@ -1,5 +1,3 @@
-/* eslint no-console: "off" */
-
 (function topRamenApiIife() {
   window.getOpts = function getOpts(opts) {
     if (typeof opts === 'object') {

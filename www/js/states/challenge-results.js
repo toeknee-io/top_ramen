@@ -1,5 +1,3 @@
-/* eslint no-console: "off" */
-
 (function challengeResultsIife() {
   const app = window.app;
   const trApi = window.trApi;

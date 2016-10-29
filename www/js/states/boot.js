@@ -30,9 +30,7 @@ function loadComplete() {
   });
 }
 
-window.app.boot.init = function appBootInit() {
-  const musicOpt = window.localStorage.getItem('music');
-
+window.app.boot.init = function appBootInit(musicOpt = window.localStorage.getItem('music')) {
   window.app.music = (_.isNil(musicOpt) || (musicOpt !== 'false' && musicOpt !== false));
 
   if (!window.app.sound) {

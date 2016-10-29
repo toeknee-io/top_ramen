@@ -1,25 +1,23 @@
-(function() {
+/* eslint no-console: "off" */
 
-  'use strict';
-
-  window.__getOpts = function (opts) {
-    if (typeof opts === 'object')
+(function topRamenApiIife() {
+  window.getOpts = function getOpts(opts) {
+    if (typeof opts === 'object') {
       return opts;
-    else
-      return {};
+    }
+    return {};
   };
 
   window.TopRamenApi = class TopRamenApi {
 
-    constructor(opts) {
-
-      if (!(this instanceof TopRamenApi))
+    constructor(opts = {}) {
+      if (!(this instanceof TopRamenApi)) {
         return new TopRamenApi(opts);
+      }
 
-      if (!window.jQuery || !window.cordova || !window._ || !window.Promise)
+      if (!window.jQuery || !window.cordova || !window._ || !window.Promise) {
         throw new Error("Stuff's missing!");
-
-      opts = window.__getOpts(opts);
+      }
 
       this.APP_NAME = 'com.bitsmitten.topramen';
 
@@ -30,6 +28,7 @@
       this.ITEM_KEY_ACCESS_TOKEN = 'accessToken';
       this.ITEM_KEY_DEVICE_TOKEN = 'registrationId';
 
+      this.app = window.app;
       this.storage = window.localStorage;
       this.session = window.sessionStorage;
       this.device = window.device;
@@ -44,25 +43,27 @@
 
       this.cordovaApp = opts.cordovaApp || {};
 
-      this.getAccessToken = () => this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
+      this.getAccessToken = () =>
+        this.accessToken || this.storage.getItem(this.ITEM_KEY_ACCESS_TOKEN);
 
-      this.setAccessToken = accessToken => {
+      this.setAccessToken = (accessToken) => {
         this.accessToken = accessToken;
         if (!accessToken) {
           this.storage.removeItem(this.ITEM_KEY_ACCESS_TOKEN);
         } else {
           this.storage.setItem(this.ITEM_KEY_ACCESS_TOKEN, accessToken);
-          $.ajaxSetup({ beforeSend: xhr => xhr.setRequestHeader("Authorization", this.getAccessToken()) });
+          $.ajaxSetup({ beforeSend: xhr => xhr.setRequestHeader('Authorization', this.getAccessToken()) });
         }
       };
 
-      this.isValidLoginToken = function(token) {
+      this.isValidLoginToken = function isValidLoginToken(token) {
         return token && !_.isEmpty(token) && token !== 'null' && token !== 'undefined';
       };
 
-      if (this.accessToken)
+      if (this.accessToken) {
         this.setAccessToken(this.accessToken);
-
+      }
+      return this;
     }
 
     getUserId() { return this.userId || this.storage.getItem(this.ITEM_KEY_USER_ID); }
@@ -73,7 +74,9 @@
       else this.storage.setItem(this.ITEM_KEY_USER_ID, userId);
     }
 
-    getDeviceToken() { return this.deviceToken || this.storage.getItem(this.ITEM_KEY_DEVICE_TOKEN); }
+    getDeviceToken() {
+      return this.deviceToken || this.storage.getItem(this.ITEM_KEY_DEVICE_TOKEN);
+    }
 
     setDeviceToken(deviceToken) {
       this.deviceToken = deviceToken;
@@ -94,92 +97,80 @@
     }
 
     getUserIdentityBySocialId(provider, externalId) {
-
-      if (!provider || !externalId || !trApi.isLoggedIn())
-        return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`);
+      if (!provider || !externalId || !this.isLoggedIn()) { return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`); }
 
       return $.get(`${this.API_URL}/userIdentities?filter[where][externalId]=${externalId}`)
         .fail(err => console.error(`Failed to getUserIdentityBySocialId: ${err.responseJSON.error.message}`));
-
     }
 
     getUserSocial() {
-      if (!this.isLoggedIn())
-        return console.error(`The user must be logged in to make the getUserSocial call.`);
+      if (!this.isLoggedIn()) {
+        return console.error('The user must be logged in to make the getUserSocial call.');
+      }
       return $.get(`${this.API_URL}/users/social/me`)
         .fail(err => console.error(err));
     }
 
-    postAppInstallation(opts) {
-
-      opts = window.__getOpts(opts);
-
+    postAppInstallation(opts = {}) {
       this.deviceToken = opts.registrationId || this.getDeviceToken();
 
-      if (!this.deviceToken || !this.isLoggedIn())
+      if (!this.deviceToken || !this.isLoggedIn()) {
         throw new Error(`The deviceToken [${this.deviceToken}] or userId [${this.getUserId()}] is missing in the postAppInstallation call`);
+      }
 
       return $.post(
         `${this.API_URL}/users/me/installations`,
-          {
-            "appId": `${this.APP_NAME}.${opts.platform || this.platform}`,
-            "deviceToken": this.deviceToken,
-            "deviceType": opts.platform || this.platform,
-            "status": opts.status || "active"
-          })
+        {
+          appId: `${this.APP_NAME}.${opts.platform || this.platform}`,
+          deviceToken: this.deviceToken,
+          deviceType: opts.platform || this.platform,
+          status: opts.status || 'active',
+        })
         .fail(err => console.error(`Failed to postAppInstallation: ${err.responseJSON.error.message}`));
-
     }
 
     getAppInstallations() {
       return new this.Promise((resolve, reject) => {
-
         if (!this.isLoggedIn()) throw new Error(`The user must be logged in to getAppInstallations, userId [${this.getUserId()}] accessToken [${this.getAccessToken()}]`);
 
         $.get(`${this.API_URL}/users/me/installations`)
           .done(installations => resolve(installations))
           .fail(err => reject(err));
-
       });
     }
 
     logUserIn(opts) {
       return new this.Promise((resolve, reject) => {
-
         if (!opts) throw new Error('No options provided to logUserIn.');
         if (!this.deviceId) throw new Error('The deviceId is missing in logUserIn call.');
 
-        let loginUri = `/auth/${opts.provider}`;
-        let loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ?
-          loginUri : '/mobile/redirect' + loginUri)}?` +
+        const loginUri = `/auth/${opts.provider}`;
+        const loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ?
+          loginUri : `/mobile/redirect${loginUri}`)}?` +
           `uuid=${this.deviceId}&deviceType=${this.platform}`;
 
-        let iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
+        const iab = cordova.InAppBrowser.open(loginUrl, '_self', opts.iab);
 
-        iab.addEventListener('loadstart', event => {
+        iab.addEventListener('loadstart', (event) => {
+          const url = event.url.split('?');
 
-          let url = event.url.split('?');
-
-          if (url[0] === `${this.BASE_URL}/login`)
+          if (url[0] === `${this.BASE_URL}/login`) {
             reject(new Error('Passport login failed.'));
+          }
 
           if (url[0] === `${this.BASE_URL}/mobile/redirect/auth/success`) {
-
-            let token = url[1].split('token=')[1].split('&id=')[0];
-            let userId = url[1].split('id=')[1].split('&')[0];
+            const token = url[1].split('token=')[1].split('&id=')[0];
+            const userId = url[1].split('id=')[1].split('&')[0];
 
             if (_.isEmpty(token) || _.isEmpty(userId)) {
-              reject(new Error("No accessToken or userId was returned from login."));
+              reject(new Error('No accessToken or userId was returned from login.'));
             } else {
               this.setAccessToken(token);
               this.setUserId(userId);
               resolve(iab.close());
             }
-
           }
-
         });
-
       });
     }
 
@@ -189,7 +180,8 @@
           .done(() => {
             this.setAccessToken(null);
             this.setUserId(null);
-            resolve(); })
+            resolve();
+          })
           .fail(err => reject(err));
       });
     }
@@ -200,11 +192,10 @@
 
     postChallenge(userId, ramenId) {
       return new this.Promise((resolve, reject) => {
-        if (!this.isLoggedIn())
-          throw new Error(`User must be logged in to make postChallenge call.`);
+        if (!this.isLoggedIn()) { throw new Error('User must be logged in to make postChallenge call.'); }
         $.post(
             `${this.API_URL}/challenges`,
-            { userId: userId, ramenId: ramenId, status: 'new' }
+            { userId, ramenId, status: 'new' }
           )
           .done(data => resolve(data))
           .fail(err => reject(err));
@@ -216,7 +207,7 @@
       return $.get(
           `${this.API_URL}/challenges?filter[where][or][0][challenged.userId]=${this.getUserId()}&` +
           `filter[where][or][1][challenger.userId]=${this.getUserId()}`)
-        .fail((err) => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
+        .fail(err => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
     }
 
     getChallengesSorted() {
@@ -227,54 +218,55 @@
 
     patchChallenge(challenge, score, status) {
       return new this.Promise((resolve, reject) => {
-
         let data = {};
 
         if (typeof challenge === 'string' &&
-          (typeof score === 'number' || typeof status === 'string'))
-        {
+          (typeof score === 'number' || typeof status === 'string')) {
           data.id = challenge;
           data.score = score;
           data.status = status;
         } else if ((typeof challenge === 'object' && typeof challenge.id === 'string') &&
-          (typeof challenge.score === 'number' || typeof challenge.status === 'string'))
-        {
+          (typeof challenge.score === 'number' || typeof challenge.status === 'string')) {
           data = challenge;
         } else {
-          throw new Error(`Invalid arguments passed to patchChallenge: ${arguments}`);
+          throw new Error(`Invalid arguments passed to patchChallenge: ${challenge}`);
         }
 
         $.ajax({
-            method: 'PATCH',
-            url: `${this.API_URL}/challenges/${data.id}`,
-            data: data,
-            dataType: 'json'})
-          .done(data => resolve(data))
+          method: 'PATCH',
+          url: `${this.API_URL}/challenges/${data.id}`,
+          data,
+          dataType: 'json' })
+          .done(res => resolve(res))
           .fail(err => reject(err));
-
       });
     }
 
+    /* eslint-disable no-param-reassign */
     acceptChallenge(challenge) {
-      if (typeof challenge !== 'object')
-        throw new Error(`Invalid arguments passed to acceptChallenge ${arguments}`);
+      if (typeof challenge !== 'object') { throw new Error(`Invalid arguments passed to acceptChallenge ${challenge}`); }
       challenge.status = 'accepted';
       return this.patchChallenge(challenge);
     }
 
     declineChallenge(challenge) {
-      if (typeof challenge !== 'object')
-        throw new Error(`Invalid arguments passed to declineChallenge ${arguments}`);
-      challenge.status = 'declined';
+      if (typeof challenge !== 'object') {
+        throw new Error(`Invalid arguments passed to declineChallenge ${challenge}`);
+      }
+      challenge.status = 'decline';
       return this.patchChallenge(challenge);
     }
+    /* eslint-enable no-param-reassign */
 
     getScores() {
       return new this.Promise((resolve, reject) => {
-        if (!this.isLoggedIn()) return reject(new Error('User must be logged in to getScores.'));
-        $.get(`${this.API_URL}/users/me/scores`)
-          .done(scores => resolve(scores))
-          .fail(err => reject(new Error(`Failed to getScores: ${err.responseJSON.error.message}`)));
+        if (!this.isLoggedIn()) {
+          reject(new Error('User must be logged in to getScores.'));
+        } else {
+          $.get(`${this.API_URL}/users/me/scores`)
+            .done(scores => resolve(scores))
+            .fail(err => reject(new Error(`Failed to getScores: ${err.responseJSON.error.message}`)));
+        }
       });
     }
 
@@ -288,63 +280,52 @@
 
     loadSocialImages() {
       return new this.Promise((resolve, reject) => {
-
         if (this.isLoggedIn()) {
-
-          if (!app.game.cache.checkImageKey('myPic')) {
+          if (!this.app.game.cache.checkImageKey('myPic')) {
             this.getUserSocial()
-              .done(data => app.game.load.image('myPic', data.facebook.picture))
+              .done(data => this.app.game.load.image('myPic', data.facebook.picture))
               .fail(err => reject(err));
           }
 
           this.getChallengesSorted()
             .done((challenges) => {
-
               let challengesTotal = 0;
               let challengesDone = 0;
 
-              let challengeKeys = Object.keys(challenges);
+              const challengeKeys = Object.keys(challenges);
               let keyCount = 0;
 
               challengeKeys.forEach((key) => {
-
                 challengesTotal += challenges[key].length;
 
                 challenges[key].forEach((challenge) => {
+                  const result = _.attempt(() => {
+                    const identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
+                    const picKey = `${identity.externalId}pic`;
 
-                  let result = _.attempt(() => {
-
-                    let identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
-                    let picKey = `${identity.externalId}pic`;
-
-                    if (!app.game.cache.checkImageKey(picKey))
-                      app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
-
+                    if (!this.app.game.cache.checkImageKey(picKey)) {
+                      this.app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
+                    }
                   });
 
                   if (_.isError(result)) console.error(result);
 
-                  challengesDone++;
-
+                  challengesDone += 1;
                 });
 
-                if (++keyCount === challengeKeys.length && challengesDone === challengesTotal)
+                keyCount += 1;
+
+                if (keyCount === challengeKeys.length && challengesDone === challengesTotal) {
                   resolve(challenges);
-
+                }
               });
-
             })
             .fail(err => reject(err));
-
         } else {
-
           resolve();
-
         }
-
       });
     }
 
   };
-
-})();
+}());

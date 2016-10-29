@@ -12,10 +12,10 @@
 
   app.game.state.onStateChange.add((newState, oldState) => {
 
-    window.__stateHistory.push(newState);
+    window.stateHistory.push(newState);
 
     if (oldState && oldState !== 'level')
-      window.__prevState = oldState;
+      window.prevState = oldState;
 
   });
 
@@ -36,7 +36,7 @@
     window.buttonSound();
 
     let currState = (app.game.state.current || DEFAULT_SATE).toLowerCase();
-    let prevState = window.__prevState;
+    let prevState = window.prevState;
 
     if (currState === 'menu') {
 

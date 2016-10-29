@@ -1,87 +1,78 @@
-app.challengeResults = {}
+/* eslint no-console: "off" */
 
-app.challengeResults.init = function(challenge) {
+(function challengeResultsIife() {
+  const app = window.app;
+  const trApi = window.trApi;
+  const scaleRatio = window.scaleRatio;
 
-	app.challengeResults.challengeData = challenge;
+  app.challengeResults = {};
 
-}
+  app.challengeResults.init = function challengeResultsInit(challenge) {
+    app.challengeResults.challengeData = challenge;
+  };
 
-app.challengeResults.create = function() {
+  app.challengeResults.create = function challengeResultsCreate() {
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    const bg = app.game.add.image(0, 0, 'gameover_bg');
 
-  var bg = app.game.add.image(0, 0, 'gameover_bg');
+    bg.scale.setTo(2.05 * scaleRatio);
+    bg.x = app.game.world.centerX;
+    bg.anchor.x = 0.5;
+    bg.y = app.game.world.centerY;
+    bg.anchor.y = 0.5;
 
-  bg.scale.setTo(2.05 * scaleRatio);
-  bg.x = app.game.world.centerX;
-  bg.anchor.x = .5;
-  bg.y = app.game.world.centerY;
-  bg.anchor.y = .5;
+    const backButton = app.game.add.button(30, 30, '', window.goBack);
+    backButton.loadTexture('main', 'back');
+    backButton.scale.setTo(scaleRatio);
 
-  var backButton = app.game.add.button(30, 30, '', window.goBack);
-  backButton.loadTexture('main', 'back');
-	backButton.scale.setTo(scaleRatio);
+    let resultText = '';
 
-	var resultText = '';
+    if (app.challengeResults.challengeData.winner === window.localStorage.userId) {
+      resultText = 'you won!';
+    } else if (app.challengeResults.challengeData.winner === 'tied') {
+      resultText = 'tied!';
+    } else {
+      resultText = 'you lost';
+    }
 
-	if (app.challengeResults.challengeData.winner === window.localStorage.userId) {
+    const challengerScore = app.challengeResults.challengeData.challenger.score;
+    const challengedScore = app.challengeResults.challengeData.challenged.score;
 
-		resultText = 'you won!';
+    let yourScore;
+    let theirScore;
+    let theirId;
 
-	} else if (app.challengeResults.challengeData.winner === "tied") {
+    if (app.challengeResults.challengeData.challenger.userId === window.localStorage.getItem('userId')) {
+      yourScore = challengerScore;
+      theirScore = challengedScore;
+      theirId = app.challengeResults.challengeData.challenged.userId;
+    } else {
+      yourScore = challengedScore;
+      theirScore = challengerScore;
+      theirId = app.challengeResults.challengeData.challenger.userId;
+    }
 
-		resultText = 'tied!';
+    const welcomeText = app.game.add.bitmapText(app.game.world.centerX, 400 * scaleRatio, 'fnt-orange', resultText);
+    welcomeText.scale.setTo(scaleRatio * 5);
+    welcomeText.anchor.x = 0.5;
 
-	} else {
+    const yourScoreText = app.game.add.bitmapText(app.game.world.centerX, 800 * scaleRatio, 'fnt', `your score:\n${yourScore}`);
+    yourScoreText.align = 'center';
+    yourScoreText.scale.setTo(scaleRatio * 3);
+    yourScoreText.anchor.x = 0.5;
 
-		resultText = 'you lost';
+    const theirScoreText = app.game.add.bitmapText(app.game.world.centerX, 1200 * scaleRatio, 'fnt', `their score:\n${theirScore}`);
+    theirScoreText.align = 'center';
+    theirScoreText.scale.setTo(scaleRatio * 3);
+    theirScoreText.anchor.x = 0.5;
 
-	}
-
-	var challengerScore = app.challengeResults.challengeData.challenger.score;
-	var challengedScore = app.challengeResults.challengeData.challenged.score;
-
-	var yourScore;
-	var yourId;
-	var theirScore;
-	var theirId;
-
-	if (app.challengeResults.challengeData.challenger.userId === window.localStorage.getItem('userId')) {
-
-		yourScore = challengerScore;
-		theirScore = challengedScore;
-		yourId = app.challengeResults.challengeData.challenger.userId;
-		theirId = app.challengeResults.challengeData.challenged.userId;
-
-	} else {
-
-		yourScore = challengedScore;
-		theirScore = challengerScore;
-		yourId = app.challengeResults.challengeData.challenged.userId;
-		theirId = app.challengeResults.challengeData.challenger.userId;
-
-	}
-
-	var welcomeText = app.game.add.bitmapText(app.game.world.centerX, 400 * scaleRatio, 'fnt-orange', resultText);
-			welcomeText.scale.setTo(scaleRatio * 5);
-			welcomeText.anchor.x = .5;
-
-	var yourScoreText = app.game.add.bitmapText(app.game.world.centerX, 800 * scaleRatio, 'fnt', 'your score:\n' + yourScore);
-	yourScoreText.align = 'center';
-	yourScoreText.scale.setTo(scaleRatio * 3);
-	yourScoreText.anchor.x = .5;
-
-	var theirScoreText = app.game.add.bitmapText(app.game.world.centerX, 1200 * scaleRatio, 'fnt', 'their score:\n' + theirScore);
-	theirScoreText.align = 'center';
-	theirScoreText.scale.setTo(scaleRatio * 3);
-	theirScoreText.anchor.x = .5;
-
-	var rematchButton = app.game.add.button(app.game.world.centerX, 1700 * scaleRatio, '', () => {
-  	trApi.postChallenge(theirId)
-      .then(data => console.log('Rematch! : ' + data))
-      .catch(err => console.error(`Failed because: ${err.responseJSON.error.message}`));
-  });
-  rematchButton.loadTexture('main', 'rematch');
-  rematchButton.anchor.x = .5;
-
-}
+    const rematchButton = app.game.add.button(app.game.world.centerX, 1700 * scaleRatio, '', () => {
+      trApi.postChallenge(theirId)
+        .then(data => console.log(`Rematch! : ${data}`))
+        .catch(err => console.error(`Failed because: ${err.responseJSON.error.message}`));
+    });
+    rematchButton.loadTexture('main', 'rematch');
+    rematchButton.anchor.x = 0.5;
+  };
+}());

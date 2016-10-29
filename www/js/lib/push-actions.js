@@ -1,44 +1,37 @@
-(function() {
+/* eslint no-console: "off" */
 
-  'use strict';
+(function pushAcionsIife() {
+  const trApi = window.trApi;
+  const app = window.app;
 
   window.pushActions = {
-    acceptChallenge: function(data) {
+    acceptChallenge(data) {
       console.log(data);
       trApi.acceptChallenge(data.additionalData.challenge)
         .then(() => this.viewChallenges(data));
     },
-    challengeRematch: function(data) {
-      console.log(data);
-      let userId = trApi.getChallengeOpponent(data.additionalData.challenge).userId;
+    challengeRematch(data) {
+      const userId = trApi.getChallengeOpponent(data.additionalData.challenge).userId;
       trApi.postChallenge(userId).catch(err => console.error(err));
     },
-    declineChallenge: function(data) {
+    declineChallenge(data) {
       console.log(data);
       trApi.declineChallenge(data.additionalData.challenge);
       navigator.app.exitApp();
     },
-    playChallenge: function(data) {
-      console.log(data);
-
-      let challenge = data.additionalData.challenge;
-
-      app.bootCreateCallback = function() {
+    playChallenge(data) {
+      const challenge = data.additionalData.challenge;
+      app.bootCreateCallback = function bootCreateCallback() {
         app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
       };
 
-      if (!data.additionalData.coldstart)
+      if (!data.additionalData.coldstart) {
         app.bootCreateCallback();
-
+      }
     },
-    viewChallenge: function(data) {
+    viewChallenge(data) {
       console.log(data);
-      app.bootCreateCallback = function() { app.game.state.start('challenge'); };
+      app.bootCreateCallback = function bootCreateCallback() { app.game.state.start('challenge'); };
     },
-    viewChallenges: function(data) {
-      console.log(data);
-      app.bootCreateCallback = function() { app.game.state.start('challenges'); };
-    }
   };
-
-})();
+}());

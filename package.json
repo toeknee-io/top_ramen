@@ -1,0 +1,31 @@
+{
+  "name": "top_ramen_game",
+  "version": "0.0.1",
+  "description": "Make Ramen!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toekneefof/top_ramen"
+  },
+  "keywords": [
+    "games",
+    "ramen",
+    "rawr"
+  ],
+  "author": "toeknee <toeknee@toeknee.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toekneefof/top_ramen/issues"
+  },
+  "homepage": "https://github.com/toekneefof/top_ramen",
+  "devDependencies": {
+    "eslint": "3.9.0",
+    "eslint-config-airbnb": "12.0.0",
+    "eslint-plugin-import": "2.0.1",
+    "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-react": "6.4.1"
+  }
+}

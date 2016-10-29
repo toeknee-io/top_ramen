@@ -34,7 +34,7 @@ app.boot.preload = function() {
 	app.game.load.bitmapFont('fnt', 'assets/fonts/font.png', 'assets/fonts/font.fnt' );
 	app.game.load.bitmapFont('fnt-orange', 'assets/fonts/font-orange.png', 'assets/fonts/font-orange.fnt' );
 
-	trApi.loadSocialImages().then(() => {
+	window.trApi.loadSocialImages().then(() => {
 		app.game.load.onLoadComplete.addOnce(loadComplete, this);
 		app.game.load.start();
 	});

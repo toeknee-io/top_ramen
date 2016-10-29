@@ -32,7 +32,7 @@
   	console.info('Challenges State');
 
   	let bg = app.game.add.image(0, 0, 'menu_bg');
-  	bg.scale.setTo(scaleRatio * 2.05);
+  	bg.scale.setTo(scaleRatio * 2.5);
   	bg.fixedToCamera = true;
 
     let homeButton = app.game.add.button(30, 30, '', window.goHome);

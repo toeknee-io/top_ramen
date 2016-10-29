@@ -40,7 +40,7 @@
             app.menuSong.play();
 
         var bg = app.game.add.image(0, 0, 'menu_bg');
-        bg.scale.setTo(2.05 * scaleRatio);
+        bg.scale.setTo(2.5 * scaleRatio);
 
         var title = app.game.add.image(app.game.world.centerX, 160 * scaleRatio, 'main', 'title2');
         title.anchor.x = 0.5;

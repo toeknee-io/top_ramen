@@ -48,7 +48,7 @@ app.challenge.create = function() {
 	console.log('Challenge State');
 
 	var bg = app.game.add.image(0, 0, 'menu_bg');
-	bg.scale.setTo(scaleRatio * 2.05);
+	bg.scale.setTo(scaleRatio * 2.5);
 	bg.fixedToCamera = true;
 
 	var homeButton = app.game.add.button(30, 30, '', window.goHome);

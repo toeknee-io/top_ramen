@@ -31,13 +31,15 @@ function loadComplete() {
 }
 
 window.app.boot.init = function appBootInit() {
-  if (!window.app.music) {
-    window.app.music = true;
-  }
+  const musicOpt = window.localStorage.getItem('music');
+
+  window.app.music = (_.isNil(musicOpt) || (musicOpt !== 'false' && musicOpt !== false));
 
   if (!window.app.sound) {
     window.app.sound = true;
   }
+
+  window.localStorage.setItem('music', window.app.music);
 };
 
 window.app.boot.preload = function appBootPreload() {

@@ -29,9 +29,7 @@
   };
 
   app.menu.create = function () {
-    console.log('Menu State');
-
-    if (!app.menuSong.isPlaying) {
+    if (!app.menuSong.isPlaying && window.app.music) {
       app.menuSong.play();
     }
 
@@ -228,6 +226,8 @@
   }
 
   function musicToggle() {
+    window.buttonSound();
+
     if (app.music === true) {
       app.music = false;
 
@@ -237,14 +237,18 @@
       app.lvlSong.volume = 0;
     } else if (app.music === false) {
       app.music = true;
-
       this.alpha = 1;
 
       app.menuSong.volume = 0.8;
       app.lvlSong.volume = 0.8;
+
     }
 
-    window.buttonSound();
+    if (!app.menuSong.isPlaying && app.music) {
+      app.menuSong.play();
+    }
+
+    window.localStorage.setItem('music', app.music);
   }
 
   function fbLogin() {

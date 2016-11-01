@@ -296,7 +296,7 @@
 
     getRamen() {
       return new this.Promise((resolve, reject) => {
-        if (_.isEmpty(this.cache.ramen)) {
+        if (!_.isEmpty(this.cache.ramen) && _.isArray(this.cache.ramen)) {
           resolve(this.cache.ramen);
         } else {
           $.get(`${this.API_URL}/ramen`)

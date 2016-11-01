@@ -107,6 +107,7 @@
 
       if (challenge.status === 'finished') {
         const deleteButton = window.app.game.add.button(0, 70 * window.scaleRatio, 'delete', () => {
+          window.trApi.hideChallenge(challenge);
           butt.destroy();
         });
 
@@ -124,9 +125,10 @@
       if (_.isNil(challenge)) { return yLoc; }
 
       try {
-        chalGroup.add(ChallengeUtils.configureButton(challenge, yLoc));
-
-        yLoc += 200 * window.scaleRatio;
+        if (!challenge.hidden) {
+          chalGroup.add(ChallengeUtils.configureButton(challenge, yLoc));
+          yLoc += 200 * window.scaleRatio;
+        }
       } catch (err) {
         console.error('Error addChallengeButton: %O ', err);
       }

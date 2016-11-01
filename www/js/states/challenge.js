@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 (function challengeIife({ app, scaleRatio }) {
   function playNow(challenge) {
     app.game.sound.stopAll();
@@ -134,12 +133,14 @@
     chefbar.bringToTop();
   }
 
-  app.challenge = {};
+  const challenge = {};
 
-  app.challenge.preload = function appChallengePreload() {
+  challenge.preload = function appChallengePreload() {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-    app.game.kineticScrolling = app.game.plugins.add(Phaser.Plugin.KineticScrolling);
+    Object.assign(app.game, {
+      kineticScrolling: app.game.plugins.add(Phaser.Plugin.KineticScrolling),
+    });
 
     app.game.kineticScrolling.configure({
       kineticMovement: true,
@@ -173,7 +174,7 @@
       });
   };
 
-  app.challenge.create = function appChallengeCreate() {
+  challenge.create = function appChallengeCreate() {
     console.log('Challenge State');
 
     const bg = app.game.add.image(0, 0, 'menu_bg');
@@ -184,4 +185,6 @@
     homeButton.loadTexture('main', 'home');
     homeButton.scale.setTo(scaleRatio);
   };
+
+  Object.assign(app, { challenge });
 }(window));

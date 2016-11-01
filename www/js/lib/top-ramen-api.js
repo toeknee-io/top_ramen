@@ -6,6 +6,12 @@
     return {};
   };
 
+  function checkIfObj(obj, fnName) {
+    if (typeof obj !== 'object') {
+      throw new Error(`Invalid arguments passed to ${fnName} ${obj}`);
+    }
+  }
+
   window.TopRamenApi = class TopRamenApi {
 
     constructor(opts = {}) {
@@ -25,6 +31,8 @@
       this.ITEM_KEY_USER_ID = 'userId';
       this.ITEM_KEY_ACCESS_TOKEN = 'accessToken';
       this.ITEM_KEY_DEVICE_TOKEN = 'registrationId';
+
+      Object.assign(this, { cache: {} });
 
       this.app = window.app;
       this.storage = window.localStorage;
@@ -108,7 +116,6 @@
 
     getUserIdentityBySocialId(provider, externalId) {
       if (!provider || !externalId || !this.isLoggedIn()) { return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`); }
-
       return $.get(`${this.API_URL}/userIdentities?filter[where][externalId]=${externalId}`)
         .fail(err => console.error(`Failed to getUserIdentityBySocialId: ${err.responseJSON.error.message}`));
     }
@@ -250,27 +257,30 @@
           method: 'PATCH',
           url: `${this.API_URL}/challenges/${data.id}`,
           data,
-          dataType: 'json' })
-          .done(res => resolve(res))
-          .fail(err => reject(err));
+          dataType: 'json',
+        })
+        .done(res => resolve(res))
+        .fail(err => reject(err));
       });
     }
 
     acceptChallenge(challenge) {
-      if (typeof challenge !== 'object') { throw new Error(`Invalid arguments passed to acceptChallenge ${challenge}`); }
+      checkIfObj(challenge, this.acceptChallenge.name);
       Object.assign(challenge, { status: 'accepted' });
       return this.patchChallenge(challenge);
     }
 
-    /* eslint-disable no-param-reassign */
     declineChallenge(challenge) {
-      if (typeof challenge !== 'object') {
-        throw new Error(`Invalid arguments passed to declineChallenge ${challenge}`);
-      }
-      challenge.status = 'decline';
+      checkIfObj(challenge, this.declineChallenge.name);
+      Object.assign(challenge, { status: 'decline' });
       return this.patchChallenge(challenge);
     }
-    /* eslint-enable no-param-reassign */
+
+    hideChallenge(challenge) {
+      checkIfObj(challenge, this.hideChallenge.name);
+      Object.assign(challenge, { hidden: true });
+      return this.patchChallenge(challenge);
+    }
 
     getScores() {
       return new this.Promise((resolve, reject) => {
@@ -286,9 +296,16 @@
 
     getRamen() {
       return new this.Promise((resolve, reject) => {
-        $.get(`${this.API_URL}/ramen`)
-          .done(ramen => resolve(ramen))
+        if (!_.isEmpty(this.cache.ramen) && _.isArray(this.cache.ramen)) {
+          resolve(this.cache.ramen);
+        } else {
+          $.get(`${this.API_URL}/ramen`)
+          .done((ramen) => {
+            this.cache.ramen = ramen;
+            resolve(ramen);
+          })
           .fail(err => reject(err));
+        }
       });
     }
 
@@ -300,7 +317,6 @@
               .then(data => this.app.game.load.image('myPic', data.facebook.picture))
               .catch(err => reject(err));
           }
-
           this.getChallengesSorted()
             .done((challenges) => {
               let challengesTotal = 0;

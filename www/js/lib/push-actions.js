@@ -1,35 +1,30 @@
-(function pushAcionsIife() {
-  const trApi = window.trApi;
-  const app = window.app;
-
+(function pushAcionsIife({ app }) {
   window.pushActions = {
     acceptChallenge(data) {
-      console.log(data);
-      trApi.acceptChallenge(data.additionalData.challenge)
+      window.trApi.acceptChallenge(data.additionalData.challenge)
         .then(() => this.viewChallenges(data));
     },
     challengeRematch(data) {
-      const userId = trApi.getChallengeOpponent(data.additionalData.challenge).userId;
-      trApi.postChallenge(userId).catch(err => console.error(err));
+      const userId = window.trApi.getChallengeOpponent(data.additionalData.challenge).userId;
+      window.trApi.postChallenge(userId).catch(err => console.error(err));
     },
     declineChallenge(data) {
-      console.log(data);
-      trApi.declineChallenge(data.additionalData.challenge);
+      window.trApi.declineChallenge(data.additionalData.challenge);
       navigator.app.exitApp();
     },
     playChallenge(data) {
       const challenge = data.additionalData.challenge;
-      app.bootCreateCallback = function bootCreateCallback() {
+      const bootCreateCallback = function bootCreateCallback() {
         app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
       };
-
+      Object.assign(app, { bootCreateCallback });
       if (!data.additionalData.coldstart) {
         app.bootCreateCallback();
       }
     },
-    viewChallenge(data) {
-      console.log(data);
-      app.bootCreateCallback = function bootCreateCallback() { app.game.state.start('challenge'); };
+    viewChallenge() {
+      const bootCreateCallback = function bootCreateCallback() { app.game.state.start('challenge'); };
+      Object.assign(app, { bootCreateCallback });
     },
   };
-}());
+}(window));

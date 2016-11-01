@@ -1,9 +1,9 @@
-(function appMenuIife() {
-  app.menu = {};
+(function appMenuIife({ app, scaleRatio }) {
+  const menu = {};
 
   let imageSize = '';
 
-  app.menu.init = function () {
+  menu.init = function () {
     if (!app.menuSong) {
       app.menuSong = app.game.add.audio('lose', 0.8, true);
     }
@@ -13,7 +13,7 @@
     }
   };
 
-  app.menu.preload = function () {
+  menu.preload = function () {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
     app.game.load.image('chefbar', 'assets/chefbar.png');
@@ -21,14 +21,14 @@
 
     if (!imageSize) imageSize = '';
 
-    if (window.devicePixelRatio == 2) {
+    if (window.devicePixelRatio === 2) {
             // imageSize = 'X2';
     } else if (window.devicePixelRatio >= 3) {
       imageSize = 'LG';
     }
   };
 
-  app.menu.create = function () {
+  menu.create = function appMenuCreate() {
     if (!app.menuSong.isPlaying && window.app.music) {
       app.menuSong.play();
     }
@@ -51,7 +51,7 @@
     const challengesButton = app.game.add.button(0, 0, '', challenges);
     challengesButton.loadTexture('main', 'button_challenges2');
 
-    const isLoggedIn = trApi.isLoggedIn();
+    const isLoggedIn = window.trApi.isLoggedIn();
 
     challengeButton.alpha = isLoggedIn ? 1 : 0.4;
     challengesButton.alpha = isLoggedIn ? 1 : 0.4;
@@ -154,7 +154,7 @@
 
   function challenge() {
     window.buttonSound();
-    if (trApi.isLoggedIn()) {
+    if (window.trApi.isLoggedIn()) {
       app.game.state.start('challenge');
     } else {
       const notLogged = app.game.add.button(0, 0, 'not_logged', () => {
@@ -170,7 +170,7 @@
 
   function challenges() {
     window.buttonSound();
-    if (trApi.isLoggedIn()) {
+    if (window.trApi.isLoggedIn()) {
       app.game.state.start('challenges');
     } else {
       const notLogged = app.game.add.button(0, 0, 'not_logged', () => notLogged.destroy());
@@ -250,7 +250,7 @@
   }
 
   function logout() {
-    trApi.logUserOut()
+    window.trApi.logUserOut()
             .then(() => app.game.state.restart())
             .catch(err => console.error(`Logout failed ${err}`));
     window.buttonSound();
@@ -266,19 +266,21 @@
 
     opts.provider = provider;
 
-    trApi.logUserIn(opts)
+    window.window.trApi.logUserIn(opts)
         .then(() => {
           app.game.state.restart();
-          trApi.getAppInstallations()
+          window.window.trApi.getAppInstallations()
                 .then((installations) => {
-                  const existingInstall = _.find(installations, install => install.deviceToken === trApi.getDeviceToken());
-                  if (_.isEmpty(existingInstall)) trApi.postAppInstallation();
+                  const existingInstall = _.find(installations, install => install.deviceToken === window.trApi.getDeviceToken());
+                  if (_.isEmpty(existingInstall)) window.trApi.postAppInstallation();
                 })
                 .catch((err) => {
                   console.error(`Failed to getAppInstallations in logUserIn ${err}`);
-                  if (!_.isEmpty(trApi.getDeviceToken()) && trApi.isLoggedIn()) { trApi.postAppInstallation(); }
+                  if (!_.isEmpty(window.trApi.getDeviceToken()) && window.trApi.isLoggedIn()) { window.trApi.postAppInstallation(); }
                 });
         })
         .catch(err => console.error(`logUserIn failed: ${err}`));
   }
-}());
+
+  Object.assign(app, { menu });
+}(window));

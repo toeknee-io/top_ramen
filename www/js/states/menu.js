@@ -1,4 +1,4 @@
-(function appMenuIife() {
+(function appMenuIife({ app }) {
   app.menu = {};
 
   let imageSize = '';
@@ -288,4 +288,4 @@
         })
         .catch(err => console.error(`logUserIn failed: ${err}`));
   }
-}());
+}(window));

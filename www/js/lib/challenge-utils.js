@@ -105,6 +105,17 @@
 
       buttPic.scale.setTo(0.8);
 
+      if (challenge.status === 'finished') {
+        const deleteButton = window.app.game.add.button(0, 70 * window.scaleRatio, 'delete', () => {
+          butt.destroy();
+        });
+
+        butt.addChild(deleteButton);
+        deleteButton.scale.setTo(0.6 * window.scaleRatio);
+
+        deleteButton.x = butt.right - (300 * window.scaleRatio);
+      }
+
       return butt;
     }
 

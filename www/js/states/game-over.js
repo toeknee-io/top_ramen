@@ -110,12 +110,12 @@ app.gameover.create = function() {
 
 		} else {
 
-			yourScoreText = app.game.add.text(app.game.world.centerX, 800 * scaleRatio, 'fnt', 'your score:\n' + yourScore);
+			yourScoreText = app.game.add.bitmapText(app.game.world.centerX, 800 * scaleRatio, 'fnt', 'your score:\n' + yourScore);
 			yourScoreText.scale.setTo(scaleRatio * 3);
 			yourScoreText.align = 'center';
 			yourScoreText.anchor.x = 0.5;
 
-			var waitingText = app.game.add.text(app.game.world.centerX, 1200 * scaleRatio, 'fnt-orange', "it's your opponent's turn!");
+			var waitingText = app.game.add.bitmapText(app.game.world.centerX, 1200 * scaleRatio, 'fnt-orange', "it's your opponent's turn!");
 			waitingText.scale.setTo(scaleRatio * 2);
 			waitingText.align = 'center';
 			waitingText.anchor.x = 0.5;

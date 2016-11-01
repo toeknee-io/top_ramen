@@ -214,13 +214,6 @@
 
       this.alpha = 1;
     }
-        // jshint ignore:end
-    trApi.setDeviceToken(null);
-
-    trApi.getCordovaApp().push.unregister(
-            () => console.log('successfully unregistered from push notifications'),
-            err => console.error(`err while unregistering from push notifications ${err}`)
-        );
 
     window.buttonSound();
   }

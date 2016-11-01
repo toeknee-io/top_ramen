@@ -1,5 +1,3 @@
-/* eslint no-console: "off" */
-
 (function cordovaInitFn() {
   window.stateHistory = [];
   window.prevState = null;

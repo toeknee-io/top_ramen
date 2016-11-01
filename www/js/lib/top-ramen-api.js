@@ -317,7 +317,6 @@
               .then(data => this.app.game.load.image('myPic', data.facebook.picture))
               .catch(err => reject(err));
           }
-
           this.getChallengesSorted()
             .done((challenges) => {
               let challengesTotal = 0;

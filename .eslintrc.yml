@@ -5,6 +5,7 @@ globals:
   _: true
   Phaser: true
   cordova: true
+  Promise: true
   ChallengeUtils: true
   PushNotification: true
 rules:

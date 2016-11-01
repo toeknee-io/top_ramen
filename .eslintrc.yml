@@ -8,8 +8,8 @@ globals:
   ChallengeUtils: true
   PushNotification: true
 rules:
-  no-console: "off"
-  no-alert: "off"
+  no-console: off
+  no-alert: off
 extends: airbnb
 installedESLint: true
 plugins:

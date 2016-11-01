@@ -94,6 +94,18 @@
         .fail(err => console.error(`Failed to get userId using deviceId [${this.deviceId}] : ${err.responseJSON.error.message}`));
     }
 
+    getUserIdentityById(id) {
+      return new this.Promise((resolve, reject) => {
+        if (_.isNil(id) || typeof id !== 'string') {
+          reject(`TopRamenApi.getUserIdentityById error: invalid id argument [${id}]`);
+        } else {
+          $.get(`${this.API_URL}/userIdentities/${id}`)
+            .done((userIdentity => resolve(userIdentity)))
+            .fail(err => reject(err));
+        }
+      });
+    }
+
     getUserIdentityBySocialId(provider, externalId) {
       if (!provider || !externalId || !this.isLoggedIn()) { return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`); }
 
@@ -102,11 +114,15 @@
     }
 
     getUserSocial() {
-      if (!this.isLoggedIn()) {
-        return console.error('The user must be logged in to make the getUserSocial call.');
-      }
-      return $.get(`${this.API_URL}/users/social/me`)
-        .fail(err => console.error(err));
+      return new this.Promise((resolve, reject) => {
+        if (!this.isLoggedIn()) {
+          reject('trApi.getUserSocial error: The user must be logged in to make the getUserSocial call');
+        } else {
+          $.get(`${this.API_URL}/users/social`)
+            .done(userSocial => resolve(userSocial))
+            .fail(err => reject(err));
+        }
+      });
     }
 
     postAppInstallation(opts = {}) {
@@ -240,13 +256,13 @@
       });
     }
 
-    /* eslint-disable no-param-reassign */
     acceptChallenge(challenge) {
       if (typeof challenge !== 'object') { throw new Error(`Invalid arguments passed to acceptChallenge ${challenge}`); }
-      challenge.status = 'accepted';
+      Object.assign(challenge, { status: 'accepted' });
       return this.patchChallenge(challenge);
     }
 
+    /* eslint-disable no-param-reassign */
     declineChallenge(challenge) {
       if (typeof challenge !== 'object') {
         throw new Error(`Invalid arguments passed to declineChallenge ${challenge}`);
@@ -281,8 +297,8 @@
         if (this.isLoggedIn()) {
           if (!this.app.game.cache.checkImageKey('myPic')) {
             this.getUserSocial()
-              .done(data => this.app.game.load.image('myPic', data.facebook.picture))
-              .fail(err => reject(err));
+              .then(data => this.app.game.load.image('myPic', data.facebook.picture))
+              .catch(err => reject(err));
           }
 
           this.getChallengesSorted()

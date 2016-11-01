@@ -1,6 +1,5 @@
 (function challengeResultsIife() {
   const app = window.app;
-  const trApi = window.trApi;
   const scaleRatio = window.scaleRatio;
 
   app.challengeResults = {};
@@ -66,7 +65,7 @@
     theirScoreText.anchor.x = 0.5;
 
     const rematchButton = app.game.add.button(app.game.world.centerX, 1700 * scaleRatio, '', () => {
-      trApi.postChallenge(theirId)
+      window.trApi.postChallenge(theirId)
         .then(data => console.log(`Rematch! : ${data}`))
         .catch(err => console.error(`Failed because: ${err.responseJSON.error.message}`));
     });

@@ -14,6 +14,23 @@
     bindEvents() { document.addEventListener('deviceready', this.onDeviceReady, false); },
 
     onDeviceReady() {
+      const defaultOptions = {
+        adSize: 'SMART_BANNER',
+        width: 360,
+        height: 90,
+        position: window.AdMob.AD_POSITION.BOTTOM_CENTER,
+        x: 0,
+        y: 0,
+        isTesting: true,
+        autoShow: true,
+      };
+      window.AdMob.setOptions(defaultOptions);
+      window.AdMob.createBanner(
+        'ca-app-pub-4615826693574949/3717066510',
+        () => console.log('success!'),
+        err => console.error(err)
+      );
+
       document.addEventListener('backbutton', onBackKeyDown, false);
 
       window.trApi = new window.TopRamenApi({ cordovaApp });

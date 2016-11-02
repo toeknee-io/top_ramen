@@ -36,7 +36,14 @@
         "phonegap-plugin-push": {
             "SENDER_ID": "184977555503",
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "cordova-plugin-admobpro": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         }
     },
-    "dependent_plugins": {}
+    "dependent_plugins": {
+        "cordova-plugin-extension": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        }
+    }
 }

@@ -125,7 +125,9 @@
 
     static displayChallengeGroup(challenges, challengerGroup, yLoc) {
       _.castArray(challenges).forEach((challenge) => {
-        yLoc = ChallengeUtils.addChallengeButton(challenge, challengerGroup, yLoc);
+        if (!challenge.hidden) {
+          yLoc = ChallengeUtils.addChallengeButton(challenge, challengerGroup, yLoc);
+        }
         return yLoc;
       });
     }

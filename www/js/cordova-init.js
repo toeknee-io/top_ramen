@@ -1,4 +1,4 @@
-(function cordovaInitFn() {
+(function cordovaInitIife() {
   window.stateHistory = [];
   window.prevState = null;
 
@@ -25,12 +25,13 @@
         autoShow: true,
       };
       window.AdMob.setOptions(defaultOptions);
+      /*
       window.AdMob.createBanner(
         'ca-app-pub-4615826693574949/3717066510',
         () => console.log('success!'),
         err => console.error(err)
       );
-
+      */
       document.addEventListener('backbutton', onBackKeyDown, false);
 
       window.trApi = new window.TopRamenApi({ cordovaApp });

@@ -123,12 +123,10 @@ app.gameover.create = function() {
 		}
 
 	} else {
-
 		welcomeText = app.game.add.bitmapText(app.game.world.centerX, 300 * scaleRatio, 'fnt-orange', 'your score\n' + app.gameover.score + '!');
 		welcomeText.scale.setTo(scaleRatio * 4);
 		welcomeText.align = 'center';
 		welcomeText.anchor.x = 0.5;
-
 	}
 
 };

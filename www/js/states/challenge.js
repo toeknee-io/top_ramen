@@ -69,11 +69,21 @@
   }
 
   function displayFriends(userSocial) {
-    const chefbar = app.game.add.image(app.game.world.centerX, app.game.world.height + 200, 'friendbar');
+    const chefbar = app.game.add.image(app.game.world.centerX, app.game.world.height, 'friendbar');
     chefbar.scale.setTo(scaleRatio);
     chefbar.fixedToCamera = true;
     chefbar.anchor.y = 1;
     chefbar.anchor.x = 0.5;
+
+    const inviteButton = app.game.add.bitmapText(app.game.world.centerX, app.game.world.height + 150, 'fnt', 'invite friends');
+    inviteButton.scale.setTo(3 * scaleRatio);
+    inviteButton.anchor.x = 0.5;
+    inviteButton.anchor.y = 1;
+    inviteButton.inputEnabled = true;
+
+    inviteButton.events.onInputUp.add(() => {
+      console.log('shit');
+    });
 
     let picY = 450 * scaleRatio;
 
@@ -131,6 +141,7 @@
     }
 
     chefbar.bringToTop();
+    inviteButton.bringToTop();
   }
 
   const challenge = {};

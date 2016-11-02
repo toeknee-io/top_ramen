@@ -1,4 +1,4 @@
-(function challengeUtilsIife() {
+(function challengeUtilsIife({ app, scaleRatio }) {
   window.ChallengeUtils = class ChallengeUtils {
 
     static getUser(challenge) {
@@ -6,7 +6,8 @@
         return challenge.challenger.userId === window.trApi.getUserId() ?
           challenge.challenger : challenge.challenged;
       }
-      throw new Error('Could not getChallengeUser for userId %s from challenge %O', window.trApi.getUserId(), challenge);
+      throw new Error('Could not getChallengeUser for userId %s from challenge %O',
+        window.trApi.getUserId(), challenge);
     }
 
     static getOpponent(challenge) {
@@ -14,51 +15,56 @@
         return challenge.challenger.userId === window.trApi.getUserId() ?
           challenge.challenged : challenge.challenger;
       }
-      throw new Error('Could not getChallengeOpponent for userId %s from challenge %O', window.trApi.getUserId(), challenge);
+      throw new Error('Could not getChallengeOpponent for userId %s from challenge %O',
+        window.trApi.getUserId(), challenge);
     }
     /* eslint-disable no-param-reassign */
     static initGroupTitles(bitmapTexts) {
       _.castArray(bitmapTexts)
         .forEach((bitmapText) => {
           bitmapText.align = 'center';
-          bitmapText.scale.setTo(window.scaleRatio * 3);
+          bitmapText.scale.setTo(scaleRatio * 3);
           bitmapText.anchor.x = 0.5;
         });
     }
-
+    /* eslint-enable no-param-reassign */
     static getButtonStatusText(challenge) {
+      const userScore = ChallengeUtils.getUser(challenge).score;
+      const opponentScore = ChallengeUtils.getOpponent(challenge).score;
+
       let statusTxt = 'wtf?!';
 
-      const userScore = ChallengeUtils.getUser(challenge).score;
-      const opponent = ChallengeUtils.getOpponent(challenge);
-
-      if (challenge.status !== 'finished') {
-        if (_.isNil(userScore) && _.isNil(opponent.score)) {
+      if (challenge.inviteStatus === 'pending' && challenge.status !== 'finished') {
+        statusTxt = 'Pending';
+      } else if (challenge.status !== 'finished') {
+        if (challenge.status === 'not_started') {
           statusTxt = 'Not Started';
         } else if (_.isNil(userScore)) {
           statusTxt = 'Your Turn';
         } else {
           statusTxt = 'Their Turn';
         }
-      } else if (challenge.winner === 'tied') {
-        statusTxt = 'Tied';
-      } else if (userScore > opponent.score) {
-        statusTxt = 'You Won!';
-      } else if (opponent.score > userScore) {
-        statusTxt = 'You Lost';
+      } else if (challenge.status === 'finished') {
+        if (challenge.winner === 'tied') {
+          statusTxt = 'Tied';
+        } else if (userScore > opponentScore) {
+          statusTxt = 'You Won!';
+        } else if (opponentScore > userScore) {
+          statusTxt = 'You Lost';
+        }
       }
 
       return statusTxt;
     }
-    /* eslint-enable no-param-reassign */
 
     static addButtonPicture(picKey) {
-      return window.app.game.cache.checkImageKey(picKey) ?
-        window.app.game.add.image(30, 30, picKey) : window.app.game.add.image(30, 30, 'main', 'chef-holder');
+      return app.game.cache.checkImageKey(picKey) ?
+        app.game.add.image(30, 30, picKey) :
+        app.game.add.image(30, 30, 'main', 'chef-holder');
     }
 
     static addButtonOpponentText(width, displayName) {
-      return window.app.game.add.text(width + 20, 30, displayName, {
+      return app.game.add.text(width + 20, 30, displayName, {
         font: 'bold 60px Arial',
         fill: '#fff',
         align: 'right',
@@ -66,7 +72,7 @@
     }
 
     static addButtonStatusText(width, status) {
-      return window.app.game.add.text(width + 20, 120, status, {
+      return app.game.add.text(width + 20, 120, status, {
         font: 'bold 40px Arial',
         fill: '#fff',
         align: 'right',
@@ -74,22 +80,22 @@
     }
 
     static configureButton(challenge, yLoc) {
-      const butt = window.app.game.add.button(0, yLoc);
+      const butt = app.game.add.button(0, yLoc);
 
       butt.loadTexture('main', 'item_bg');
 
       butt.onInputDown.add(() => {
-        const yWorld = window.app.game.world.y;
+        const yWorld = app.game.world.y;
 
         butt.onInputUp.add(() => {
-          if (yWorld === window.app.game.world.y) {
+          if (yWorld === app.game.world.y) {
             ChallengeUtils.challengeStart(challenge);
           }
         }, challenge);
       });
 
-      butt.scale.setTo(0.8 * window.scaleRatio);
-      butt.centerX = window.app.game.world.centerX;
+      butt.scale.setTo(0.8 * scaleRatio);
+      butt.centerX = app.game.world.centerX;
 
       const opponent = ChallengeUtils.getOpponent(challenge);
 
@@ -105,7 +111,7 @@
 
       buttPic.scale.setTo(0.8);
 
-      const deleteButton = window.app.game.add.button(0, 70 * window.scaleRatio, 'delete', () => {
+      const deleteButton = window.app.game.add.button(0, 50 * scaleRatio, 'delete', () => {
         const deleteGroup = window.app.game.add.group();
         deleteGroup.fixedToCamera = true;
 
@@ -116,17 +122,7 @@
         lb.width = window.app.game.width;
         lb.height = window.app.game.height;
 
-        let deleteText;
-        let decline;
-
-        if (ChallengeUtils.getUser(challenge) === challenge.challenged && challenge.status === 'new') {
-          deleteText = 'decline';
-          decline = true;
-        } else {
-          deleteText = 'delete';
-        }
-
-        const declineText = window.app.game.add.bitmapText(window.app.game.world.centerX, 300, 'fnt-orange', `do you want\nto ${deleteText} \nthis challenge?`);
+        const declineText = window.app.game.add.bitmapText(window.app.game.world.centerX, 300, 'fnt-orange', 'do you want\nto delete \nthis challenge?');
         declineText.align = 'center';
         declineText.anchor.x = 0.5;
         declineText.scale.setTo(3 * window.scaleRatio);
@@ -147,11 +143,7 @@
         deleteGroup.add(no);
 
         yes.events.onInputUp.add(() => {
-          if (!decline) {
-            window.trApi.hideChallenge(challenge);
-          } else {
-            window.trApi.declineChallenge(challenge);
-          }
+          window.trApi.hideChallenge(challenge);
           window.app.game.state.restart();
         });
 
@@ -175,7 +167,7 @@
       try {
         if (!challenge.hidden) {
           chalGroup.add(ChallengeUtils.configureButton(challenge, yLoc));
-          yLoc += 200 * window.scaleRatio;
+          yLoc += 200 * scaleRatio;
         }
       } catch (err) {
         console.error('Error addChallengeButton: %O ', err);
@@ -200,18 +192,17 @@
       console.info('challengeStart for challenge: %O', challenge);
 
       if (challenge.status === 'finished') {
-        window.app.game.world.setBounds(0, 0, window.app.game.width, window.app.game.height);
-        window.app.game.state.start('challengeResults', true, false, challenge);
-      } else if (challenge.status === 'declined') {
-        alert('This Challenge Was Declined!');
+        app.game.world.setBounds(0, 0, app.game.width, app.game.height);
+        app.game.state.start('challengeResults', true, false, challenge);
+      } else if (challenge.inviteStatus === 'declined') {
+        window.alert('This Challenge Was Declined!');
       } else if (_.isNil(ChallengeUtils.getUser(challenge).score)) {
-        window.app.menuSong.stop();
-
-        window.app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
+        app.menuSong.stop();
+        app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
       } else if (_.isNil(ChallengeUtils.getOpponent(challenge).score)) {
-        alert('Waiting For Opponent!');
+        window.alert('Waiting For Opponent!');
       }
     }
 
   };
-}());
+}(window));

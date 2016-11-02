@@ -266,13 +266,13 @@
 
     acceptChallenge(challenge) {
       checkIfObj(challenge, this.acceptChallenge.name);
-      Object.assign(challenge, { status: 'accepted' });
+      Object.assign(challenge, { inviteStatus: 'accepted' });
       return this.patchChallenge(challenge);
     }
 
     declineChallenge(challenge) {
       checkIfObj(challenge, this.declineChallenge.name);
-      Object.assign(challenge, { status: 'declined' });
+      Object.assign(challenge, { inviteStatus: 'declined' });
       return this.patchChallenge(challenge);
     }
 

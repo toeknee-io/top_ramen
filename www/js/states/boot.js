@@ -45,6 +45,7 @@ window.app.boot.preload = function appBootPreload() {
 
   window.app.game.load.image('menu_bg', 'assets/bg4.jpg');
   window.app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
+  window.app.game.load.image('delete', 'assets/delete.png');
 
   window.app.game.load.audio('lvl', 'assets/sounds/lvl2.ogg');
   window.app.game.load.audio('drum', 'assets/sounds/drumroll.ogg');

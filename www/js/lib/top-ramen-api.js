@@ -272,7 +272,7 @@
 
     declineChallenge(challenge) {
       checkIfObj(challenge, this.declineChallenge.name);
-      Object.assign(challenge, { status: 'decline' });
+      Object.assign(challenge, { status: 'declined' });
       return this.patchChallenge(challenge);
     }
 

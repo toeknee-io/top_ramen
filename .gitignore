@@ -1,4 +1,6 @@
 platforms/
+node_modules/
+.eslintrc.yml
 info.txt
 www/prepros.cfg
 .DS_Store

@@ -1,6 +1,15 @@
 (function challengeUtilsIife({ app, scaleRatio }) {
   window.ChallengeUtils = class ChallengeUtils {
 
+    static getPlayerPropertyKey(challenge) {
+      if (challenge.challenger && challenge.challenged && window.trApi.getUserId()) {
+        return challenge.challenger.userId === window.trApi.getUserId() ?
+          'challenger' : 'challenged';
+      }
+      throw new Error('Could not getPlayerPropertyKey for userId %s from challenge %O',
+        window.trApi.getUserId(), challenge);
+    }
+
     static getUser(challenge) {
       if (challenge.challenger && challenge.challenged && window.trApi.getUserId()) {
         return challenge.challenger.userId === window.trApi.getUserId() ?
@@ -18,6 +27,7 @@
       throw new Error('Could not getChallengeOpponent for userId %s from challenge %O',
         window.trApi.getUserId(), challenge);
     }
+
     /* eslint-disable no-param-reassign */
     static initGroupTitles(bitmapTexts) {
       _.castArray(bitmapTexts)
@@ -34,7 +44,7 @@
 
       let statusTxt = 'wtf?!';
 
-      if (challenge.inviteStatus === 'pending' && challenge.status !== 'finished') {
+      if (challenge.challenged.inviteStatus === 'pending') {
         statusTxt = 'Pending';
       } else if (challenge.status !== 'finished') {
         if (challenge.status === 'not_started') {

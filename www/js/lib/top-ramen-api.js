@@ -32,7 +32,12 @@
       this.ITEM_KEY_ACCESS_TOKEN = 'accessToken';
       this.ITEM_KEY_DEVICE_TOKEN = 'registrationId';
 
-      Object.assign(this, { cache: {} });
+      this.CACHE_KEY_CHALLENGES = 'challenges';
+      this.CACHE_KEY_RAMEN = 'ramen';
+
+      this.cache = {};
+      this.cache[this.CACHE_KEY_RAMEN] = {};
+      this.cache[this.CACHE_KEY_CHALLENGES] = {};
 
       this.app = window.app;
       this.storage = window.localStorage;
@@ -72,7 +77,9 @@
       return this;
     }
 
-    getUserId() { return this.userId || this.storage.getItem(this.ITEM_KEY_USER_ID); }
+    getUserId() {
+      return this.userId || this.storage.getItem(this.ITEM_KEY_USER_ID);
+    }
 
     setUserId(userId) {
       this.userId = userId;
@@ -213,6 +220,7 @@
 
     postChallenge(userId, ramenId) {
       return new this.Promise((resolve, reject) => {
+        this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
         if (!this.isLoggedIn()) { throw new Error('User must be logged in to make postChallenge call.'); }
         $.post(
             `${this.API_URL}/challenges`,
@@ -223,23 +231,25 @@
       });
     }
 
-    getChallenges() {
-      if (!this.isLoggedIn()) throw new Error('User must be logged in to getChallenges.');
-      return $.get(
-          `${this.API_URL}/challenges?filter[where][or][0][challenged.userId]=${this.getUserId()}&` +
-          `filter[where][or][1][challenger.userId]=${this.getUserId()}`)
-        .fail(err => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
-    }
-
     getChallengesSorted() {
-      if (!this.isLoggedIn()) throw new Error('User must be logged in to getChallengesSorted.');
-      return $.get(`${this.API_URL}/challenges/sort/me`)
-        .fail(err => console.error(`Failed to get challenges: ${err.responseJSON.error.message}`));
+      return new this.Promise((resolve, reject) => {
+        if (!this.isLoggedIn()) {
+          reject(new Error('User must be logged in to getChallengesSorted.'));
+        }
+        $.get(`${this.API_URL}/challenges/sort/me`)
+          .done((challenges) => {
+            this.setLocalCache(this.CACHE_KEY_CHALLENGES, challenges);
+            resolve(this.getLocalCache(this.CACHE_KEY_CHALLENGES));
+          })
+          .fail(err => reject(err));
+      });
     }
 
     patchChallenge(challenge, score, status) {
       return new this.Promise((resolve, reject) => {
         let data = {};
+
+        this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
 
         if (typeof challenge === 'string' &&
           (typeof score === 'number' || typeof status === 'string')) {
@@ -266,19 +276,25 @@
 
     acceptChallenge(challenge) {
       checkIfObj(challenge, this.acceptChallenge.name);
-      Object.assign(challenge, { inviteStatus: 'accepted' });
+      Object.assign(challenge,
+        { [ChallengeUtils.getPlayerPropertyKey(challenge)]: { inviteStatus: 'accepted' } }
+      );
       return this.patchChallenge(challenge);
     }
 
     declineChallenge(challenge) {
       checkIfObj(challenge, this.declineChallenge.name);
-      Object.assign(challenge, { inviteStatus: 'declined' });
+      Object.assign(challenge,
+        { [ChallengeUtils.getPlayerPropertyKey(challenge)]: { inviteStatus: 'declined' } }
+      );
       return this.patchChallenge(challenge);
     }
 
     hideChallenge(challenge) {
       checkIfObj(challenge, this.hideChallenge.name);
-      Object.assign(challenge, { hidden: true });
+      Object.assign(challenge,
+        { [ChallengeUtils.getPlayerPropertyKey(challenge)]: { hidden: true } }
+      );
       return this.patchChallenge(challenge);
     }
 
@@ -296,12 +312,13 @@
 
     getRamen() {
       return new this.Promise((resolve, reject) => {
-        if (!_.isEmpty(this.cache.ramen) && _.isArray(this.cache.ramen)) {
-          resolve(this.cache.ramen);
+        const cachedRamen = this.getLocalCache(this.CACHE_KEY_RAMEN);
+        if (!_.isEmpty(cachedRamen) && _.isArray(cachedRamen)) {
+          resolve(cachedRamen);
         } else {
           $.get(`${this.API_URL}/ramen`)
           .done((ramen) => {
-            this.cache.ramen = ramen;
+            this.setLocalCache(this.CACHE_KEY_RAMEN, ramen);
             resolve(ramen);
           })
           .fail(err => reject(err));
@@ -309,7 +326,7 @@
       });
     }
 
-    loadSocialImages() {
+    initUser() {
       return new this.Promise((resolve, reject) => {
         if (this.isLoggedIn()) {
           if (!this.app.game.cache.checkImageKey('myPic')) {
@@ -317,44 +334,68 @@
               .then(data => this.app.game.load.image('myPic', data.facebook.picture))
               .catch(err => reject(err));
           }
-          this.getChallengesSorted()
-            .done((challenges) => {
-              let challengesTotal = 0;
-              let challengesDone = 0;
-
+          const cachedChallenges = this.getLocalCache(this.CACHE_KEY_CHALLENGES);
+          if (!_.isEmpty(cachedChallenges)) {
+            resolve(cachedChallenges);
+          } else {
+            this.getChallengesSorted()
+            .then((challenges) => {
               const challengeKeys = Object.keys(challenges);
-              let keyCount = 0;
+              console.debug('initUser.getChallengesSorted.challengeKeys: %O', challengeKeys);
+              if (_.isEmpty(challengeKeys)) {
+                resolve();
+              } else {
+                let keyCount = 0;
+                let challengesDone = 0;
+                let challengesTotal = 0;
 
-              challengeKeys.forEach((key) => {
-                challengesTotal += challenges[key].length;
+                challengeKeys.forEach((key) => {
+                  challengesTotal += challenges[key].length;
 
-                challenges[key].forEach((challenge) => {
-                  const result = _.attempt(() => {
-                    const identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
-                    const picKey = `${identity.externalId}pic`;
+                  challenges[key].forEach((challenge) => {
+                    const result = _.attempt(() => {
+                      const identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
+                      const picKey = `${identity.externalId}pic`;
 
-                    if (!this.app.game.cache.checkImageKey(picKey)) {
-                      this.app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
-                    }
+                      if (!this.app.game.cache.checkImageKey(picKey)) {
+                        this.app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
+                      }
+                    });
+
+                    if (_.isError(result)) console.error(result);
+
+                    challengesDone += 1;
                   });
 
-                  if (_.isError(result)) console.error(result);
+                  keyCount += 1;
 
-                  challengesDone += 1;
+                  if (keyCount === challengeKeys.length && challengesDone === challengesTotal) {
+                    resolve(challenges);
+                  }
                 });
-
-                keyCount += 1;
-
-                if (keyCount === challengeKeys.length && challengesDone === challengesTotal) {
-                  resolve(challenges);
-                }
-              });
-            })
-            .fail(err => reject(err));
+              }
+            }).catch(err => reject(err));
+          }
         } else {
           resolve();
         }
       });
+    }
+
+    setLocalCache(key, data) {
+      Object.assign(this.cache, { [key]: data });
+    }
+
+    getLocalCache(key) {
+      const data = this.cache[key];
+      if (_.isNil(data)) {
+        throw new Error(`Return value for getLocalCache using key [${key}] isNil.  This key should be set as an empty object in the constructor if it needs to be used.`);
+      }
+      return data;
+    }
+
+    clearLocalCache(key) {
+      this.cache[key] = {};
     }
 
   };

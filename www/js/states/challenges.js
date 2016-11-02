@@ -1,5 +1,5 @@
 (function challengesIife({ app, scaleRatio }, challenges) {
-  function displayChallenges(userChallenges) {
+  function displayChallenges(userChallenges = {}) {
     const openGroupTitle = app.game.add.bitmapText(app.game.world.centerX, 230 * scaleRatio, 'fnt', 'open\nchallenges');
     const finishedGroupTitle = app.game.add.bitmapText(app.game.world.centerX, 0, 'fnt', 'completed\nchallenges');
 
@@ -31,7 +31,7 @@
       openGroup.height + finishedGroup.height + (1200 * scaleRatio));
   }
 
-  const preload = function challengesPreload() {
+  const preload = function appChallengesPreload() {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
     Object.assign(app.game, {
@@ -47,15 +47,20 @@
     });
 
     app.game.kineticScrolling.start();
+    let challengesToDisplay;
 
-    window.trApi.loadSocialImages().then((userChallenges) => {
-      app.game.load.onLoadComplete.addOnce(displayChallenges.bind(app, userChallenges));
-      app.game.load.start();
-    }).catch(err => console.error('trApi.loadSocialImages err: %O', err));
+    window.trApi.initUser()
+      .then((userChallenges) => { challengesToDisplay = userChallenges; })
+      .catch(err => console.error('trApi.loadSocialImages err: %O', err))
+      .finally(() => {
+        console.debug('userChallenges %O', challengesToDisplay);
+        app.game.load.onLoadComplete.addOnce(displayChallenges.bind(app, challengesToDisplay));
+        app.game.load.start();
+      });
   };
 
   const create = function challengesCreate() {
-    console.info('Challenges State');
+    console.log('Challenges State');
 
     const bg = app.game.add.image(0, 0, 'menu_bg');
     bg.scale.setTo(scaleRatio * 2.5);

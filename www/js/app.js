@@ -4,4 +4,4 @@ window.app = {
 };
 
 window.scaleRatio = window.devicePixelRatio / 3.5;
-console.log(`Device Pixel Ratio: ${window.devicePixelRatio}`);
+window.console.log(`Device Pixel Ratio: ${window.devicePixelRatio}`);

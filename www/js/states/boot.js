@@ -1,83 +1,88 @@
-window.app.boot = {};
+(function appBootIife({ app, console }) {
+  const boot = {};
+  /* eslint-disable no-param-reassign */
+  function loadComplete() {
+    console.log('Boot State');
 
-function loadComplete() {
-  console.log('Boot State');
+    app.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  window.app.game.physics.startSystem(Phaser.Physics.ARCADE);
+    app.game.forceSingleUpdate = true;
 
-  window.app.game.forceSingleUpdate = true;
+    app.game.stage.backgroundColor = '#000000';
 
-  window.app.game.stage.backgroundColor = '#000000';
+    app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio,
+      window.innerHeight * window.devicePixelRatio);
 
-  window.app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio,
-    window.innerHeight * window.devicePixelRatio);
+    app.game.sound.setDecodedCallback(['lose'], () => {
+      if (window.navigator.splashscreen) {
+        window.navigator.splashscreen.hide();
+      }
 
-  window.app.game.sound.setDecodedCallback(['lose'], () => {
-    if (navigator.splashscreen) {
-      navigator.splashscreen.hide();
-    }
-
-    if (window.app.bootCreateCallback && typeof window.app.bootCreateCallback === 'function') {
-      console.log(`bootCreateCallback: ${window.app.bootCreateCallback}`);
-      window.app.bootCreateCallback();
-    } else {
-      setTimeout(() => {
-        window.app.game.scale.setGameSize(window.innerWidth * window.devicePixelRatio,
-          window.innerHeight * window.devicePixelRatio);
-        window.app.game.state.start('menu');
-      }, 1000);
-    }
-  });
-}
-
-window.app.boot.init = function appBootInit(musicOpt = window.localStorage.getItem('music')) {
-  window.app.music = (_.isNil(musicOpt) || (musicOpt !== 'false' && musicOpt !== false));
-
-  if (!window.app.sound) {
-    window.app.sound = true;
+      if (app.bootCreateCallback && typeof app.bootCreateCallback === 'function') {
+        console.debug(`bootCreateCallback: ${app.bootCreateCallback}`);
+        app.bootCreateCallback();
+      } else {
+        window.setTimeout(() => {
+          app.game.scale.setGameSize(
+            window.innerWidth * window.devicePixelRatio,
+            window.innerHeight * window.devicePixelRatio
+          );
+          app.game.state.start('menu');
+        }, 1000);
+      }
+    });
   }
 
-  window.localStorage.setItem('music', window.app.music);
-};
+  boot.init = function appBootInit(musicOpt = window.localStorage.getItem('music')) {
+    app.music = (_.isNil(musicOpt) || (musicOpt !== 'false' && musicOpt !== false));
+    if (!app.sound) {
+      app.sound = true;
+    }
+    window.localStorage.setItem('music', app.music);
+  };
 
-window.app.boot.preload = function appBootPreload() {
-  window.app.game.load.atlasJSONHash('main', 'assets/sheets/main.png', 'assets/sheets/main.json');
+  boot.preload = function appBootPreload() {
+    app.game.load.atlasJSONHash('main', 'assets/sheets/main.png', 'assets/sheets/main.json');
 
-  window.app.game.load.image('menu_bg', 'assets/bg4.jpg');
-  window.app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
-  window.app.game.load.image('delete', 'assets/delete.png');
+    app.game.load.image('menu_bg', 'assets/bg4.jpg');
+    app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
+    app.game.load.image('delete', 'assets/delete.png');
 
-  window.app.game.load.audio('lvl', 'assets/sounds/lvl2.ogg');
-  window.app.game.load.audio('drum', 'assets/sounds/drumroll.ogg');
-  window.app.game.load.audio('pop', 'assets/sounds/pop.ogg');
-  window.app.game.load.audio('lose', 'assets/sounds/lose.ogg');
-  window.app.game.load.audio('button', 'assets/sounds/button.ogg');
-  window.app.game.load.audio('bonus', 'assets/sounds/bonus.ogg');
-  window.app.game.load.audio('cat', 'assets/sounds/cat.ogg');
-  window.app.game.load.audio('bad', 'assets/sounds/bad.ogg');
-  window.app.game.load.audio('bug', 'assets/sounds/bug.ogg');
-  window.app.game.load.audio('count', 'assets/sounds/count.ogg');
-  window.app.game.load.audio('sake', 'assets/sounds/sake.ogg');
+    app.game.load.audio('lvl', 'assets/sounds/lvl2.ogg');
+    app.game.load.audio('drum', 'assets/sounds/drumroll.ogg');
+    app.game.load.audio('pop', 'assets/sounds/pop.ogg');
+    app.game.load.audio('lose', 'assets/sounds/lose.ogg');
+    app.game.load.audio('button', 'assets/sounds/button.ogg');
+    app.game.load.audio('bonus', 'assets/sounds/bonus.ogg');
+    app.game.load.audio('cat', 'assets/sounds/cat.ogg');
+    app.game.load.audio('bad', 'assets/sounds/bad.ogg');
+    app.game.load.audio('bug', 'assets/sounds/bug.ogg');
+    app.game.load.audio('count', 'assets/sounds/count.ogg');
+    app.game.load.audio('sake', 'assets/sounds/sake.ogg');
 
-  window.app.game.load.bitmapFont('fnt', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
-  window.app.game.load.bitmapFont('fnt-orange', 'assets/fonts/font-orange.png', 'assets/fonts/font-orange.fnt');
+    app.game.load.bitmapFont('fnt', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
+    app.game.load.bitmapFont('fnt-orange', 'assets/fonts/font-orange.png', 'assets/fonts/font-orange.fnt');
 
-  window.trApi.loadSocialImages().then(() => {
-    window.app.game.load.onLoadComplete.addOnce(loadComplete, this);
-    window.app.game.load.start();
-  });
-};
+    window.trApi.initUser()
+      .catch(err => console.error('failed to trApi.initUser because: %O', err))
+      .finally(() => {
+        app.game.load.onLoadComplete.addOnce(loadComplete);
+        app.game.load.start();
+      });
+  };
 
-/* window.app.boot.create = function() {
+  /* app.boot.create = function() {
 
-  window.app.game.state.start('level');
+    app.game.state.start('level');
 
-}*/
+  }*/
 
-window.buttonSound = function buttonSound() {
-  if (!window.app.buttonSound) {
-    window.app.buttonSound = window.app.game.add.audio('button');
-  }
+  window.buttonSound = function buttonSound() {
+    if (!app.buttonSound) {
+      app.buttonSound = app.game.add.audio('button');
+    }
+    app.buttonSound.play();
+  };
 
-  window.app.buttonSound.play();
-};
+  Object.assign(app, { boot });
+}(window));

@@ -105,17 +105,65 @@
 
       buttPic.scale.setTo(0.8);
 
-      if (challenge.status === 'finished') {
-        const deleteButton = window.app.game.add.button(0, 70 * window.scaleRatio, 'delete', () => {
-          window.trApi.hideChallenge(challenge);
-          butt.destroy();
+      const deleteButton = window.app.game.add.button(0, 70 * window.scaleRatio, 'delete', () => {
+        const deleteGroup = window.app.game.add.group();
+        deleteGroup.fixedToCamera = true;
+
+        console.log(ChallengeUtils.getUser);
+
+        const lb = window.app.game.add.button(0, 0);
+        lb.loadTexture('main', 'lightbox_bg');
+        lb.width = window.app.game.width;
+        lb.height = window.app.game.height;
+
+        let deleteText;
+        let decline;
+
+        if (ChallengeUtils.getUser(challenge) === challenge.challenged && challenge.status === 'new') {
+          deleteText = 'decline';
+          decline = true;
+        } else {
+          deleteText = 'delete';
+        }
+
+        const declineText = window.app.game.add.bitmapText(window.app.game.world.centerX, 300, 'fnt-orange', `do you want\nto ${deleteText} \nthis challenge?`);
+        declineText.align = 'center';
+        declineText.anchor.x = 0.5;
+        declineText.scale.setTo(3 * window.scaleRatio);
+
+        const yes = window.app.game.add.bitmapText(window.app.game.world.centerX, declineText.bottom + (200 * window.scaleRatio), 'fnt', 'yes');
+        yes.anchor.x = 0.5;
+        yes.scale.setTo(5 * window.scaleRatio);
+        yes.inputEnabled = true;
+
+        const no = window.app.game.add.bitmapText(window.app.game.world.centerX, yes.bottom + (175 * window.scaleRatio), 'fnt', 'no');
+        no.anchor.x = 0.5;
+        no.scale.setTo(5 * window.scaleRatio);
+        no.inputEnabled = true;
+
+        deleteGroup.add(lb);
+        deleteGroup.add(declineText);
+        deleteGroup.add(yes);
+        deleteGroup.add(no);
+
+        yes.events.onInputUp.add(() => {
+          if (!decline) {
+            window.trApi.hideChallenge(challenge);
+          } else {
+            window.trApi.declineChallenge(challenge);
+          }
+          window.app.game.state.restart();
         });
 
-        butt.addChild(deleteButton);
-        deleteButton.scale.setTo(0.6 * window.scaleRatio);
+        no.events.onInputUp.add(() => {
+          deleteGroup.destroy();
+        });
+      });
 
-        deleteButton.x = butt.right - (300 * window.scaleRatio);
-      }
+      butt.addChild(deleteButton);
+      deleteButton.scale.setTo(0.6 * window.scaleRatio);
+
+      deleteButton.x = butt.right - (300 * window.scaleRatio);
 
       return butt;
     }

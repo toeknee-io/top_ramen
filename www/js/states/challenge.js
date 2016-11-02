@@ -1,4 +1,4 @@
-(function challengeIife({ app, scaleRatio }) {
+(function challengeIife({ app, scaleRatio, console }) {
   function playNow(challenge) {
     app.game.sound.stopAll();
 

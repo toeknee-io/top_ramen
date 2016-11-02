@@ -1,4 +1,4 @@
-(function mainIife(app) {
+(function mainIife({ app }) {
   app.game.state.add('boot', app.boot);
   app.game.state.add('menu', app.menu);
   app.game.state.add('challenges', app.challenges);
@@ -9,8 +9,9 @@
 
   app.game.state.onStateChange.add((newState, oldState) => {
     window.stateHistory.push(newState);
-
-    if (oldState && oldState !== 'level') { window.prevState = oldState; }
+    if (oldState && oldState !== 'level') {
+      window.prevState = oldState;
+    }
   });
 
   const DEFAULT_SATE = 'menu';
@@ -56,4 +57,4 @@
   };
 
   app.game.state.start('boot');
-}(window.app));
+}(window));

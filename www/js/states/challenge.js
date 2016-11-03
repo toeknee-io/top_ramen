@@ -139,7 +139,27 @@
     inviteButton.inputEnabled = true;
 
     inviteButton.events.onInputUp.add(() => {
-      console.log('shit');
+      window.facebookConnectPlugin.appInvite(
+        {
+          url: 'https://fb.me/555825484601535',
+        },
+        (obj) => {
+          if (obj) {
+            if (obj.completionGesture === 'cancel') {
+              console.log('cancel');
+            } else {
+              console.log('success');
+              console.log(obj);
+            }
+          } else {
+            console.log('no object');
+          }
+        },
+        (obj) => {
+          console.log('fail');
+          console.log(obj);
+        }
+      );
     });
   }
 

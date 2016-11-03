@@ -1,4 +1,4 @@
-(function challengesIife({ app, scaleRatio }, challenges) {
+(function challengesIife({ app, scaleRatio, console }, challenges) {
   function displayChallenges(userChallenges = {}) {
     const openGroupTitle = app.game.add.bitmapText(app.game.world.centerX, 230 * scaleRatio, 'fnt', 'open\nchallenges');
     const finishedGroupTitle = app.game.add.bitmapText(app.game.world.centerX, 0, 'fnt', 'completed\nchallenges');

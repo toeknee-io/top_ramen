@@ -1,4 +1,4 @@
-(function cordovaInitIife() {
+(function cordovaInitIife({ console }) {
   window.stateHistory = [];
   window.prevState = null;
 
@@ -90,4 +90,4 @@
   };
 
   cordovaApp.initialize();
-}());
+}(window));

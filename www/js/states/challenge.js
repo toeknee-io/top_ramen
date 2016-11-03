@@ -190,7 +190,10 @@
           app.game.load.image('myPic', userSocial.facebook.picture);
         }
 
-        userSocial.facebook.friends.forEach((friend) => {
+        _.castArray(userSocial.facebook.friends).forEach((friend) => {
+          if (!friend) {
+            console.debug('bad friend! %O', friend);
+          }
           const picKey = `${friend.externalId}pic`;
 
           if (!app.game.cache.checkImageKey(picKey)) {
@@ -201,7 +204,7 @@
         app.game.load.onLoadComplete.addOnce(displayFriends.bind(this, userSocial));
 
         app.game.load.start();
-      });
+      }).catch(err => console.error('failed to trApi.getUserSocial because: %s', err.stack));
   };
 
   challenge.create = function appChallengeCreate() {

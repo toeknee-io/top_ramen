@@ -40,10 +40,11 @@ function fadeInText(text, speedIn, speedOut) {
 app.level.init = function (challenge = {}) {
   app.level.fabs = [];
 
-  if (challenge.id && challenge.challenger && challenge.challenged) {
+  if (challenge.challenger && challenge.challenged) {
     app.level.challengeObj = challenge;
   }
 
+  console.log('challengeObj %j', app.level.challengeObj);
   app.level.ramenId = challenge.ramenId ? challenge.ramenId : 'spicy_chicken';
 
   app.level.pop = app.game.add.audio('pop');
@@ -411,8 +412,7 @@ window.endGame = function () {
   app.lvlSong.stop();
 
   if (typeof app.level.challengeObj === 'object' && !_.isEmpty(app.level.challengeObj)) {
-    app.level.challengeObj.score = score;
-    trApi.patchChallenge(app.level.challengeObj)
+    trApi.patchChallenge(app.level.challengeObj.id, score)
 			.then(data => app.game.state.start('game-over', true, false, score, data))
 			.catch(err => console.error('endGame.trApi.patchChallenge failed: %O', err));
   } else {

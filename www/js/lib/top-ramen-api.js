@@ -6,12 +6,6 @@
     return {};
   };
 
-  function checkIfObj(obj, fnName) {
-    if (typeof obj !== 'object') {
-      throw new Error(`Invalid arguments passed to ${fnName} ${obj}`);
-    }
-  }
-
   window.TopRamenApi = class TopRamenApi {
 
     constructor(opts = {}) {
@@ -244,18 +238,14 @@
       });
     }
 
-    patchChallenge(challenge) {
+    patchChallenge(challengeId, score) {
       return new this.Promise((resolve, reject) => {
         this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
 
-        if (typeof challenge !== 'object' || _.isEmpty(challenge)) {
-          throw new Error('Invalid arguments passed to patchChallenge: %O', challenge);
-        }
-
         $.ajax({
           method: 'PATCH',
-          url: `${Constants.URL.API.CHALLENGES}/${challenge.id}`,
-          data: challenge,
+          url: `${Constants.URL.API.CHALLENGES}/${challengeId}`,
+          data: { score },
           dataType: 'json',
         })
         .done(res => resolve(res))
@@ -263,34 +253,34 @@
       });
     }
 
-    acceptChallenge(challenge) {
-      checkIfObj(challenge, this.acceptChallenge.name);
-      Object.assign(challenge[ChallengeUtils.getPlayerPropertyKey(challenge)],
-        { inviteStatus: Constants.CHALLENGE.INVITE.STATUS.ACCEPTED }
-      );
-      return this.patchChallenge(challenge);
+    acceptChallenge(challengeId) {
+      return new this.Promise((resolve, reject) => {
+        this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
+
+        $.post(`${Constants.URL.API.CHALLENGES}/${challengeId}/decline`)
+        .done(res => resolve(res))
+        .fail(err => reject(err));
+      });
     }
 
-    declineChallenge(challenge) {
-      checkIfObj(challenge, this.declineChallenge.name);
-      const playerKey = ChallengeUtils.getPlayerPropertyKey(challenge);
-      Object.assign(challenge, { status: 'finished' });
-      Object.assign(challenge[playerKey],
-        {
-          inviteStatus: Constants.CHALLENGE.INVITE.STATUS.DECLINED,
-          hidden: true,
-        }
-      );
-      return this.patchChallenge(challenge);
+    declineChallenge(challengeId) {
+      return new this.Promise((resolve, reject) => {
+        this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
+
+        $.post(`${Constants.URL.API.CHALLENGES}/${challengeId}/accept`)
+        .done(res => resolve(res))
+        .fail(err => reject(err));
+      });
     }
 
-    hideChallenge(challenge) {
-      checkIfObj(challenge, this.hideChallenge.name);
-      const playerKey = ChallengeUtils.getPlayerPropertyKey(challenge);
-      Object.assign(challenge[playerKey],
-        { hidden: true }
-      );
-      return this.patchChallenge(challenge);
+    hideChallenge(challengeId) {
+      return new this.Promise((resolve, reject) => {
+        this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
+
+        $.post(`${Constants.URL.API.CHALLENGES}/${challengeId}/hide`)
+        .done(res => resolve(res))
+        .fail(err => reject(err));
+      });
     }
 
     getScores() {

@@ -185,7 +185,7 @@
           const fn = playerKey === 'challenged' && challenge.status !== this.Constants.INVITE.STATUS.ACCEPTED ?
             'declineChallenge' : 'hideChallenge';
 
-          window.trApi[fn](challenge)
+          window.trApi[fn](challenge.id)
             .finally(() => window.app.game.state.restart());
         });
 
@@ -240,8 +240,9 @@
         window.alert('This Challenge Was Declined!');
       } else if (_.isNil(ChallengeUtils.getUser(challenge).score)) {
         app.menuSong.stop();
-        app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
-      } else if (_.isNil(ChallengeUtils.getOpponent(challenge).score)) {
+        app.game.state.start('level', true, false, challenge);
+      } else if (_.isNil(ChallengeUtils.getOpponent(challenge).score) &&
+        challenge.status === this.Constants.STATUS.STARTED) {
         window.alert('Waiting For Opponent!');
       }
     }

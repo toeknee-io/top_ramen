@@ -1,7 +1,7 @@
 (function pushAcionsIife({ app }) {
   window.pushActions = {
     acceptChallenge(data) {
-      window.trApi.acceptChallenge(data.additionalData.challenge)
+      window.trApi.acceptChallenge(data.additionalData.challenge.id)
         .then(() => this.viewChallenges(data));
     },
     challengeRematch(data) {
@@ -9,7 +9,7 @@
       window.trApi.postChallenge(userId).catch(err => console.error(err));
     },
     declineChallenge(data) {
-      window.trApi.declineChallenge(data.additionalData.challenge);
+      window.trApi.declineChallenge(data.additionalData.challenge.id);
       navigator.app.exitApp();
     },
     playChallenge(data) {

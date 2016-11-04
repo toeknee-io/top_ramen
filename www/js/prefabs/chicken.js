@@ -18,7 +18,7 @@ chicken.init = function() {
 
 	}
 
-	chicken.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','chicken.png');
+	chicken.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet', 'chicken.png');
 	chicken.sprite.alpha = 0;
 	chicken.sprite.scale.setTo(scaleRatio * 1.3);
 	chicken.drunk = false;
@@ -47,15 +47,15 @@ chicken.spawn = function() {
 
 	if (chicken.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	chicken.sprite.loadTexture(sheet, 'chicken.png');
+	chicken.sprite.loadTexture('ings-sheet', `chicken${blur}.png`);
 
 	chicken.motionTween = app.game.add.tween(chicken.sprite).to({ y: 50 }, chicken.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	chicken.fadeInTween = app.game.add.tween(chicken.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

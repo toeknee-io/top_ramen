@@ -19,7 +19,7 @@ menma.init = function() {
 
 	}
 
-	menma.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','menma.png');
+	menma.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet', 'menma.png');
 	menma.sprite.scale.setTo(scaleRatio, scaleRatio);
 	menma.sprite.alpha = 0;
 	menma.drunk = false;
@@ -53,15 +53,15 @@ menma.spawn = function() {
 
 	if (menma.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	menma.sprite.loadTexture(sheet, 'menma.png');
+	menma.sprite.loadTexture('ings-sheet', `menma${blur}.png`);
 	
 	menma.motionTween = app.game.add.tween(menma.sprite).to({ y: 50 }, menma.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	menma.fadeInTween = app.game.add.tween(menma.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

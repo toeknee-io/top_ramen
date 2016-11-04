@@ -13,6 +13,31 @@ app.gameover.create = function() {
 
 	console.log('Game Over State');
 
+  window.facebookConnectPlugin.showDialog(
+    {
+      method: 'share',
+      href: 'http://bitsmittenstudios.com',
+      caption: `I scored ${app.gameover.score}!`,
+      description: 'Download Top Ramen now for free!',
+    },
+    (obj) => {
+      if (obj) {
+        if (obj.completionGesture === 'cancel') {
+          console.log('cancel');
+        } else {
+          console.log('success');
+          console.log(obj);
+        }
+      } else {
+        console.log('no object');
+      }
+    },
+    (obj) => {
+      console.log('fail');
+      console.log(obj);
+    }
+  );
+
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
   var bg = app.game.add.image(0, 0, 'gameover_bg');

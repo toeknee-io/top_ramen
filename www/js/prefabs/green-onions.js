@@ -5,8 +5,9 @@ greenOnions.init = function() {
 	greenOnions.worth = 1;
 	greenOnions.bonus = 0;
 	greenOnions.type = 'good';
-	greenOnions.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','green-onions.png');
+	greenOnions.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet', 'green-onions.png');
 	greenOnions.sprite.scale.setTo(scaleRatio, scaleRatio);
+  greenOnions.sprite.alpha = 0;
 	greenOnions.drunk = false;
 
 	greenOnions.sound = app.level.pop;
@@ -39,15 +40,15 @@ greenOnions.spawn = function() {
 
 	if (greenOnions.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	greenOnions.sprite.loadTexture(sheet, 'green-onions.png');
+	greenOnions.sprite.loadTexture('ings-sheet', `green-onions${blur}.png`);
 
 	greenOnions.motionTween = app.game.add.tween(greenOnions.sprite).to({ y: 50 }, greenOnions.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	greenOnions.fadeInTween = app.game.add.tween(greenOnions.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

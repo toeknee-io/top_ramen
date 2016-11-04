@@ -4,9 +4,7 @@
   function loadComplete() {
     console.log('Boot State');
 
-    app.game.physics.startSystem(Phaser.Physics.ARCADE);
-
-    app.game.forceSingleUpdate = true;
+    //app.game.physics.startSystem(Phaser.Physics.ARCADE);
 
     app.game.stage.backgroundColor = '#000000';
 
@@ -48,7 +46,7 @@
     app.game.load.image('gameover_bg', 'assets/gameover-bg.jpg');
     app.game.load.image('delete', 'assets/delete.png');
 
-    app.game.load.audio('lvl', 'assets/sounds/lvl2.ogg');
+    app.game.load.audio('lvl', 'assets/sounds/new.ogg');
     app.game.load.audio('drum', 'assets/sounds/drumroll.ogg');
     app.game.load.audio('pop', 'assets/sounds/pop.ogg');
     app.game.load.audio('lose', 'assets/sounds/lose.ogg');
@@ -70,12 +68,6 @@
         app.game.load.start();
       });
   };
-
-  /* app.boot.create = function() {
-
-    app.game.state.start('level');
-
-  }*/
 
   window.buttonSound = function buttonSound() {
     if (!app.buttonSound) {

@@ -19,7 +19,7 @@ chili.init = function() {
 
 	}
 
-	chili.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','chili.png');
+	chili.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet', 'chili.png');
 	chili.sprite.alpha = 0;
 	chili.sprite.scale.setTo(scaleRatio, scaleRatio);
 	chili.drunk = false;
@@ -52,15 +52,15 @@ chili.spawn = function() {
 
 	if (chili.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	chili.sprite.loadTexture(sheet, 'chili.png');
+	chili.sprite.loadTexture('ings-sheet', `chili${blur}.png`);
 
 	chili.motionTween = app.game.add.tween(chili.sprite).to({ y: 50 }, chili.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	chili.fadeInTween = app.game.add.tween(chili.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

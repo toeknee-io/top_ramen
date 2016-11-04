@@ -26,7 +26,7 @@ corn.init = function() {
 
 	}
 
-	corn.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet','corn.png');
+	corn.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds),'ings-sheet', 'corn.png');
 	corn.sprite.scale.setTo(scaleRatio, scaleRatio);
 	corn.sprite.alpha = 0;
 	corn.drunk = false;
@@ -60,15 +60,15 @@ corn.spawn = function() {
 
 	if (corn.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	corn.sprite.loadTexture(sheet, 'corn.png');
+	corn.sprite.loadTexture('ings-sheet', `corn${blur}.png`);
 	
 	corn.motionTween = app.game.add.tween(corn.sprite).to({ y: 50 }, corn.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	corn.fadeInTween = app.game.add.tween(corn.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

@@ -41,15 +41,15 @@ sprouts.spawn = function() {
 
 	if (sprouts.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	sprouts.sprite.loadTexture(sheet, 'sprouts.png');
+	sprouts.sprite.loadTexture('ings-sheet', `sprouts${blur}.png`);
 	
 	sprouts.motionTween = app.game.add.tween(sprouts.sprite).to({ y: 50 }, sprouts.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	sprouts.fadeInTween = app.game.add.tween(sprouts.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

@@ -19,7 +19,7 @@ pork.init = function() {
 
 	}
 
-	pork.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','pork.png');
+	pork.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet', 'pork.png');
 	pork.sprite.alpha = 0;
 	pork.sprite.scale.setTo(scaleRatio * 1.3);
 	pork.drunk = false;
@@ -48,15 +48,15 @@ pork.spawn = function() {
 
 	if (pork.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	pork.sprite.loadTexture(sheet, 'pork.png');
+	pork.sprite.loadTexture('ings-sheet', `pork${blur}.png`);
 
 	pork.motionTween = app.game.add.tween(pork.sprite).to({ y: 50 }, pork.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	pork.fadeInTween = app.game.add.tween(pork.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

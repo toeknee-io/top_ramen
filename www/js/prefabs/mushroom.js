@@ -18,7 +18,7 @@ mushroom.init = function() {
 	}
 
 	mushroom.type = 'good';
-	mushroom.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','mushroom.png');
+	mushroom.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet', 'mushroom.png');
 	mushroom.sprite.alpha = 0;
 	mushroom.sprite.scale.setTo(scaleRatio, scaleRatio);
 	mushroom.drunk = false;
@@ -47,15 +47,15 @@ mushroom.spawn = function() {
 
 	if (mushroom.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	mushroom.sprite.loadTexture(sheet, 'mushroom.png');
+	mushroom.sprite.loadTexture('ings-sheet', `mushroom${blur}.png`);
 
 	mushroom.motionTween = app.game.add.tween(mushroom.sprite).to({ y: app.game.world.height * .20 }, mushroom.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	mushroom.fadeInTween = app.game.add.tween(mushroom.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 app.level = {};
 
@@ -31,19 +32,14 @@ let bonusEmitter;
 let steamEmitter; // jshint ignore:line
 // Groups
 let ings;
-app.level.init = function (challengeId, ramenId) {
+app.level.init = function (challenge = {}) {
   app.level.fabs = [];
 
-  app.level.challengeId = false;
-  app.level.ramenId = 'spicy_chicken';
-
-  if (challengeId) {
-    app.level.challengeId = challengeId;
+  if (challenge.id && challenge.challenger && challenge.challenged) {
+    app.level.challengeObj = challenge;
   }
 
-  if (ramenId) {
-    app.level.ramenId = ramenId;
-  }
+  app.level.ramenId = challenge.ramenId ? challenge.ramenId : 'spicy_chicken';
 
   app.level.pop = app.game.add.audio('pop');
   app.level.bonus = app.game.add.audio('bonus');
@@ -417,8 +413,9 @@ window.endGame = function () {
   app.game.state.clearCurrentState();
   app.lvlSong.stop();
 
-  if (app.level.challengeId && typeof app.level.challengeId === 'string') {
-    trApi.patchChallenge(app.level.challengeId, score)
+  if (typeof app.level.challengeObj === 'object' && !_.isEmpty(app.level.challengeObj)) {
+    app.level.challengeObj.score = score;
+    trApi.patchChallenge(app.level.challengeObj)
 			.then(data => app.game.state.start('game-over', true, false, score, data))
 			.catch(err => console.error('endGame.trApi.patchChallenge failed: %O', err));
   } else {

@@ -3,6 +3,7 @@ env:
   jquery: true
 globals:
   _: true
+  io: true
   Phaser: true
   cordova: true
   Promise: true

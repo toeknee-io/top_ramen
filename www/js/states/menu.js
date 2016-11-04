@@ -149,7 +149,7 @@
       ramenId = 'spicy_chicken';
     }
 
-    app.game.state.start('level', true, false, false, ramenId);
+    app.game.state.start('level', true, false, false, { ramenId });
   }
 
   function challenge() {

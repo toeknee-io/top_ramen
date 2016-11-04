@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget android-versionCode="1" id="com.bitsmitten.topramen.android" version="0.0.1" xmlns="http://www.w3.org/ns/widgets">
+<widget android-versionCode="3" id="com.bitsmitten.topramen.android" version="0.0.3" xmlns="http://www.w3.org/ns/widgets">
     <name>Top Ramen</name>
     <description>Make Ramen!</description>
     <author>BitSmitten Studios</author>
@@ -18,7 +18,7 @@
     <preference name="android-targetSdkVersion" value="23" />
     <preference name="android-installLocation" value="auto" />
     <preference name="android-signed" value="true" />
-    <preference name="debuggable" value="false" />
+    <preference name="debuggable" value="true" />
     <preference name="AutoHideSplashScreen" value="false" />
     <preference name="FadeSplashScreen" value="true" />
     <preference name="ShowSplashScreenSpinner" value="false" />
@@ -39,4 +39,5 @@
         <variable name="APP_ID" value="522622927921791" />
         <variable name="APP_NAME" value="Top Ramen" />
     </plugin>
+    <engine name="android" spec="~5.2.2" />
 </widget>

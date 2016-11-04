@@ -51,9 +51,8 @@
 
     window.trApi.initUser()
       .then((userChallenges) => { challengesToDisplay = userChallenges; })
-      .catch(err => console.error('trApi.loadSocialImages err: %O', err))
+      .catch(err => console.error('trApi.initUser err: %O', err))
       .finally(() => {
-        console.debug('userChallenges %O', challengesToDisplay);
         app.game.load.onLoadComplete.addOnce(displayChallenges.bind(app, challengesToDisplay));
         app.game.load.start();
       });

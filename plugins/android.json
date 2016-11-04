@@ -7,6 +7,9 @@
         "files": {}
     },
     "installed_plugins": {
+        "cordova-plugin-admobpro": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
         "cordova-plugin-crosswalk-webview": {
             "XWALK_VERSION": "21+",
             "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
@@ -16,6 +19,11 @@
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "cordova-plugin-facebook4": {
+            "APP_ID": "522622927921791",
+            "APP_NAME": "Top Ramen",
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         },
         "cordova-plugin-inappbrowser": {
@@ -35,14 +43,6 @@
         },
         "phonegap-plugin-push": {
             "SENDER_ID": "184977555503",
-            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
-        },
-        "cordova-plugin-admobpro": {
-            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
-        },
-        "cordova-plugin-facebook4": {
-            "APP_ID": "522622927921791",
-            "APP_NAME": "Top Ramen",
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         }
     },

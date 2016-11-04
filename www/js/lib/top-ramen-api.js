@@ -1,4 +1,4 @@
-(function topRamenApiIife() {
+(function topRamenApiIife({ $, _, alert, jQuery, Promise, TopRamenConstants: Constants }) {
   window.getOpts = function getOpts(opts) {
     if (typeof opts === 'object') {
       return opts;
@@ -19,14 +19,13 @@
         return new TopRamenApi(opts);
       }
 
-      if (!window.jQuery || !window.cordova || !window._ || !window.Promise) {
+      if (!jQuery || !$ || !window.cordova || !_ || !Promise || !Constants) {
         throw new Error("Stuff's missing!");
       }
 
-      this.APP_NAME = 'com.bitsmitten.topramen';
+      this.Constants = Constants;
 
-      this.BASE_URL = 'http://www.toeknee.io:3000';
-      this.API_URL = `${this.BASE_URL}/api`;
+      this.APP_NAME = 'com.bitsmitten.topramen';
 
       this.ITEM_KEY_USER_ID = 'userId';
       this.ITEM_KEY_ACCESS_TOKEN = 'accessToken';
@@ -35,9 +34,11 @@
       this.CACHE_KEY_CHALLENGES = 'challenges';
       this.CACHE_KEY_RAMEN = 'ramen';
 
-      this.cache = {};
-      this.cache[this.CACHE_KEY_RAMEN] = {};
-      this.cache[this.CACHE_KEY_CHALLENGES] = {};
+      this.cache = {
+        enabled: false,
+        [this.CACHE_KEY_RAMEN]: {},
+        [this.CACHE_KEY_CHALLENGES]: {},
+      };
 
       this.app = window.app;
       this.storage = window.localStorage;
@@ -105,8 +106,8 @@
 
     getUserByDeviceId() {
       if (!this.deviceId) throw new Error('Cannot getUserByDeviceId without deviceId');
-      return $.get(`${this.API_URL}/devices/${this.deviceId}/user`)
-        .fail(err => console.error(`Failed to get userId using deviceId [${this.deviceId}] : ${err.responseJSON.error.message}`));
+      return $.get(`${Constants.URL.API.DEVICES}/${this.deviceId}/user`)
+        .fail(err => alert('Failed to get userId using deviceId: %s', err.stack || err.message));
     }
 
     getUserIdentityById(id) {
@@ -114,7 +115,7 @@
         if (_.isNil(id) || typeof id !== 'string') {
           reject(`TopRamenApi.getUserIdentityById error: invalid id argument [${id}]`);
         } else {
-          $.get(`${this.API_URL}/userIdentities/${id}`)
+          $.get(`${Constants.URL.API.USER_IDENTITIES}/${id}`)
             .done((userIdentity => resolve(userIdentity)))
             .fail(err => reject(err));
         }
@@ -123,7 +124,7 @@
 
     getUserIdentityBySocialId(provider, externalId) {
       if (!provider || !externalId || !this.isLoggedIn()) { return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`); }
-      return $.get(`${this.API_URL}/userIdentities?filter[where][externalId]=${externalId}`)
+      return $.get(`${Constants.URL.API.USER_IDENTITIES}?filter[where][externalId]=${externalId}`)
         .fail(err => console.error(`Failed to getUserIdentityBySocialId: ${err.responseJSON.error.message}`));
     }
 
@@ -132,7 +133,7 @@
         if (!this.isLoggedIn()) {
           reject('trApi.getUserSocial error: The user must be logged in to make the getUserSocial call');
         } else {
-          $.get(`${this.API_URL}/users/social`)
+          $.get(Constants.URL.API.USER_SOCIAL)
             .done(userSocial => resolve(userSocial))
             .fail(err => reject(err));
         }
@@ -146,8 +147,7 @@
         throw new Error(`The deviceToken [${this.deviceToken}] or userId [${this.getUserId()}] is missing in the postAppInstallation call`);
       }
 
-      return $.post(
-        `${this.API_URL}/users/me/installations`,
+      return $.post(Constants.URL.API.INSTALLATIONS,
         {
           appId: `${this.APP_NAME}.${opts.platform || this.platform}`,
           deviceToken: this.deviceToken,
@@ -161,7 +161,7 @@
       return new this.Promise((resolve, reject) => {
         if (!this.isLoggedIn()) throw new Error(`The user must be logged in to getAppInstallations, userId [${this.getUserId()}] accessToken [${this.getAccessToken()}]`);
 
-        $.get(`${this.API_URL}/users/me/installations`)
+        $.get(Constants.URL.API.INSTALLATIONS)
           .done(installations => resolve(installations))
           .fail(err => reject(err));
       });
@@ -173,7 +173,7 @@
         if (!this.deviceId) throw new Error('The deviceId is missing in logUserIn call.');
 
         const loginUri = `/auth/${opts.provider}`;
-        const loginUrl = `${this.BASE_URL}${(opts.provider === 'local' ?
+        const loginUrl = `${Constants.URL.BASE}${(opts.provider === 'local' ?
           loginUri : `/mobile/redirect${loginUri}`)}?` +
           `uuid=${this.deviceId}&deviceType=${this.platform}`;
 
@@ -181,12 +181,12 @@
 
         iab.addEventListener('loadstart', (event) => {
           const url = event.url.split('?');
-
-          if (url[0] === `${this.BASE_URL}/login`) {
+          console.debug('logUserIn.event.url: %s', url[0]);
+          if (url[0] === `${Constants.URL.BASE}/login`) {
             reject(new Error('Passport login failed.'));
           }
 
-          if (url[0] === `${this.BASE_URL}/mobile/redirect/auth/success`) {
+          if (url[0] === `${Constants.URL.BASE}/mobile/redirect/auth/success`) {
             const token = url[1].split('token=')[1].split('&id=')[0];
             const userId = url[1].split('id=')[1].split('&')[0];
 
@@ -204,7 +204,7 @@
 
     logUserOut() {
       return new this.Promise((resolve, reject) => {
-        $.post(`${this.API_URL}/auth/logout`)
+        $.post(Constants.URL.API.LOG_OUT)
           .done(() => {
             this.setAccessToken(null);
             this.setUserId(null);
@@ -222,8 +222,7 @@
       return new this.Promise((resolve, reject) => {
         this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
         if (!this.isLoggedIn()) { throw new Error('User must be logged in to make postChallenge call.'); }
-        $.post(
-            `${this.API_URL}/challenges`,
+        $.post(Constants.URL.API.CHALLENGES,
             { userId, ramenId, status: 'new' }
           )
           .done(data => resolve(data))
@@ -236,37 +235,27 @@
         if (!this.isLoggedIn()) {
           reject(new Error('User must be logged in to getChallengesSorted.'));
         }
-        $.get(`${this.API_URL}/challenges/sort/me`)
+        $.get(Constants.URL.API.CHALLENGES_SORT)
           .done((challenges) => {
             this.setLocalCache(this.CACHE_KEY_CHALLENGES, challenges);
-            resolve(this.getLocalCache(this.CACHE_KEY_CHALLENGES));
+            resolve(challenges);
           })
           .fail(err => reject(err));
       });
     }
 
-    patchChallenge(challenge, score, status) {
+    patchChallenge(challenge) {
       return new this.Promise((resolve, reject) => {
-        let data = {};
-
         this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
 
-        if (typeof challenge === 'string' &&
-          (typeof score === 'number' || typeof status === 'string')) {
-          data.id = challenge;
-          data.score = score;
-          data.status = status;
-        } else if ((typeof challenge === 'object' && typeof challenge.id === 'string') &&
-          (typeof challenge.score === 'number' || typeof challenge.status === 'string')) {
-          data = challenge;
-        } else {
-          throw new Error(`Invalid arguments passed to patchChallenge: ${challenge}`);
+        if (typeof challenge !== 'object' || _.isEmpty(challenge)) {
+          throw new Error('Invalid arguments passed to patchChallenge: %O', challenge);
         }
 
         $.ajax({
           method: 'PATCH',
-          url: `${this.API_URL}/challenges/${data.id}`,
-          data,
+          url: `${Constants.URL.API.CHALLENGES}/${challenge.id}`,
+          data: challenge,
           dataType: 'json',
         })
         .done(res => resolve(res))
@@ -276,24 +265,30 @@
 
     acceptChallenge(challenge) {
       checkIfObj(challenge, this.acceptChallenge.name);
-      Object.assign(challenge,
-        { [ChallengeUtils.getPlayerPropertyKey(challenge)]: { inviteStatus: 'accepted' } }
+      Object.assign(challenge[ChallengeUtils.getPlayerPropertyKey(challenge)],
+        { inviteStatus: Constants.CHALLENGE.INVITE.STATUS.ACCEPTED }
       );
       return this.patchChallenge(challenge);
     }
 
     declineChallenge(challenge) {
       checkIfObj(challenge, this.declineChallenge.name);
-      Object.assign(challenge,
-        { [ChallengeUtils.getPlayerPropertyKey(challenge)]: { inviteStatus: 'declined' } }
+      const playerKey = ChallengeUtils.getPlayerPropertyKey(challenge);
+      Object.assign(challenge, { status: 'finished' });
+      Object.assign(challenge[playerKey],
+        {
+          inviteStatus: Constants.CHALLENGE.INVITE.STATUS.DECLINED,
+          hidden: true,
+        }
       );
       return this.patchChallenge(challenge);
     }
 
     hideChallenge(challenge) {
       checkIfObj(challenge, this.hideChallenge.name);
-      Object.assign(challenge,
-        { [ChallengeUtils.getPlayerPropertyKey(challenge)]: { hidden: true } }
+      const playerKey = ChallengeUtils.getPlayerPropertyKey(challenge);
+      Object.assign(challenge[playerKey],
+        { hidden: true }
       );
       return this.patchChallenge(challenge);
     }
@@ -303,7 +298,7 @@
         if (!this.isLoggedIn()) {
           reject(new Error('User must be logged in to getScores.'));
         } else {
-          $.get(`${this.API_URL}/users/me/scores`)
+          $.get(Constants.URL.API.SCORE)
             .done(scores => resolve(scores))
             .fail(err => reject(new Error(`Failed to getScores: ${err.responseJSON.error.message}`)));
         }
@@ -316,7 +311,7 @@
         if (!_.isEmpty(cachedRamen) && _.isArray(cachedRamen)) {
           resolve(cachedRamen);
         } else {
-          $.get(`${this.API_URL}/ramen`)
+          $.get(Constants.URL.API.RAMEN)
           .done((ramen) => {
             this.setLocalCache(this.CACHE_KEY_RAMEN, ramen);
             resolve(ramen);
@@ -341,7 +336,6 @@
             this.getChallengesSorted()
             .then((challenges) => {
               const challengeKeys = Object.keys(challenges);
-              console.debug('initUser.getChallengesSorted.challengeKeys: %O', challengeKeys);
               if (_.isEmpty(challengeKeys)) {
                 resolve();
               } else {
@@ -354,15 +348,18 @@
 
                   challenges[key].forEach((challenge) => {
                     const result = _.attempt(() => {
-                      const identity = challenge[challenge.challenger.userId === this.getUserId() ? 'challenged' : 'challenger'].identities[0];
-                      const picKey = `${identity.externalId}pic`;
+                      const player = challenge[ChallengeUtils.getPlayerPropertyKey(challenge)];
 
-                      if (!this.app.game.cache.checkImageKey(picKey)) {
-                        this.app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
+                      if (_.isArray(player.identities) && player.identities[0]) {
+                        const identity = player.identities[0];
+                        const picKey = `${identity.externalId}pic`;
+                        if (!this.app.game.cache.checkImageKey(picKey)) {
+                          this.app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);
+                        }
                       }
                     });
 
-                    if (_.isError(result)) console.error(result);
+                    if (_.isError(result)) alert(`getChallengesSorted error: ${result}`);
 
                     challengesDone += 1;
                   });
@@ -387,16 +384,17 @@
     }
 
     getLocalCache(key) {
-      const data = this.cache[key];
-      if (_.isNil(data)) {
+      const data = this.cache.enabled ? this.cache[key] : {};
+      if (this.cache.enabled && _.isNil(data)) {
         throw new Error(`Return value for getLocalCache using key [${key}] isNil.  This key should be set as an empty object in the constructor if it needs to be used.`);
       }
       return data;
     }
 
     clearLocalCache(key) {
+      console.debug('clearLocalCache for key %s', key);
       this.cache[key] = {};
     }
 
   };
-}());
+}(window));

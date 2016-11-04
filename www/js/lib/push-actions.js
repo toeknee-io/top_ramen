@@ -15,7 +15,7 @@
     playChallenge(data) {
       const challenge = data.additionalData.challenge;
       const bootCreateCallback = function bootCreateCallback() {
-        app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
+        app.game.state.start('level', true, false, challenge);
       };
       Object.assign(app, { bootCreateCallback });
       if (!data.additionalData.coldstart) {

@@ -1,4 +1,4 @@
-(function challengeUtilsIife({ app, scaleRatio }) {
+(function challengeUtilsIife({ app, scaleRatio, alert }) {
   window.ChallengeUtils = class ChallengeUtils {
 
     static getPlayerPropertyKey(challenge) {
@@ -28,6 +28,22 @@
         window.trApi.getUserId(), challenge);
     }
 
+    static isUserChallenger(challenger) {
+      if (challenger && window.trApi.getUserId()) {
+        return challenger.userId === window.trApi.getUserId();
+      }
+      throw new Error('Could not determine isUserChallenger for userId %s from challenger: %O',
+        window.trApi.getUserId(), challenger);
+    }
+
+    static isUserChallenged(challenged) {
+      if (challenged && window.trApi.getUserId()) {
+        return challenged.userId === window.trApi.getUserId();
+      }
+      throw new Error('Could not determine isUserChallenged for userId %s from challenger: %O',
+        window.trApi.getUserId(), challenged);
+    }
+
     /* eslint-disable no-param-reassign */
     static initGroupTitles(bitmapTexts) {
       _.castArray(bitmapTexts)
@@ -38,30 +54,39 @@
         });
     }
     /* eslint-enable no-param-reassign */
-    static getButtonStatusText(challenge) {
-      const userScore = ChallengeUtils.getUser(challenge).score;
-      const opponentScore = ChallengeUtils.getOpponent(challenge).score;
+    static getButtonStatusText(
+      {
+        status, challenger, challenged, winner,
+        challenged: { score: dScore },
+        challenger: { score: rScore },
+        challenged: { inviteStatus: ivStatus },
+      },
+      CCS = this.Constants.STATUS, CCIS = this.Constants.INVITE.STATUS,
+      CCN = this.Constants.NEW, CCST = this.Constants.STARTED,
+      uScore = this.isUserChallenger(challenger) ? rScore : dScore,
+      oScore = this.isUserChallenged(challenged) ? rScore : dScore,
+      isNew = status === CCS.NEW,
+      isFinished = status === CCS.FINISHED,
+      isAccepted = ivStatus === CCIS.ACCEPTED,
+      isDeclined = ivStatus === CCIS.DECLINED
+    ) {
+      let statusTxt = CCN.BUTTONS.TEXT.STATUS.PENDING;
 
-      let statusTxt = 'wtf?!';
-
-      if (challenge.challenged.inviteStatus === 'pending') {
-        statusTxt = 'Pending';
-      } else if (challenge.status !== 'finished') {
-        if (challenge.status === 'not_started') {
-          statusTxt = 'Not Started';
-        } else if (_.isNil(userScore)) {
-          statusTxt = 'Your Turn';
-        } else {
-          statusTxt = 'Their Turn';
+      if (isNew) {
+        if (isAccepted) {
+          const CCNB = CCN.BUTTONS;
+          const CCSTB = CCST.BUTTONS;
+          if (_.isNil(rScore) && _.isNil(oScore)) {
+            statusTxt = CCNB.TEXT.STATUS.READY;
+          } else {
+            statusTxt = _.isNil(oScore) ? CCSTB.TEXT.STATUS.THEM : CCSTB.TEXT.STATUS.YOU;
+          }
         }
-      } else if (challenge.status === 'finished') {
-        if (challenge.winner === 'tied') {
-          statusTxt = 'Tied';
-        } else if (userScore > opponentScore) {
-          statusTxt = 'You Won!';
-        } else if (opponentScore > userScore) {
-          statusTxt = 'You Lost';
-        }
+      } else if (isFinished) {
+        const CCF = this.Constants.FINISHED;
+        statusTxt = isDeclined ? CCF.BUTTONS.TEXT.STATUS.DECLINED : CCF.BUTTONS.TEXT.STATUS.TIED;
+        statusTxt = !isDeclined && (uScore > oScore) ?
+          CCF.BUTTONS.TEXT.STATUS.WON : CCF.BUTTONS.TEXT.STATUS.LOST;
       }
 
       return statusTxt;
@@ -125,8 +150,6 @@
         const deleteGroup = window.app.game.add.group();
         deleteGroup.fixedToCamera = true;
 
-        console.log(ChallengeUtils.getUser);
-
         const lb = window.app.game.add.button(0, 0);
         lb.loadTexture('main', 'lightbox_bg');
         lb.width = window.app.game.width;
@@ -153,8 +176,12 @@
         deleteGroup.add(no);
 
         yes.events.onInputUp.add(() => {
-          window.trApi.hideChallenge(challenge);
-          window.app.game.state.restart();
+          const playerKey = ChallengeUtils.getPlayerPropertyKey(challenge);
+          const fn = playerKey === 'challenged' && challenge.status !== this.Constants.INVITE.STATUS.ACCEPTED ?
+            'declineChallenge' : 'hideChallenge';
+
+          window.trApi[fn](challenge)
+            .finally(() => window.app.game.state.restart());
         });
 
         no.events.onInputUp.add(() => {
@@ -172,15 +199,15 @@
 
     /* eslint-disable no-param-reassign */
     static addChallengeButton(challenge, chalGroup, yLoc) {
-      if (_.isNil(challenge)) { return yLoc; }
+      if (_.isEmpty(challenge)) { return yLoc; }
 
       try {
-        if (!challenge.hidden) {
+        if (!ChallengeUtils.getUser(challenge).hidden) {
           chalGroup.add(ChallengeUtils.configureButton(challenge, yLoc));
           yLoc += 200 * scaleRatio;
         }
       } catch (err) {
-        console.error('Error addChallengeButton: %O ', err);
+        alert(`Error addChallengeButton:${err.stack || err.message}`);
       }
 
       return yLoc;
@@ -212,6 +239,10 @@
       } else if (_.isNil(ChallengeUtils.getOpponent(challenge).score)) {
         window.alert('Waiting For Opponent!');
       }
+    }
+
+    static get Constants() {
+      return window.TopRamenConstants.CHALLENGE;
     }
 
   };

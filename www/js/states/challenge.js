@@ -185,26 +185,24 @@
     app.game.load.image('friendbar', 'assets/friendbar.png');
 
     window.trApi.getUserSocial()
-      .then((userSocial) => {
+      .then((userSocial, friends = _.castArray(userSocial.facebook.friends)) => {
         if (!app.game.cache.checkImageKey('myPic')) {
           app.game.load.image('myPic', userSocial.facebook.picture);
         }
 
-        _.castArray(userSocial.facebook.friends).forEach((friend) => {
-          if (!friend) {
-            console.debug('bad friend! %O', friend);
-          }
-          const picKey = `${friend.externalId}pic`;
-
-          if (!app.game.cache.checkImageKey(picKey)) {
-            app.game.load.image(`${friend.externalId}pic`, `https://graph.facebook.com/${friend.externalId}/picture?type=large`);
-          }
-        });
+        if (friends) {
+          friends.forEach((friend, picKey = `${friend.externalId}pic`) => {
+            if (!friend) { return; }
+            if (!app.game.cache.checkImageKey(picKey)) {
+              app.game.load.image(`${friend.externalId}pic`, `https://graph.facebook.com/${friend.externalId}/picture?type=large`);
+            }
+          });
+        }
 
         app.game.load.onLoadComplete.addOnce(displayFriends.bind(this, userSocial));
 
         app.game.load.start();
-      }).catch(err => console.error('failed to trApi.getUserSocial because: %s', err.stack));
+      }).catch(err => console.error('failed to trApi.getUserSocial because: %s', err));
   };
 
   challenge.create = function appChallengeCreate() {

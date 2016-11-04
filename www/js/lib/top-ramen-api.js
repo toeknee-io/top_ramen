@@ -217,7 +217,7 @@
         this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
         if (!this.isLoggedIn()) { throw new Error('User must be logged in to make postChallenge call.'); }
         $.post(Constants.URL.API.CHALLENGES,
-            { userId, ramenId, status: 'new' }
+            { ramenId, status: 'new' }
           )
           .done(data => resolve(data))
           .fail(err => reject(err));

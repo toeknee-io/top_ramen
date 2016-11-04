@@ -257,7 +257,7 @@
       return new this.Promise((resolve, reject) => {
         this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
 
-        $.post(`${Constants.URL.API.CHALLENGES}/${challengeId}/decline`)
+        $.post(`${Constants.URL.API.CHALLENGES}/${challengeId}/accept`)
         .done(res => resolve(res))
         .fail(err => reject(err));
       });
@@ -267,7 +267,7 @@
       return new this.Promise((resolve, reject) => {
         this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
 
-        $.post(`${Constants.URL.API.CHALLENGES}/${challengeId}/accept`)
+        $.post(`${Constants.URL.API.CHALLENGES}/${challengeId}/decline`)
         .done(res => resolve(res))
         .fail(err => reject(err));
       });

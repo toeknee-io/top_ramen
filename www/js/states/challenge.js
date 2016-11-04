@@ -5,7 +5,7 @@
     window.buttonSound();
 
     app.game.world.setBounds(0, 0, app.game.width, app.game.height);
-    app.game.state.start('level', true, false, challenge.id, challenge.ramenId);
+    app.game.state.start('level', true, false, challenge);
   }
 
   function playLater() {

@@ -68,6 +68,7 @@ app.level.init = function (challenge = {}) {
     }, 100);
   });
 };
+
 app.level.preload = function () {
   console.log('Level Sate');
 

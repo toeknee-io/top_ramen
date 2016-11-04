@@ -84,9 +84,14 @@
         }
       } else if (isFinished) {
         const CCF = this.Constants.FINISHED;
-        statusTxt = isDeclined ? CCF.BUTTONS.TEXT.STATUS.DECLINED : CCF.BUTTONS.TEXT.STATUS.TIED;
-        statusTxt = !isDeclined && (uScore > oScore) ?
-          CCF.BUTTONS.TEXT.STATUS.WON : CCF.BUTTONS.TEXT.STATUS.LOST;
+        statusTxt = CCF.BUTTONS.TEXT.STATUS.TIED;
+        if (isDeclined) {
+          statusTxt = CCF.BUTTONS.TEXT.STATUS.DECLINED;
+        } else if (uScore > oScore) {
+          statusTxt = CCF.BUTTONS.TEXT.STATUS.WON;
+        } else if (oScore > uScore) {
+          statusTxt = CCF.BUTTONS.TEXT.STATUS.LOST;
+        }
       }
 
       return statusTxt;

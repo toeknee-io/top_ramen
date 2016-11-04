@@ -348,10 +348,10 @@
 
                   challenges[key].forEach((challenge) => {
                     const result = _.attempt(() => {
-                      const player = challenge[ChallengeUtils.getPlayerPropertyKey(challenge)];
+                      const opponent = ChallengeUtils.getOpponent(challenge);
 
-                      if (_.isArray(player.identities) && player.identities[0]) {
-                        const identity = player.identities[0];
+                      if (_.isArray(opponent.identities) && opponent.identities[0]) {
+                        const identity = opponent.identities[0];
                         const picKey = `${identity.externalId}pic`;
                         if (!this.app.game.cache.checkImageKey(picKey)) {
                           this.app.game.load.image(picKey, `https://graph.facebook.com/${identity.externalId}/picture?type=large`);

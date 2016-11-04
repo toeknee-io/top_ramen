@@ -5,7 +5,7 @@ sake.init = function() {
 	sake.worth = 0;
 	sake.bonus = 0;
 	sake.type = '';
-	sake.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds), 'sake');
+	sake.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds, rightBounds),app.game.rnd.integerInRange(topBounds,bottomBounds), 'ings-sheet', 'sake.png');
 	sake.sprite.scale.setTo(scaleRatio * 1.3);
 	sake.sprite.alpha = 0;
 	sake.sound = app.game.add.audio('sake');

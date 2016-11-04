@@ -5,7 +5,7 @@ egg.init = function() {
 	egg.worth = 2;
 	egg.bonus = 2;
 	egg.type = 'good';
-	egg.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet','egg.png');
+	egg.sprite = app.game.add.image(app.game.rnd.integerInRange(leftBounds,rightBounds),app.game.rnd.integerInRange(app.game.world.height * .70,app.game.world.height * .50),'ings-sheet', 'egg.png');
 	egg.sprite.alpha = 0;
 	egg.sprite.scale.setTo(scaleRatio * 1.3);
 	egg.sound = app.level.bonus;
@@ -33,15 +33,15 @@ egg.spawn = function() {
 
 	if (egg.drunk === true) {
 
-		sheet = 'ings-sheet-blur';
+		blur = '-blur';
 
-	} else {
+  } else {
 
-		sheet = 'ings-sheet';
+    blur = '';
 
-	}
+  }
 
-	egg.sprite.loadTexture(sheet, 'egg.png');
+	egg.sprite.loadTexture('ings-sheet', `egg${blur}.png`);
 
 	egg.motionTween = app.game.add.tween(egg.sprite).to({ y: app.game.world.height * .20 }, egg.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	egg.fadeInTween = app.game.add.tween(egg.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);

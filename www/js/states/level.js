@@ -6,8 +6,6 @@ let score;
 let scoreText;
 let goodText;
 let bonusText;
-let bonusFadeIn;
-let bonusFadeOut;
 let gameTimer;
 let bonusTimer;
 let timeLeft;
@@ -29,9 +27,16 @@ let goodFadeOut;
 
 let emitter;
 let bonusEmitter;
-let steamEmitter; // jshint ignore:line
 // Groups
 let ings;
+
+function fadeInText(text, speedIn, speedOut) {
+  fadeIn = app.game.add.tween(text).to({ alpha: 1 }, speedIn, Phaser.Easing.easeIn, false, 0, 0, false);
+  fadeOut = app.game.add.tween(text).to({ alpha: 0 }, speedOut, Phaser.Easing.easeIn, false, 0, 0, false);
+  fadeIn.chain(fadeOut);
+  fadeIn.start();
+}
+
 app.level.init = function (challenge = {}) {
   app.level.fabs = [];
 
@@ -80,11 +85,9 @@ app.level.preload = function () {
   app.game.load.image('bg', 'assets/bgLG.jpg');
   app.game.load.image('lights', 'assets/top-lightsLG.png');
   app.game.load.image('board', 'assets/board.png');
-  app.game.load.image('sake', 'assets/sake.png');
   app.game.load.atlasJSONHash('stars-sheet', 'assets/sheets/stars.png', 'assets/sheets/stars.json');
   app.game.load.atlasJSONHash('level', 'assets/sheets/level.png', 'assets/sheets/level.json');
   app.game.load.atlasJSONHash('ings-sheet', 'assets/sheets/ings.png', 'assets/sheets/ings.json');
-  app.game.load.atlasJSONHash('ings-sheet-blur', 'assets/sheets/ings-blur.png', 'assets/sheets/ings-blur.json');
 
   leftBounds = app.game.world.width * 0.17;
   rightBounds = app.game.world.width * 0.83;
@@ -127,7 +130,7 @@ app.level.create = function () {
 	// Set up bowl
   const bowl = app.game.add.image(0, 0, 'level', 'bowlLG');
   bowl.scale.setTo(scaleRatio);
-  bowl.x = app.game.width / 2 - bowl.width / 2;
+  bowl.x = app.game.width * 0.5 - bowl.width * 0.5;
   bowl.y = app.game.height - 10 - bowl.height;
 	// Score text
   scoreText = app.game.add.bitmapText(39 * scaleRatio, 30 * scaleRatio, 'fnt', 'score\n0');
@@ -156,19 +159,13 @@ app.level.create = function () {
   // Collect Text
   bonusText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40, 300), 'fnt', 'bonus!');
   bonusText.scale.setTo(window.devicePixelRatio * 2);
-  bonusText.x = app.game.world.centerX - bonusText.width / 2;
+  bonusText.x = app.game.world.centerX - bonusText.width * 0.5;
   bonusText.alpha = 0;
-  bonusFadeIn = app.game.add.tween(bonusText).to({ alpha: 1 }, 150, Phaser.Easing.easeIn, false, 0, 0, false);
-  bonusFadeOut = app.game.add.tween(bonusText).to({ alpha: 0 }, 400, Phaser.Easing.easeIn, false, 0, 0, false);
-  bonusFadeIn.chain(bonusFadeOut);
 
   goodText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40, 300), 'fnt', 'good');
   goodText.scale.setTo(window.devicePixelRatio * 1.5);
-  goodText.x = app.game.world.centerX - goodText.width / 2;
+  goodText.x = app.game.world.centerX - goodText.width * 0.5;
   goodText.alpha = 0;
-  goodFadeIn = app.game.add.tween(goodText).to({ alpha: 1 }, 150, Phaser.Easing.easeIn, false, 0, 0, false);
-  goodFadeOut = app.game.add.tween(goodText).to({ alpha: 0 }, 400, Phaser.Easing.easeIn, false, 0, 0, false);
-  goodFadeIn.chain(goodFadeOut);
 
   streakText = app.game.add.bitmapText(app.game.width * 0.93, app.game.world.height * 0.83, 'fnt-orange', '');
   streakText.scale.setTo(scaleRatio * 3);
@@ -220,23 +217,19 @@ function startGame(menu, self) {
   startTimer.loop(1000, () => {
     if (startCount != 0) {
       counter.text = startCount;
-
       app.level.count.play();
-
       startCount--;
     } else {
       counter.text = 'start!';
-
       startTimer.stop();
+      app.lvlSong.play();
     }
   });
 
   startTimer.start();
 
   setTimeout(() => {
-		// app.lvlSong.play();
-
-    app.game.add.tween(counter).to({ alpha: 0 }, 1200, Phaser.Easing.easeIn, true, 0, 0, false);
+    app.game.add.tween(counter).to({ alpha: 0 }, 400, Phaser.Easing.easeIn, true, 0, 0, false);
 		// Timer to call end of game
     app.game.time.events.add(60000, time, self);
 		// Timer for countdown
@@ -246,9 +239,9 @@ function startGame(menu, self) {
 		// Introduce Noodles
 		// noodles.init();
 		// Introduce Green Onions
-    app.game.time.events.add(app.game.rnd.integerInRange(0, 1000), greenOnions.init, self);
+    app.game.time.events.add(app.game.rnd.integerInRange(500, 1000), greenOnions.init, self);
 		// Introduce Chili Powder & Menma
-    app.game.time.events.add(app.game.rnd.integerInRange(0, 3000), chili.init, self);
+    app.game.time.events.add(app.game.rnd.integerInRange(500, 3000), chili.init, self);
     app.game.time.events.add(app.game.rnd.integerInRange(2000, 6000), menma.init, self);
 		// Introduce Bok choy
     app.game.time.events.add(app.game.rnd.integerInRange(3000, 6000), bokchoy.init, self);
@@ -282,6 +275,11 @@ function time() {
   gameTimer.stop();
   timeLeft = 0;
   if (bonusTime > 0) {
+    let bonusAlert = app.game.add.bitmapText(app.game.world.centerX, 450 * scaleRatio, 'fnt-orange', 'bonus time!');
+    bonusAlert.alpha = 0;
+    bonusAlert.anchor.x = 0.5;
+    bonusAlert.scale.setTo(scaleRatio * 6);
+    fadeInText(bonusAlert, 150, 1800);
     bonus = true;
     timeLeft = bonusTime;
     bonusTimer = app.game.time.create(false);
@@ -294,31 +292,31 @@ function time() {
   }
 }
 // Collect (tap) ingredients
-function collect(ingredient) { // jshint ignore:line
+function collect(ingredient, pointer) { // jshint ignore:line
 	/* jshint validthis:true */
-  collectSound(this);
+  this.sound.play();
 
-  if (this.bonus === 0 && this.worth > 0 && goodFadeOut.isRunning === false) {
-    goodFadeIn.start();
+  if (this.bonus === 0 && this.worth > 0) {
+    fadeInText(goodText, 150, 400);
     goodText.y = app.game.rnd.integerInRange(app.game.world.y + 100, app.game.world.height - 300);
     goodText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - goodText.width - 10);
   }
 
-  if ((this.bonus > 0 && !bonus) || (this.worth < 0) && bonusFadeOut.isRunning === false) {
+  if ((this.bonus > 0 && !bonus) || (this.worth < 0)) {
     if (this.worth < 0) {
       bonusText.text = 'bad!';
     } else {
       bonusText.text = 'bonus!';
     }
 
-    bonusFadeIn.start();
+    fadeInText(bonusText, 150, 400);
     bonusText.y = app.game.rnd.integerInRange(app.game.world.y + 100, app.game.world.height - 300);
     bonusText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - bonusText.width - 10);
   }
 
   if (this.bonus === 0) {
-    emitter.x = this.sprite.x + this.sprite.width / 2;
-	  emitter.y = this.sprite.y + this.sprite.height / 2;
+    emitter.x = pointer.x;
+	  emitter.y = pointer.y;
 	  emitter.start(true, 1000, null, app.game.rnd.integerInRange(3, 6));
 	  if ('vibrate' in window.navigator && this.type === 'good') {
 	    window.navigator.vibrate(50);
@@ -326,8 +324,8 @@ function collect(ingredient) { // jshint ignore:line
     window.navigator.vibrate(200);
   }
   } else if (this.bonus > 0) {
-    bonusEmitter.x = this.sprite.x + this.sprite.width / 2;
-	  bonusEmitter.y = this.sprite.y + this.sprite.height / 2;
+    bonusEmitter.x = pointer.x;
+	  bonusEmitter.y = pointer.y;
 	  bonusEmitter.start(true, 1000, null, 20);
 	  if ('vibrate' in window.navigator) {
 	    window.navigator.vibrate(250);
@@ -351,7 +349,7 @@ function collect(ingredient) { // jshint ignore:line
       app.level.fabs.forEach((i) => {
         if (i.drunk === true) {
           i.drunk = false;
-          i.worth = i.worth / 2;
+          i.worth = i.worth * 0.5;
         }
       });
     }, 6000);
@@ -398,9 +396,6 @@ function destroyIng(ing) {
   reSpawn(this);
 }
 // jshint ignore:end
-function collectSound(ing) {
-  ing.sound.play();
-}
 // GAME OVER
 window.endGame = function () {
   gameOver = true;

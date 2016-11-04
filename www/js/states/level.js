@@ -207,7 +207,7 @@ app.level.create = function () {
 function startGame(menu, self) {
   app.level.isStarted = true;
 
-  menu.removeAll(true);
+  menu.destroy();
   let startCount = 2;
   const counter = app.game.add.bitmapText(app.game.world.centerX, app.game.world.height * 0.30, 'fnt', '3');
   counter.scale.setTo(scaleRatio * 6);
@@ -276,7 +276,8 @@ function time() {
   gameTimer.stop();
   timeLeft = 0;
   if (bonusTime > 0) {
-    let bonusAlert = app.game.add.bitmapText(app.game.world.centerX, 450 * scaleRatio, 'fnt-orange', 'bonus time!');
+    let bonusAlert = app.game.add.bitmapText(app.game.world.centerX, 450 * scaleRatio, 'fnt-orange', 'bonus\ntime!');
+    bonusAlert.align = 'center';
     bonusAlert.alpha = 0;
     bonusAlert.anchor.x = 0.5;
     bonusAlert.scale.setTo(scaleRatio * 6);

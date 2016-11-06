@@ -44,6 +44,9 @@
         "phonegap-plugin-push": {
             "SENDER_ID": "184977555503",
             "PACKAGE_NAME": "com.bitsmitten.topramen.android"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "com.bitsmitten.topramen.android"
         }
     },
     "dependent_plugins": {

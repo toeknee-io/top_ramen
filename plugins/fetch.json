@@ -100,5 +100,13 @@
             "APP_ID": "522622927921791",
             "APP_NAME": "Top Ramen"
         }
+    },
+    "cordova-plugin-dialogs": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-dialogs"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

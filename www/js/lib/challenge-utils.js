@@ -24,7 +24,7 @@
         return challenge.challenger.userId === window.trApi.getUserId() ?
           challenge.challenged : challenge.challenger;
       }
-      throw new Error('Could not getChallengeOpponent for userId %s from challenge %O',
+      throw new Error('Could not getOpponent for userId %s from challenge %O',
         window.trApi.getUserId(), challenge);
     }
 
@@ -39,7 +39,6 @@
       throw new Error('Could not determine isUserChallenged for userId %s from challenger: %O',
         userId, challenged);
     }
-
     /* eslint-disable no-param-reassign */
     static initGroupTitles(bitmapTexts) {
       _.castArray(bitmapTexts)
@@ -57,26 +56,17 @@
         challenged: { inviteStatus: ivStatus },
       },
       CCS = this.Constants.STATUS, CCIS = this.Constants.INVITE.STATUS,
-      CCN = this.Constants.NEW, CCST = this.Constants.STARTED,
-      uScore = this.isUserChallenger(challenger) ? rScore : dScore,
-      oScore = this.isUserChallenger(challenger) ? dScore : rScore,
-      isNew = status === CCS.NEW,
-      isStarted = status === CCS.STARTED,
-      isFinished = status === CCS.FINISHED,
-      isAccepted = ivStatus === CCIS.ACCEPTED,
-      isDeclined = ivStatus === CCIS.DECLINED
+      CCN = this.Constants.NEW, CCST = this.Constants.STARTED, CCNB = CCN.BUTTONS
     ) {
-      let statusTxt = CCN.BUTTONS.TEXT.STATUS.PENDING;
-      if (isNew) {
-        console.debug('isNew');
-        if (isAccepted) {
-          const CCNB = CCN.BUTTONS;
-          console.debug('isAccepted');
-          if (_.isNil(rScore) && _.isNil(oScore)) {
-            statusTxt = CCNB.TEXT.STATUS.READY;
-          }
-        }
-      } else if (isStarted) {
+      const uScore = this.isUserChallenger(challenger) ? rScore : dScore;
+      const oScore = this.isUserChallenger(challenger) ? dScore : rScore;
+      const isStarted = status === CCS.STARTED;
+      const isFinished = status === CCS.FINISHED;
+      const isDeclined = ivStatus === CCIS.DECLINED;
+
+      let statusTxt = CCNB.TEXT.STATUS.READY;
+
+      if (isStarted) {
         console.debug('isStarted');
         const CCSTB = CCST.BUTTONS;
         statusTxt = _.isNil(oScore) ? CCSTB.TEXT.STATUS.THEM : CCSTB.TEXT.STATUS.YOU;

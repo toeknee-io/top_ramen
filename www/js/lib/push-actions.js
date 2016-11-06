@@ -1,11 +1,4 @@
 (function pushAcionsIife({ app }) {
-  const declineOpts = [
-    navigator.app.exitApp,
-    window.pushActions.viewChallenge,
-    window.pushActions.viewChallenges,
-    navigator.app.exitApp,
-  ];
-
   function isColdStart(data) {
     return data.additionalData.coldstart;
   }
@@ -25,7 +18,7 @@
 
   function onConfirm(data, buttonIndex) {
     console.info(`Selected button ${buttonIndex}`);
-    declineOpts[buttonIndex](data);
+    window.tru.getDeclineChallengeOpts()[buttonIndex](data);
   }
 
   window.pushActions = {
@@ -35,7 +28,7 @@
         .catch(err => console.error(err));
     },
     challengeRematch(data) {
-      const userId = window.trApi.getChallengeOpponent(data.additionalData.challenge).userId;
+      const userId = window.ChallengeUtils.getOpponent(data.additionalData.challenge).userId;
       window.trApi.postChallenge(userId)
         .then(() => this.viewChallenges(data))
         .catch(err => console.error(err));
@@ -46,6 +39,7 @@
           navigator.notification.confirm(
             'Challenge Declined  \uD83D\uDC4E',
              onConfirm.bind(this, data),
+             'What now?',
             ['Challenge Someone', 'View Other Challenges', 'Exit']
           );
         })
@@ -53,6 +47,7 @@
           navigator.notification.confirm(
             `Whoops, couldn't decline challenge because: ${err.message}\n\n You can still decline by clicking the x on the Challenges screen`,
              onConfirm.bind(this, data),
+             'What now?',
             ['Challenge Someone', 'View Other Challenges', 'Exit']
           );
         });

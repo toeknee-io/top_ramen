@@ -15,6 +15,9 @@ let bonus;
 let gameOver;
 let streakNumber;
 let streakText;
+let combo = 0;
+let comboTimer;
+let comboAlert;
 
 let leftBounds;
 let rightBounds;
@@ -108,6 +111,8 @@ app.level.create = function () {
 	// Groups
   ings = app.game.add.group();
   ings.inputEnableChildren = true;
+
+  ingObj = app.game.add.group();
 	// Set up Background
   const bg = app.game.add.image(app.game.world.centerX, app.game.world.centerY, 'bg');
   bg.anchor.x = 0.5;
@@ -169,11 +174,15 @@ app.level.create = function () {
   goodText.x = app.game.world.centerX - goodText.width * 0.5;
   goodText.alpha = 0;
 
-  streakText = app.game.add.bitmapText(app.game.width * 0.93, app.game.world.height * 0.83, 'fnt-orange', '');
+  streakText = app.game.add.bitmapText(app.game.width * 0.93, app.game.world.height * 0.83, 'fnt', '');
   streakText.scale.setTo(scaleRatio * 3);
   streakText.align = 'center';
   streakText.anchor.x = 1;
   streakText.anchor.y = 0.5;
+
+  comboAlert = app.game.add.bitmapText(app.game.world.centerX, app.game.world.height - (450 * scaleRatio), 'fnt-orange');
+  comboTimer = app.game.time.create(false);
+
 	// Set up Menu
   const menu = app.game.add.image(app.game.world.centerX, app.game.world.centerY - 100, 'level', app.level.ramenId);
   menu.anchor.x = 0.5;
@@ -208,7 +217,7 @@ app.level.create = function () {
 function startGame(menu, self) {
   app.level.isStarted = true;
 
-  menu.removeAll(true);
+  menu.destroy();
   let startCount = 2;
   const counter = app.game.add.bitmapText(app.game.world.centerX, app.game.world.height * 0.30, 'fnt', '3');
   counter.scale.setTo(scaleRatio * 6);
@@ -252,9 +261,10 @@ function startGame(menu, self) {
 		// Introduce Corn & Mushrooms
     app.game.time.events.add(app.game.rnd.integerInRange(1000, 9000), corn.init, self);
     app.game.time.events.add(app.game.rnd.integerInRange(3000, 8000), mushroom.init, self);
-		// Introduce Egg & Sprouts
+		// Introduce Egg, Kamaboko & Sprouts
     app.game.time.events.add(app.game.rnd.integerInRange(5000, 8000), sprouts.init, self);
     app.game.time.events.add(app.game.rnd.integerInRange(10000, 14000), egg.init, self);
+    app.game.time.events.add(app.game.rnd.integerInRange(12000, 16000), kamaboko.init, self);
 		// Introduce Chicken & Pork
     app.game.time.events.add(app.game.rnd.integerInRange(18000, 25000), chicken.init, self);
     app.game.time.events.add(app.game.rnd.integerInRange(18000, 25000), pork.init, self);
@@ -277,7 +287,8 @@ function time() {
   gameTimer.stop();
   timeLeft = 0;
   if (bonusTime > 0) {
-    let bonusAlert = app.game.add.bitmapText(app.game.world.centerX, 450 * scaleRatio, 'fnt-orange', 'bonus time!');
+    let bonusAlert = app.game.add.bitmapText(app.game.world.centerX, 450 * scaleRatio, 'fnt-orange', 'bonus\ntime!');
+    bonusAlert.align = 'center';
     bonusAlert.alpha = 0;
     bonusAlert.anchor.x = 0.5;
     bonusAlert.scale.setTo(scaleRatio * 6);
@@ -302,6 +313,34 @@ function collect(ingredient, pointer) { // jshint ignore:line
     fadeInText(goodText, 150, 400);
     goodText.y = app.game.rnd.integerInRange(app.game.world.y + 100, app.game.world.height - 300);
     goodText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - goodText.width - 10);
+  }
+
+  if (this.worth > 0) {
+    if (comboTimer.running && comboTimer.seconds <= 1.8) {
+      combo++;
+      comboTimer.seconds = 0;
+    } else if (comboTimer.running && comboTimer.seconds > 1.8) {
+      comboTimer.stop();
+      combo = 0;
+    } else {
+      comboTimer.start();
+      combo++;
+    }
+  } else {
+    comboTimer.stop();
+    combo = 0;
+  }
+
+  if (combo > 1) {
+    comboAlert.text = `combo +${combo}`;
+    comboAlert.align = 'center';
+    comboAlert.alpha = 0;
+    comboAlert.anchor.x = 0.5;
+    comboAlert.scale.setTo(scaleRatio * 6);
+    if (comboAlert.alpha !== 1) {
+      fadeInText(comboAlert, 150, 1000);
+    }
+    score = score + 2;
   }
 
   if ((this.bonus > 0 && !bonus) || (this.worth < 0)) {
@@ -402,8 +441,9 @@ function destroyIng(ing) {
 window.endGame = function () {
   gameOver = true;
   timeLeft = 0;
+  combo = 0;
   streakNumber = 0;
-  ings.callAll('destroy');
+  ings.destroy();
   console.log('End of Game');
   const challengeData = false;
 

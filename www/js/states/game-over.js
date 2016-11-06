@@ -13,7 +13,7 @@ app.gameover.create = function() {
 
 	console.log('Game Over State');
 
-  window.facebookConnectPlugin.showDialog(
+  /*window.facebookConnectPlugin.showDialog(
     {
       method: 'share',
       href: 'http://bitsmittenstudios.com',
@@ -36,7 +36,7 @@ app.gameover.create = function() {
       console.log('fail');
       console.log(obj);
     }
-  );
+  );*/
 
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 

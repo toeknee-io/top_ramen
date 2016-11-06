@@ -9,3 +9,4 @@ top-ramen-game.sublime-*
 .cordova.config.android.xml
 .plugin-modifications.java
 topramen.jks
+build.json

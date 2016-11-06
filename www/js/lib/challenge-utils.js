@@ -1,4 +1,4 @@
-(function challengeUtilsIife({ app, scaleRatio, alert }) {
+(function challengeUtilsIife({ app, scaleRatio, alert, tru }) {
   window.ChallengeUtils = class ChallengeUtils {
 
     static getPlayerPropertyKey(challenge) {
@@ -28,20 +28,16 @@
         window.trApi.getUserId(), challenge);
     }
 
-    static isUserChallenger(challenger) {
-      if (challenger && window.trApi.getUserId()) {
-        return challenger.userId === window.trApi.getUserId();
-      }
+    static isUserChallenger(challenger, userId = window.trApi.getUserId()) {
+      if (this.isChallengerObj(challenger) && userId) { return challenger.userId === userId; }
       throw new Error('Could not determine isUserChallenger for userId %s from challenger: %O',
-        window.trApi.getUserId(), challenger);
+        userId, challenger);
     }
 
-    static isUserChallenged(challenged) {
-      if (challenged && window.trApi.getUserId()) {
-        return challenged.userId === window.trApi.getUserId();
-      }
+    static isUserChallenged(challenged, userId = window.trApi.getUserId()) {
+      if (this.isChallengedObj(challenged) && userId) { return challenged.userId === userId; }
       throw new Error('Could not determine isUserChallenged for userId %s from challenger: %O',
-        window.trApi.getUserId(), challenged);
+        userId, challenged);
     }
 
     /* eslint-disable no-param-reassign */
@@ -54,8 +50,7 @@
         });
     }
     /* eslint-enable no-param-reassign */
-    static getButtonStatusText(
-      {
+    static getButtonStatusText({
         status, challenger, challenged, winner,
         challenged: { score: dScore },
         challenger: { score: rScore },
@@ -64,36 +59,39 @@
       CCS = this.Constants.STATUS, CCIS = this.Constants.INVITE.STATUS,
       CCN = this.Constants.NEW, CCST = this.Constants.STARTED,
       uScore = this.isUserChallenger(challenger) ? rScore : dScore,
-      oScore = this.isUserChallenged(challenged) ? rScore : dScore,
+      oScore = this.isUserChallenger(challenger) ? dScore : rScore,
       isNew = status === CCS.NEW,
+      isStarted = status === CCS.STARTED,
       isFinished = status === CCS.FINISHED,
       isAccepted = ivStatus === CCIS.ACCEPTED,
       isDeclined = ivStatus === CCIS.DECLINED
     ) {
       let statusTxt = CCN.BUTTONS.TEXT.STATUS.PENDING;
-
       if (isNew) {
+        console.debug('isNew');
         if (isAccepted) {
           const CCNB = CCN.BUTTONS;
-          const CCSTB = CCST.BUTTONS;
+          console.debug('isAccepted');
           if (_.isNil(rScore) && _.isNil(oScore)) {
             statusTxt = CCNB.TEXT.STATUS.READY;
-          } else {
-            statusTxt = _.isNil(oScore) ? CCSTB.TEXT.STATUS.THEM : CCSTB.TEXT.STATUS.YOU;
           }
         }
+      } else if (isStarted) {
+        console.debug('isStarted');
+        const CCSTB = CCST.BUTTONS;
+        statusTxt = _.isNil(oScore) ? CCSTB.TEXT.STATUS.THEM : CCSTB.TEXT.STATUS.YOU;
       } else if (isFinished) {
-        const CCF = this.Constants.FINISHED;
-        statusTxt = CCF.BUTTONS.TEXT.STATUS.TIED;
+        console.debug('isFinished');
+        const CCFB = this.Constants.FINISHED.BUTTONS;
+        statusTxt = CCFB.TEXT.STATUS.TIED;
         if (isDeclined) {
-          statusTxt = CCF.BUTTONS.TEXT.STATUS.DECLINED;
+          statusTxt = CCFB.TEXT.STATUS.DECLINED;
         } else if (uScore > oScore) {
-          statusTxt = CCF.BUTTONS.TEXT.STATUS.WON;
+          statusTxt = CCFB.TEXT.STATUS.WON;
         } else if (oScore > uScore) {
-          statusTxt = CCF.BUTTONS.TEXT.STATUS.LOST;
+          statusTxt = CCFB.TEXT.STATUS.LOST;
         }
       }
-
       return statusTxt;
     }
 
@@ -129,7 +127,7 @@
 
         butt.onInputUp.add(() => {
           if (yWorld === app.game.world.y) {
-            ChallengeUtils.challengeStart(challenge);
+            this.challengeStart(challenge);
           }
         }, challenge);
       });
@@ -137,7 +135,7 @@
       butt.scale.setTo(0.8 * scaleRatio);
       butt.centerX = app.game.world.centerX;
 
-      const opponent = ChallengeUtils.getOpponent(challenge);
+      const opponent = this.getOpponent(challenge);
 
       const picKey = `${opponent.identities[0].externalId}pic`;
       const buttPic = ChallengeUtils.addButtonPicture(picKey);
@@ -160,17 +158,20 @@
         lb.width = window.app.game.width;
         lb.height = window.app.game.height;
 
-        const declineText = window.app.game.add.bitmapText(window.app.game.world.centerX, 300, 'fnt-orange', 'do you want\nto delete \nthis challenge?');
+        const declineText = window.app.game.add.bitmapText(window.app.game.world.centerX,
+          300, 'fnt-orange', 'do you want\nto delete \nthis challenge?');
         declineText.align = 'center';
         declineText.anchor.x = 0.5;
         declineText.scale.setTo(3 * window.scaleRatio);
 
-        const yes = window.app.game.add.bitmapText(window.app.game.world.centerX, declineText.bottom + (200 * window.scaleRatio), 'fnt', 'yes');
+        const yes = window.app.game.add.bitmapText(window.app.game.world.centerX,
+          declineText.bottom + (200 * window.scaleRatio), 'fnt', 'yes');
         yes.anchor.x = 0.5;
         yes.scale.setTo(5 * window.scaleRatio);
         yes.inputEnabled = true;
 
-        const no = window.app.game.add.bitmapText(window.app.game.world.centerX, yes.bottom + (175 * window.scaleRatio), 'fnt', 'no');
+        const no = window.app.game.add.bitmapText(window.app.game.world.centerX,
+          yes.bottom + (175 * window.scaleRatio), 'fnt', 'no');
         no.anchor.x = 0.5;
         no.scale.setTo(5 * window.scaleRatio);
         no.inputEnabled = true;
@@ -181,8 +182,9 @@
         deleteGroup.add(no);
 
         yes.events.onInputUp.add(() => {
-          const playerKey = ChallengeUtils.getPlayerPropertyKey(challenge);
-          const fn = playerKey === 'challenged' && challenge.status !== this.Constants.INVITE.STATUS.ACCEPTED ?
+          const playerKey = this.getPlayerPropertyKey(challenge);
+          const accepted = this.Constants.INVITE.STATUS.ACCEPTED;
+          const fn = playerKey === 'challenged' && challenge.status !== accepted ?
             'declineChallenge' : 'hideChallenge';
 
           window.trApi[fn](challenge.id)
@@ -207,8 +209,8 @@
       if (_.isEmpty(challenge)) { return yLoc; }
 
       try {
-        if (!ChallengeUtils.getUser(challenge).hidden) {
-          chalGroup.add(ChallengeUtils.configureButton(challenge, yLoc));
+        if (!this.getUser(challenge).hidden) {
+          chalGroup.add(this.configureButton(challenge, yLoc));
           yLoc += 200 * scaleRatio;
         }
       } catch (err) {
@@ -221,7 +223,7 @@
     static displayChallengeGroup(challenges, challengerGroup, yLoc) {
       _.castArray(challenges).forEach((challenge) => {
         if (!challenge.hidden) {
-          yLoc = ChallengeUtils.addChallengeButton(challenge, challengerGroup, yLoc);
+          yLoc = this.addChallengeButton(challenge, challengerGroup, yLoc);
         }
         return yLoc;
       });
@@ -238,10 +240,10 @@
         app.game.state.start('challengeResults', true, false, challenge);
       } else if (challenge.inviteStatus === 'declined') {
         window.alert('This Challenge Was Declined!');
-      } else if (_.isNil(ChallengeUtils.getUser(challenge).score)) {
+      } else if (_.isNil(this.getUser(challenge).score)) {
         app.menuSong.stop();
         app.game.state.start('level', true, false, challenge);
-      } else if (_.isNil(ChallengeUtils.getOpponent(challenge).score) &&
+      } else if (_.isNil(this.getOpponent(challenge).score) &&
         challenge.status === this.Constants.STATUS.STARTED) {
         window.alert('Waiting For Opponent!');
       }
@@ -249,6 +251,14 @@
 
     static get Constants() {
       return window.TopRamenConstants.CHALLENGE;
+    }
+
+    static isChallengerObj(challenger) {
+      return challenger && !tru.hasOwnProp(challenger, 'inviteStatus') && tru.hasOwnProp(challenger, 'identities');
+    }
+
+    static isChallengedObj(challenged) {
+      return challenged && tru.hasOwnProp(challenged, 'inviteStatus') && tru.hasOwnProp(challenged, 'identities');
     }
 
   };

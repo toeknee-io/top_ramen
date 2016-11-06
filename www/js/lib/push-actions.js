@@ -37,7 +37,7 @@
       window.trApi.declineChallenge(data.additionalData.challenge.id)
         .then(() => {
           navigator.notification.confirm(
-            'Challenge Declined  \uD83D\uDC4E',
+            'Challenge Declined \uD83D\uDC4E',
              onConfirm.bind(this, data),
              'What now?',
             ['Challenge Someone', 'View Other Challenges', 'Exit']

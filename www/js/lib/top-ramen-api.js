@@ -153,7 +153,9 @@
 
     getAppInstallations() {
       return new this.Promise((resolve, reject) => {
-        if (!this.isLoggedIn()) throw new Error(`The user must be logged in to getAppInstallations, userId [${this.getUserId()}] accessToken [${this.getAccessToken()}]`);
+        if (!this.isLoggedIn()) {
+          throw new Error(`The user must be logged in to getAppInstallations, userId [${this.getUserId()}] accessToken [${this.getAccessToken()}]`);
+        }
 
         $.get(Constants.URL.API.INSTALLATIONS)
           .done(installations => resolve(installations))
@@ -175,7 +177,6 @@
 
         iab.addEventListener('loadstart', (event) => {
           const url = event.url.split('?');
-          console.debug('logUserIn.event.url: %s', url[0]);
           if (url[0] === `${Constants.URL.BASE}/login`) {
             reject(new Error('Passport login failed.'));
           }
@@ -187,9 +188,10 @@
             if (_.isEmpty(token) || _.isEmpty(userId)) {
               reject(new Error('No accessToken or userId was returned from login.'));
             } else {
+              iab.close();
               this.setAccessToken(token);
               this.setUserId(userId);
-              resolve(iab.close());
+              resolve(token, userId);
             }
           }
         });
@@ -216,9 +218,7 @@
       return new this.Promise((resolve, reject) => {
         this.clearLocalCache(this.CACHE_KEY_CHALLENGES);
         if (!this.isLoggedIn()) { throw new Error('User must be logged in to make postChallenge call.'); }
-        $.post(Constants.URL.API.CHALLENGES,
-            { userId, ramenId }
-          )
+        $.post(Constants.URL.API.CHALLENGES, { userId, ramenId })
           .done(data => resolve(data))
           .fail(err => reject(err));
       });
@@ -349,7 +349,9 @@
                       }
                     });
 
-                    if (_.isError(result)) alert(`getChallengesSorted error: ${result}`);
+                    if (_.isError(result)) {
+                      alert(`getChallengesSorted error: ${result}`);
+                    }
 
                     challengesDone += 1;
                   });

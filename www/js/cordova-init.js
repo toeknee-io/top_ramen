@@ -37,60 +37,59 @@
 
       const trApi = window.trApi = new TopRamenApi({ cordovaApp });
 
-      cordovaApp.push = PushNotification.init({
-        android: {
-          senderID: '184977555503',
-          forceShow: true,
-        },
-        ios: {
-          sound: true,
-          vibration: true,
-          badge: true,
-        },
-        windows: {},
-      });
+      if (window.PushNotification) {
+        cordovaApp.push = PushNotification.init({
+          android: {
+            senderID: '184977555503',
+            forceShow: true,
+          },
+          ios: {
+            sound: true,
+            vibration: true,
+            badge: true,
+          },
+          windows: {},
+        });
 
-      cordovaApp.push.on('registration', (data) => {
-        let saveRegId = true;
-        const regId = data.registrationId;
+        cordovaApp.push.on('registration', (data) => {
+          let saveRegId = true;
+          const regId = data.registrationId;
 
-        if (trApi.isLoggedIn()) {
-          trApi.getAppInstallations()
-            .then((installations) => {
-              _.castArray(installations).forEach((installation) => {
-                if (installation.deviceToken === regId) {
-                  if (installation.status === 'active') {
-                    saveRegId = false;
-                  } else if (installation.status === 'unregistered') {
-                    console.log('unregistering push registrationId because saved registrationId is invalid');
+          if (trApi.isLoggedIn()) {
+            trApi.getAppInstallations()
+              .then((installations) => {
+                _.castArray(installations).forEach((installation) => {
+                  if (installation.deviceToken === regId) {
+                    if (installation.status === 'active') {
+                      saveRegId = false;
+                    } else if (installation.status === 'unregistered') {
+                      console.log('unregistering push registrationId because saved registrationId is invalid');
+                      trApi.getCordovaApp().push.unregister(
+                        () => console.log('successfully unregistered from push notifications'),
+                        err => console.error(`err while unregistering from push notifications ${err}`)
+                      );
+                      saveRegId = false;
+                    }
+                  }
+                });
 
-                    trApi.getCordovaApp().push.unregister(
-                      () => console.log('successfully unregistered from push notifications'),
-                      err => console.error(`err while unregistering from push notifications ${err}`)
-                    );
+                if (saveRegId) {
+                  console.log(`new push registrationId ${data.registrationId}`);
 
-                    saveRegId = false;
+                  trApi.setDeviceToken(data.registrationId);
+
+                  if (trApi.isLoggedIn()) {
+                    trApi.postAppInstallation({ registrationId: data.registrationId, status: 'active' });
                   }
                 }
-              });
+              })
+              .catch(err => console.error(err));
+          }
+        });
 
-              if (saveRegId) {
-                console.log(`new push registrationId ${data.registrationId}`);
-
-                trApi.setDeviceToken(data.registrationId);
-
-                if (trApi.isLoggedIn()) {
-                  trApi.postAppInstallation({ registrationId: data.registrationId, status: 'active' });
-                }
-              }
-            })
-            .catch(err => console.error(err));
-        }
-      });
-
-      cordovaApp.push.on('error', err => console.error(err));
-      cordovaApp.push.on('notification', data => console.log(data));
-
+        cordovaApp.push.on('error', err => console.error(err));
+        cordovaApp.push.on('notification', data => console.log(data));
+      }
       const socket = window.socket = io(BASE_URL);
 
       socket.on('connect', () => {

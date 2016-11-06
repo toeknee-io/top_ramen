@@ -3,7 +3,7 @@
 
   let imageSize = '';
 
-  menu.init = function () {
+  menu.init = () => {
     if (!app.menuSong) {
       app.menuSong = app.game.add.audio('lose', 0.8, true);
     }
@@ -262,24 +262,35 @@
   }
 
   function login(provider, opts = {}) {
-    if (typeof opts.iab !== 'string') opts.iab = 'location=no,zoom=no';
+    if (typeof opts.iab !== 'string') {
+      opts.iab = 'location=no,zoom=no';
+    }
 
     opts.provider = provider;
 
-    window.window.trApi.logUserIn(opts)
-        .then(() => {
-          app.game.state.restart();
-          window.window.trApi.getAppInstallations()
-                .then((installations) => {
-                  const existingInstall = _.find(installations, install => install.deviceToken === window.trApi.getDeviceToken());
-                  if (_.isEmpty(existingInstall)) window.trApi.postAppInstallation();
-                })
-                .catch((err) => {
-                  console.error(`Failed to getAppInstallations in logUserIn ${err}`);
-                  if (!_.isEmpty(window.trApi.getDeviceToken()) && window.trApi.isLoggedIn()) { window.trApi.postAppInstallation(); }
-                });
-        })
-        .catch(err => console.error(`logUserIn failed: ${err}`));
+    window.trApi.logUserIn(opts)
+      .then((token, userId) => {
+        if (_.isNil(window.trApi.getDeviceToken()) && token) {
+          window.trApi.setDeviceToken(token);
+        }
+        if (_.isNil(window.trApi.getUserId()) && userId) {
+          window.trApi.setUserId(userId);
+        }
+        window.trApi.getAppInstallations().then((installations) => {
+          const existingInstall = _.find(installations,
+            install => install.deviceToken === window.trApi.getDeviceToken());
+          if (_.isEmpty(existingInstall)) {
+            window.trApi.postAppInstallation();
+          }
+        }).catch((err) => {
+          console.error(`Failed to getAppInstallations in logUserIn: ${err}`);
+          if (!_.isEmpty(window.trApi.getDeviceToken()) && window.trApi.isLoggedIn()) {
+            window.trApi.postAppInstallation();
+          }
+        });
+      })
+      .catch(err => console.error(`logUserIn failed: ${err}`))
+      .finally(() => app.game.state.restart());
   }
 
   Object.assign(app, { menu });

@@ -1,6 +1,6 @@
 {
   "name": "top_ramen_game",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Make Ramen!",
   "main": "app.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/toekneefof/top_ramen/issues"
   },
-  "homepage": "https://github.com/toekneefof/top_ramen",
+  "homepage": "http://www.bitsmittenstudios.com",
   "devDependencies": {
     "eslint": "3.9.0",
     "eslint-config-airbnb": "12.0.0",

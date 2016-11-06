@@ -3,6 +3,7 @@
    - [Background Events](#push-message-arrives-with-app-in-background)
    - [Tap Events](#user-clicks-on-notification-in-notification-center)
 - [Android Behaviour](#android-behaviour)
+  - [Localization](#localization)
   - [Images](#images)
   - [Sound](#sound)
   - [Stacking](#stacking)
@@ -15,14 +16,16 @@
   - [Picture Messages](#picture-messages)
   - [Background Notifications](#background-notifications)
     - [Use of content-available: true](#use-of-content-available-true)
+  - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
   - [Visibility](#visibility-of-notifications)
   - [Badges](#badges)
+  - [Support for Twilio Notify](#support-for-twilio-notify)
 - [iOS Behaviour](#ios-behaviour)
   - [Sound](#sound-1)
   - [Background Notifications](#background-notifications-1)
   - [Action Buttons](#action-buttons-1)
     - [Action Buttons using GCM on iOS](#action-buttons-using-gcm-on-ios)
-    - [Huawei and Xiaomi Phones](#huawei-and-xiaomi-phones)
+  - [GCM and Additional Data](#gcm-and-additional-data)
 - [Windows Behaviour](#windows-behaviour)
   - [Notifications](#notifications)
   - [Setting Toast Capable Option for Windows](#setting-toast-capable-option-for-windows)
@@ -45,7 +48,7 @@ The following flowchart attempts to give you a picture of what happens when a pu
 
 - The push plugin receives the data from the remote push service and checks to see if there is a title or message in the data received. If there is then the message will be displayed in the devices notification center.
 - Then the push plugin checks to see if the app is running. If the user has killed the application then no further processing of the push data will occur.
-- If they app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
+- If the app is running in the background the push plugin then checks to see if `content-available` exists in the push data.
 - If `content-available` is set to `1` then the plugin calls all of your `notification` event handlers.
 
 ## User clicks on notification in notification center
@@ -62,6 +65,61 @@ Some ways to handle this *double* event are:
 - include a unique ID in your push so you can check to see if you've already processed this event.
 
 # Android Behaviour
+
+## Localization
+
+Plugin supported localization from resources for: title, message and summaryText.
+
+You may use simple link to locale constant.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": {"locKey": "push_app_title"},
+        "message": "Simple non-localizable text for message!"
+    }
+}
+```
+
+Or use localization with formatted constants.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+        "title": {"locKey": "push_app_title"},
+        "message": {"locKey": "push_message_fox", "locData": ["fox", "dog"]}
+    }
+}
+```
+
+Here is an example using node-gcm that sends the above JSON:
+
+```javascript
+var gcm = require('node-gcm');
+// Replace these with your own values.
+var apiKey = "replace with API key";
+var deviceID = "my device id";
+var service = new gcm.Sender(apiKey);
+var message = new gcm.Message();
+message.addData('title', {"locKey": "push_app_title"});
+message.addData('message', 'Simple non-localizable text for message!');
+// Constant with formatted params
+// message.addData('message', {"locKey": "push_message_fox", "locData": ["fox", "dog"]});
+service.send(message, { registrationTokens: [ deviceID ] }, function (err, response) {
+    if(err) console.error(err);
+    else    console.log(response);
+});
+```
+
+Localization must store in strings.xml
+
+```xml
+<string name="push_app_title">@string/app_name</string>
+<string name="push_message_fox">The quick brown %1$s jumps over the lazy %2$s</string>
+<string name="push_summary_text">%%n%% new message(s)</string>
+```
 
 ## Images
 
@@ -424,7 +482,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
-You will only see both "Push number 1" and "Push number 2" in the shade.
+You will see both "Push number 1" and "Push number 2" in the shade.
 
 ## Inbox Stacking
 
@@ -506,7 +564,7 @@ If you use `%n%` in the `summaryText` of the JSON coming down from GCM it will b
 
 ## Action Buttons
 
-Your notification can include action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
+Your notification can include a maximum of three action buttons. If you wish to include an icon along with the button name they must be placed in the `res/drawable` directory of your Android project. Then you can send the following JSON from GCM:
 
 ```javascript
 {
@@ -704,7 +762,7 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 
 ## Priority in Notifications
 
-You can set a priority parameter for your notifications. Just add a `priority` field in your notification. -2: minimum, -1: low, 0: default , 1: high, 2: maximum priority:
+You can set a priority parameter for your notifications. This priority value determines where the push notification will be put in the notification shade. Low-priority notifications may be hidden from the user in certain situations, while the user might be interrupted for a higher-priority notification. Add a `priority` field in your notification. -2: minimum, -1: low, 0: default , 1: high, 2: maximum priority.
 
 ```javascript
 {
@@ -734,6 +792,8 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 	else 	console.log(response);
 });
 ```
+
+Do not confuse this with the GCM option of setting the [delivery priority of the message](https://developers.google.com/cloud-messaging/concept-options#setting-the-priority-of-a-message). Which is used by GCM to tell the device whether or not it should wake up to deal with the message.
 
 ## Picture Messages
 
@@ -955,6 +1015,40 @@ service.send(message, { registrationTokens: [ deviceID ] }, function (err, respo
 });
 ```
 
+## Support for Twilio Notify
+
+This plugin seamlessly supports payloads generated by Twilio Notify on Android. Specifically the parameters passed in to the Twilio REST API are available in the message payload passed to your app as follows:
+
+- `Title` --> `data.title`
+- `Body` --> `data.message`
+- `Sound` --> `data.sound`
+
+Here is an example request to Twilio REST API and the corresponding JSON received by your app.
+
+```
+curl 'https://notify.twilio.com/v1/Services/IS1e928b239609199df31d461071fd3d23/Notifications' -X POST \
+--data-urlencode 'Identity=Bob' \
+--data-urlencode 'Body=Hello Bob! Twilio Notify + Phonegap is awesome!' \
+--data-urlencode 'Title=Hello Bob!' \
+--data-urlencode 'Sound=chime' \
+-u [AccountSID]:[AuthToken]
+```
+
+The JSON received by your app will comply with the standards described in the sections above:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "Hello Bob!",
+    	"message": "Hello Bob! Twilio Notify + Phonegap is awesome!",
+    	"sound": "chime"
+    }
+}
+```
+
+Note: "sound" and "soundname" are equivalent and are considered to be the same by the plugin.
+
 # iOS Behaviour
 
 ## Sound
@@ -1002,6 +1096,8 @@ For instance the following JSON:
 ```
 
 will produce a notification in the notification shade and call your `on('notification')` event handler.
+
+**NOTE:** The `on('notification')` event handler will **not** be called if Background App Refresh is disabled on the user's iOS device. (Settings > General > Background App Refresh)
 
 However if you want your `on('notification')` event handler called but no notification to be shown in the shader you would omit the `alert` property and send the following JSON to APNS:
 
@@ -1128,6 +1224,68 @@ If you are using GCM to send push messages on iOS you will need to send a differ
     	"body": "Scrum: Daily touchbase @ 10am Please be on time so we can cover everything on the agenda.",
         "click-action": "invite"
     }
+}
+```
+
+## GCM and Additional Data
+
+GCM on iOS is a different animal. The way you send data via GCM on Android is like:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "data": {
+    	"title": "My Title",
+    	"message": "My message",
+    	"key1": "data 1",
+    	"key2": "data 2"
+    }
+}
+```
+
+will produce a `notification` event with the following data:
+
+```javascript
+{
+    "title": "My Title",
+    "message": "My message",
+    "additionalData": {
+        "key1": "data 1",
+        "key2": "data 2"
+    }
+}
+```
+
+but in order for the same `notification` event you would need to send your push to GCM iOS in a slight different format:
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "notification": {
+        "title": "My Title",
+    	"body": "My message"        
+    }
+    "data": {
+    	"key1": "data 1",
+    	"key2": "data 2"
+    }
+}
+```
+
+The `title` and `body` need to be in the `notification` part of the payload in order for the OS to pick them up correctly. Everything else should be in the `data` part of the payload.
+
+## GCM Messages Not Arriving
+
+For some users of the plugin they are unable to get messages sent via GCM to show up on their devices. If you are running into this issue try setting the `priority` of the message to `high` in the payload.
+
+```javascript
+{
+    "registration_ids": ["my device id"],
+    "notification": {
+        "title": "My Title",
+    	"body": "My message"        
+    },
+    "priority": "high"
 }
 ```
 

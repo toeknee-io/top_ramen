@@ -8,6 +8,8 @@
   - [push.on('error')](#pushonerror-callback)
 - [push.off()](#pushoffevent-callback)
 - [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
+- [push.subscribe()](#pushsubscribetopic-successhandler-errorhandler)
+- [push.unsubscribe()](#pushunsubscribetopic-successhandler-errorhandler)
 - [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
 - [push.getApplicationIconBadgeNumber() - iOS only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
 - [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
@@ -63,7 +65,7 @@ Attribute | Type | Default | Description
 `ios.badge` | `boolean` | `false` | Optional. If `true` the device sets the badge number on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.sound` | `boolean` | `false` | Optional. If `true` the device plays a sound on receipt of notification. **Note:** the value you set this option to the first time you call the init method will be how the application always acts. Once this is set programmatically in the init method it can only be changed manually by the user in Settings>Notifications>`App Name`. This is normal iOS behaviour.
 `ios.clearBadge` | `boolean` | `false` | Optional. If `true` the badge will be cleared on app startup.
-`ios.categories` | `array` | `[]` | Optional. The data required in order to enabled Action Buttons for iOS. See [Action Buttons on iOS](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1) for more details.
+`ios.categories` | `Object` | `{}` | Optional. The data required in order to enabled Action Buttons for iOS. See [Action Buttons on iOS](https://github.com/phonegap/phonegap-plugin-push/blob/master/docs/PAYLOAD.md#action-buttons-1) for more details.
 
 #### iOS GCM support
 
@@ -278,6 +280,51 @@ push.unregister(function() {
 	console.log('success');
 }, function() {
 	console.log('error');
+});
+```
+
+## push.subscribe(topic, successHandler, errorHandler)
+
+The subscribe method is used when the application wants to subscribe a new topic to receive push notifications.
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`topic` | `String` | | Topic to subscribe to.
+`successHandler` | `Function` | | Is called when the api successfully subscribes.
+`errorHandler` | `Function` | | Is called when the api encounters an error while subscribing.
+
+### Example
+
+```javascript
+push.subscribe('my-topic', function() {
+	console.log('success');
+}, function(e) {
+	console.log('error:');
+	console.log(e);
+});
+```
+## push.unsubscribe(topic, successHandler, errorHandler)
+
+The unsubscribe method is used when the application no longer wants to receive push notifications from a specific topic but continue to receive other push messages.
+
+### Parameters
+
+Parameter | Type | Default | Description
+--------- | ---- | ------- | -----------
+`topic` | `String` | | Topic to unsubscribe from.
+`successHandler` | `Function` | | Is called when the api successfully unsubscribe.
+`errorHandler` | `Function` | | Is called when the api encounters an error while unsubscribing.
+
+### Example
+
+```javascript
+push.unsubscribe('my-topic', function() {
+	console.log('success');
+}, function(e) {
+	console.log('error:');
+	console.log(e);
 });
 ```
 

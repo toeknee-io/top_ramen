@@ -11,21 +11,22 @@
     ChallengeUtils.initGroupTitles([openGroupTitle, finishedGroupTitle]);
 
     let finishedStatuses;
-    const openStatuses = _.remove(finishedStatuses = Object.keys(userChallenges), status => status !== 'finished');
+    const openStatuses = _.remove(finishedStatuses = Object.keys(userChallenges),
+      status => status !== ChallengeUtils.Constants.STATUS.FINISHED);
 
-    const picY = 0;
+    let picY = 0;
     openGroup.y = openGroupTitle.y + (400 * scaleRatio);
 
-    openStatuses.forEach(status =>
-      ChallengeUtils.displayChallengeGroup(userChallenges[status], openGroup, picY)
-    );
+    openStatuses.forEach((status) => {
+      picY = ChallengeUtils.displayChallengeGroup(userChallenges[status], openGroup, picY);
+    });
 
-    const pic2Y = finishedGroupTitle.y + (400 * scaleRatio);
+    let pic2Y = finishedGroupTitle.y + (400 * scaleRatio);
     finishedGroup.y = openGroup.height + (800 * scaleRatio);
 
-    finishedStatuses.forEach(status =>
-      ChallengeUtils.displayChallengeGroup(userChallenges[status], finishedGroup, pic2Y)
-    );
+    finishedStatuses.forEach((status) => {
+      pic2Y = ChallengeUtils.displayChallengeGroup(userChallenges[status], finishedGroup, pic2Y);
+    });
 
     app.game.world.setBounds(0, 0, app.game.width,
       openGroup.height + finishedGroup.height + (1200 * scaleRatio));

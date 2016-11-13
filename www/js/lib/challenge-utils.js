@@ -1,4 +1,4 @@
-(function challengeUtilsIife({ app, scaleRatio, alert, tru }) {
+(function challengeUtilsIife({ app, scaleRatio, tru }) {
   window.ChallengeUtils = class ChallengeUtils {
 
     static getPlayerPropertyKey(challenge) {
@@ -10,13 +10,13 @@
         window.trApi.getUserId(), challenge);
     }
 
-    static getUser(challenge) {
-      if (challenge.challenger && challenge.challenged && window.trApi.getUserId()) {
-        return challenge.challenger.userId === window.trApi.getUserId() ?
-          challenge.challenger : challenge.challenged;
+    static getUser({ challenger, challenged }) {
+      if (challenger && challenged && window.trApi.getUserId()) {
+        return challenger.userId === window.trApi.getUserId() ?
+          challenger : challenged;
       }
-      throw new Error('Could not getChallengeUser for userId %s from challenge %O',
-        window.trApi.getUserId(), challenge);
+      throw new Error('Could not getUser for userId %s from challenger/challenged: %O',
+        window.trApi.getUserId(), { challenger, challenged });
     }
 
     static getOpponent(challenge) {
@@ -49,42 +49,36 @@
         });
     }
     /* eslint-enable no-param-reassign */
-    static getButtonStatusText({
-        status, challenger, challenged, winner,
-        challenged: { score: dScore },
-        challenger: { score: rScore },
-        challenged: { inviteStatus: ivStatus },
-      },
-      CCS = this.Constants.STATUS, CCIS = this.Constants.INVITE.STATUS,
-      CCN = this.Constants.NEW, CCST = this.Constants.STARTED, CCNB = CCN.BUTTONS
-    ) {
-      const uScore = this.isUserChallenger(challenger) ? rScore : dScore;
-      const oScore = this.isUserChallenger(challenger) ? dScore : rScore;
-      const isStarted = status === CCS.STARTED;
-      const isFinished = status === CCS.FINISHED;
-      const isDeclined = ivStatus === CCIS.DECLINED;
+    /* eslint-disable prefer-rest-params */
+    static getButtonStatusText(challenge) {
+      const [CCSTB, CCFB] = [this.Constants.STARTED.BUTTONS, this.Constants.FINISHED.BUTTONS];
 
-      let statusTxt = CCNB.TEXT.STATUS.READY;
+      const uScore = this.getUser(challenge).score;
+      const oScore = this.getOpponent(challenge).score;
 
-      if (isStarted) {
-        console.debug('isStarted');
-        const CCSTB = CCST.BUTTONS;
-        statusTxt = _.isNil(oScore) ? CCSTB.TEXT.STATUS.THEM : CCSTB.TEXT.STATUS.YOU;
-      } else if (isFinished) {
-        console.debug('isFinished');
-        const CCFB = this.Constants.FINISHED.BUTTONS;
-        statusTxt = CCFB.TEXT.STATUS.TIED;
-        if (isDeclined) {
-          statusTxt = CCFB.TEXT.STATUS.DECLINED;
-        } else if (uScore > oScore) {
-          statusTxt = CCFB.TEXT.STATUS.WON;
-        } else if (oScore > uScore) {
-          statusTxt = CCFB.TEXT.STATUS.LOST;
+      let statusTxt = null;
+
+      if (ChallengeUtils.isNewChallenge(challenge)) {
+        statusTxt = this.Constants.NEW.BUTTONS.TEXT.STATUS.READY;
+      } else if (ChallengeUtils.isDeclinedChallenge(challenge)) {
+        statusTxt = CCFB.TEXT.STATUS.DECLINED;
+      } else if (ChallengeUtils.isFinishedChallenge(challenge)) {
+        if (!_.isNil(challenge.winner)) {
+          if (uScore !== oScore) {
+            statusTxt = uScore > oScore ? CCFB.TEXT.STATUS.WON : CCFB.TEXT.STATUS.LOST;
+          } else if (uScore === oScore) {
+            statusTxt = CCFB.TEXT.STATUS.TIED;
+          }
         }
       }
+
+      if (_.isNil(statusTxt)) {
+        statusTxt = _.isNil(oScore) ? CCSTB.TEXT.STATUS.THEM : CCSTB.TEXT.STATUS.YOU;
+      }
+
       return statusTxt;
     }
-
+    /* eslint-enable prefer-rest-params */
     static addButtonPicture(picKey) {
       return app.game.cache.checkImageKey(picKey) ?
         app.game.add.image(30, 30, picKey) :
@@ -172,10 +166,9 @@
         deleteGroup.add(no);
 
         yes.events.onInputUp.add(() => {
-          const playerKey = this.getPlayerPropertyKey(challenge);
-          const accepted = this.Constants.INVITE.STATUS.ACCEPTED;
-          const fn = playerKey === 'challenged' && challenge.status !== accepted ?
-            'declineChallenge' : 'hideChallenge';
+          const isChallenged = ChallengeUtils.isUserChallenged(challenge.challenged);
+          const accepted = ChallengeUtils.isAcceptedChallenge(challenge);
+          const fn = isChallenged && !accepted ? 'declineChallenge' : 'hideChallenge';
 
           window.trApi[fn](challenge.id)
             .finally(() => window.app.game.state.restart());
@@ -196,15 +189,14 @@
 
     /* eslint-disable no-param-reassign */
     static addChallengeButton(challenge, chalGroup, yLoc) {
-      if (_.isEmpty(challenge)) { return yLoc; }
-
       try {
-        if (!this.getUser(challenge).hidden) {
+        if (!_.isEmpty(challenge) && !this.getUser(challenge).hidden) {
+          console.debug('adding challenge button for challenge: %O', challenge);
           chalGroup.add(this.configureButton(challenge, yLoc));
           yLoc += 200 * scaleRatio;
         }
       } catch (err) {
-        alert(`Error addChallengeButton:${err.stack || err.message}`);
+        window.tru.error(`Error addChallengeButton:${err.stack || err.message}`);
       }
 
       return yLoc;
@@ -212,18 +204,16 @@
 
     static displayChallengeGroup(challenges, challengerGroup, yLoc) {
       _.castArray(challenges).forEach((challenge) => {
-        if (!challenge.hidden) {
-          yLoc = this.addChallengeButton(challenge, challengerGroup, yLoc);
-        }
-        return yLoc;
+        yLoc = this.addChallengeButton(challenge, challengerGroup, yLoc);
       });
+      return yLoc;
     }
     /* eslint-enable no-param-reassign */
 
     static challengeStart(challenge) {
       window.buttonSound();
 
-      console.info('challengeStart for challenge: %O', challenge);
+      console.debug('challengeStart for challenge: %O', challenge);
 
       if (challenge.status === 'finished') {
         app.game.world.setBounds(0, 0, app.game.width, app.game.height);
@@ -233,10 +223,30 @@
       } else if (_.isNil(this.getUser(challenge).score)) {
         app.menuSong.stop();
         app.game.state.start('level', true, false, challenge);
-      } else if (_.isNil(this.getOpponent(challenge).score) &&
-        challenge.status === this.Constants.STATUS.STARTED) {
+      } else if (_.isNil(this.getOpponent(challenge).score)) {
         window.alert('Waiting For Opponent!');
       }
+    }
+
+    static isNewChallenge({ status }) {
+      return status === this.Constants.STATUS.NEW;
+    }
+
+    static isStartedChallenge({ status }) {
+      return status === this.Constants.STATUS.STARTED;
+    }
+
+
+    static isAcceptedChallenge({ challenged: { inviteStatus } }) {
+      return inviteStatus === this.Constants.INVITE.STATUS.ACCEPTED;
+    }
+
+    static isDeclinedChallenge({ challenged: { inviteStatus } }) {
+      return inviteStatus === this.Constants.INVITE.STATUS.DECLINED;
+    }
+
+    static isFinishedChallenge({ status }) {
+      return status === this.Constants.STATUS.FINISHED;
     }
 
     static get Constants() {

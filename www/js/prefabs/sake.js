@@ -16,6 +16,7 @@ sake.init = function() {
 	sake.text.alpha = 0;
 
 	ings.add(sake.sprite);
+	sake.sprite.events.onInputDown.add(collect, sake);
 
 	sake.spawn();
 
@@ -38,8 +39,6 @@ sake.spawn = function() {
 	sake.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	sake.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
-	sake.sprite.events.onInputDown.add(collect, sake);
-	
 	sake.motionTween = app.game.add.tween(sake.sprite).to({ y: 50 }, sake.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	sake.fadeInTween = app.game.add.tween(sake.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	//sake.rotateTween = app.game.add.tween(sake.sprite).to({ angle: 20 }, sake.speed, Phaser.Easing.easeIn, true, 0, 0, false);

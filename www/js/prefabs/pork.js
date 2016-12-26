@@ -26,6 +26,7 @@ pork.init = function() {
 
 	ings.add(pork.sprite);
 	app.level.fabs.push(pork);
+	pork.sprite.events.onInputDown.add(collect, pork);
 
 	pork.spawn();
 
@@ -41,8 +42,6 @@ pork.spawn = function() {
 	pork.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	pork.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	pork.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	pork.sprite.events.onInputDown.add(collect, pork);
 
 	let sheet;
 
@@ -62,5 +61,5 @@ pork.spawn = function() {
 	pork.fadeInTween = app.game.add.tween(pork.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	pork.rotateTween = app.game.add.tween(pork.sprite).to({ angle: 30 }, pork.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	pork.motionTween.onComplete.addOnce(destroyIng, this);
-	
+
 }

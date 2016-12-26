@@ -26,6 +26,7 @@ bokchoy.init = function() {
 
 	ings.add(bokchoy.sprite);
 	app.level.fabs.push(bokchoy);
+  bokchoy.sprite.events.onInputDown.add(collect, bokchoy);
 
 	bokchoy.spawn();
 
@@ -46,8 +47,6 @@ bokchoy.spawn = function() {
 	bokchoy.spawnTime = app.game.rnd.integerInRange(2000,5500);
 	bokchoy.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	bokchoy.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	bokchoy.sprite.events.onInputDown.add(collect, bokchoy);
 
 	let sheet;
 

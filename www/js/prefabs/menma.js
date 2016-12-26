@@ -26,6 +26,7 @@ menma.init = function() {
 
 	ings.add(menma.sprite);
 	app.level.fabs.push(menma);
+	menma.sprite.events.onInputDown.add(collect, menma);
 
 	menma.spawn();
 
@@ -47,8 +48,6 @@ menma.spawn = function() {
 	menma.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	menma.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
-	menma.sprite.events.onInputDown.add(collect, menma);
-
 	let sheet;
 
 	if (menma.drunk === true) {
@@ -62,7 +61,7 @@ menma.spawn = function() {
   }
 
 	menma.sprite.loadTexture('ings-sheet', `menma${blur}.png`);
-	
+
 	menma.motionTween = app.game.add.tween(menma.sprite).to({ y: 50 }, menma.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	menma.fadeInTween = app.game.add.tween(menma.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	menma.rotateTween = app.game.add.tween(menma.sprite).to({ angle: 20 }, menma.speed, Phaser.Easing.easeIn, true, 0, 0, false);

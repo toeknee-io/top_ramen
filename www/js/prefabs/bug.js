@@ -13,6 +13,7 @@ bug.init = function() {
 
 	ings.add(bug.sprite);
 	app.level.fabs.push(bug);
+	bug.sprite.events.onInputDown.add(collect, bug);
 
 	bug.spawn();
 
@@ -28,12 +29,10 @@ bug.spawn = function() {
 	} else {
 		bug.spawnTime = app.game.rnd.integerInRange(1300,5700);
 	}
-
+	
 	bug.speed = app.game.rnd.integerInRange(900, 1300);
 	bug.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	bug.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-	
-	bug.sprite.events.onInputDown.add(collect, bug);
 
 	let sheet;
 
@@ -48,7 +47,7 @@ bug.spawn = function() {
   }
 
 	bug.sprite.loadTexture('ings-sheet', `bug${blur}.png`);
-	
+
 	bug.motionTween = app.game.add.tween(bug.sprite).to({ y: 50 }, bug.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	bug.fadeInTween = app.game.add.tween(bug.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	bug.rotateTween = app.game.add.tween(bug.sprite).to({ angle: -30 }, bug.speed, Phaser.Easing.easeIn, true, 0, 0, false);

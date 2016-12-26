@@ -14,6 +14,7 @@ greenOnions.init = function() {
 
 	ings.add(greenOnions.sprite);
 	app.level.fabs.push(greenOnions);
+	greenOnions.sprite.events.onInputDown.add(collect, greenOnions);
 
 	greenOnions.spawn();
 
@@ -33,8 +34,6 @@ greenOnions.spawn = function() {
 	greenOnions.spawnTime = app.game.rnd.integerInRange(2200,5000);
 	greenOnions.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	greenOnions.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	greenOnions.sprite.events.onInputDown.add(collect, greenOnions);
 
 	let sheet;
 

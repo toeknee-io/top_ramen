@@ -25,6 +25,7 @@ mushroom.init = function() {
 
 	ings.add(mushroom.sprite);
 	app.level.fabs.push(mushroom);
+	mushroom.sprite.events.onInputDown.add(collect, mushroom);
 
 	mushroom.spawn();
 
@@ -40,8 +41,6 @@ mushroom.spawn = function() {
 	mushroom.spawnTime = app.game.rnd.integerInRange(15000,18000);
 	mushroom.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	mushroom.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	mushroom.sprite.events.onInputDown.add(collect, mushroom);
 
 	let sheet;
 
@@ -61,5 +60,5 @@ mushroom.spawn = function() {
 	mushroom.fadeInTween = app.game.add.tween(mushroom.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	mushroom.rotateTween = app.game.add.tween(mushroom.sprite).to({ angle: 30 }, mushroom.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	mushroom.motionTween.onComplete.addOnce(destroyIng, this);
-	
+
 }

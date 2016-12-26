@@ -26,6 +26,7 @@ chili.init = function() {
 
 	ings.add(chili.sprite);
 	app.level.fabs.push(chili);
+	chili.sprite.events.onInputDown.add(collect, chili);
 
 	chili.spawn();
 
@@ -45,8 +46,6 @@ chili.spawn = function() {
 	chili.spawnTime = app.game.rnd.integerInRange(4000,6000);
 	chili.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	chili.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	chili.sprite.events.onInputDown.add(collect, chili);
 
 	let sheet;
 

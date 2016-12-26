@@ -4,8 +4,6 @@ app.level = {};
 
 let score;
 let scoreText;
-let goodText;
-let bonusText;
 let gameTimer;
 let bonusTimer;
 let timeLeft;
@@ -17,7 +15,6 @@ let streakNumber;
 let streakText;
 let combo = 0;
 let comboTimer;
-let comboAlert;
 
 let leftBounds;
 let rightBounds;
@@ -25,21 +22,22 @@ let topBounds;
 let bottomBounds;
 
 let imageSize = '';
-let goodFadeIn;
-let goodFadeOut;
 
 let emitter;
 let bonusEmitter;
 // Groups
 let ings;
 
-function fadeInText(text, speedIn, speedOut) {
-  fadeIn = app.game.add.tween(text).to({ alpha: 1 }, speedIn, Phaser.Easing.easeIn, false, 0, 0, false);
-  fadeOut = app.game.add.tween(text).to({ alpha: 0 }, speedOut, Phaser.Easing.easeIn, false, 0, 0, false);
-  fadeIn.chain(fadeOut);
-  fadeIn.start();
+function popText(text, speedIn, speedOut, color, size, posX, posY) {
+  let bitText = app.game.add.bitmapText(posX, posY, color, text);
+  bitText.scale.setTo(scaleRatio * size);
+  bitText.align = 'center';
+  bitText.anchor.x = 0.5;
+  let fadeOut = app.game.add.tween(bitText).to({ alpha: 0 }, speedOut, Phaser.Easing.easeIn, true, speedIn, 0, false);
+  fadeOut.onComplete.addOnce(() => {
+    bitText.destroy();
+  });
 }
-
 app.level.init = function (challenge = {}) {
   app.level.fabs = [];
 
@@ -163,16 +161,6 @@ app.level.create = function () {
   bonusEmitter.setAlpha(0, 1, 1000, Phaser.Easing.easeOut, true);
   bonusEmitter.setScale(scaleRatio, scaleRatio, scaleRatio, scaleRatio);
   bonusEmitter.gravity = 0;
-  // Collect Text
-  bonusText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40, 300), 'fnt', 'bonus!');
-  bonusText.scale.setTo(window.devicePixelRatio * 2);
-  bonusText.x = app.game.world.centerX - bonusText.width * 0.5;
-  bonusText.alpha = 0;
-
-  goodText = app.game.add.bitmapText(0, app.game.rnd.integerInRange(40, 300), 'fnt', 'good');
-  goodText.scale.setTo(window.devicePixelRatio * 1.5);
-  goodText.x = app.game.world.centerX - goodText.width * 0.5;
-  goodText.alpha = 0;
 
   streakText = app.game.add.bitmapText(app.game.width * 0.93, app.game.world.height * 0.83, 'fnt', '');
   streakText.scale.setTo(scaleRatio * 3);
@@ -180,7 +168,6 @@ app.level.create = function () {
   streakText.anchor.x = 1;
   streakText.anchor.y = 0.5;
 
-  comboAlert = app.game.add.bitmapText(app.game.world.centerX, app.game.world.height - (450 * scaleRatio), 'fnt-orange');
   comboTimer = app.game.time.create(false);
 
 	// Set up Menu
@@ -287,12 +274,7 @@ function time() {
   gameTimer.stop();
   timeLeft = 0;
   if (bonusTime > 0) {
-    let bonusAlert = app.game.add.bitmapText(app.game.world.centerX, 450 * scaleRatio, 'fnt-orange', 'bonus\ntime!');
-    bonusAlert.align = 'center';
-    bonusAlert.alpha = 0;
-    bonusAlert.anchor.x = 0.5;
-    bonusAlert.scale.setTo(scaleRatio * 6);
-    fadeInText(bonusAlert, 150, 1800);
+    popText('bonus\ntime!', 600, 400, 'fnt-orange', 6, app.game.world.centerX, 450 * scaleRatio);
     bonus = true;
     timeLeft = bonusTime;
     bonusTimer = app.game.time.create(false);
@@ -310,9 +292,7 @@ function collect(ingredient, pointer) { // jshint ignore:line
   this.sound.play();
 
   if (this.bonus === 0 && this.worth > 0) {
-    fadeInText(goodText, 150, 400);
-    goodText.y = app.game.rnd.integerInRange(app.game.world.y + 100, app.game.world.height - 300);
-    goodText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - goodText.width - 10);
+    popText('good', 400, 400, 'fnt', 4, pointer.x, pointer.y);
   }
 
   if (this.worth > 0) {
@@ -332,27 +312,19 @@ function collect(ingredient, pointer) { // jshint ignore:line
   }
 
   if (combo > 1) {
-    comboAlert.text = `combo +${combo}`;
-    comboAlert.align = 'center';
-    comboAlert.alpha = 0;
-    comboAlert.anchor.x = 0.5;
-    comboAlert.scale.setTo(scaleRatio * 6);
-    if (comboAlert.alpha !== 1) {
-      fadeInText(comboAlert, 150, 1000);
-    }
+    popText(`combo +${combo}`, 400, 400, 'fnt-orange', 6, app.game.world.centerX, app.game.world.height - (450 * scaleRatio));
     score = score + 2;
   }
 
   if ((this.bonus > 0 && !bonus) || (this.worth < 0)) {
+    let bonusOrBad;
     if (this.worth < 0) {
-      bonusText.text = 'bad!';
+      bonusOrBad = 'bad!';
     } else {
-      bonusText.text = 'bonus!';
+      bonusOrBad = 'bonus!';
     }
 
-    fadeInText(bonusText, 150, 400);
-    bonusText.y = app.game.rnd.integerInRange(app.game.world.y + 100, app.game.world.height - 300);
-    bonusText.x = app.game.rnd.integerInRange(app.game.world.x + 10, app.game.world.width - bonusText.width - 10);
+    popText(bonusOrBad, 400, 400, 'fnt', 5, pointer.x, pointer.y);
   }
 
   if (this.bonus === 0) {

@@ -13,6 +13,7 @@ egg.init = function() {
 
 	ings.add(egg.sprite);
 	app.level.fabs.push(egg);
+	egg.sprite.events.onInputDown.add(collect, egg);
 
 	egg.spawn();
 
@@ -26,8 +27,6 @@ egg.spawn = function() {
 	egg.spawnTime = app.game.rnd.integerInRange(7000,12000);
 	egg.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	egg.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	egg.sprite.events.onInputDown.add(collect, egg);
 
 	let sheet;
 

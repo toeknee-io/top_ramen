@@ -13,6 +13,7 @@ kamaboko.init = function() {
 
 	ings.add(kamaboko.sprite);
 	app.level.fabs.push(kamaboko);
+	kamaboko.sprite.events.onInputDown.add(collect, kamaboko);
 
 	kamaboko.spawn();
 
@@ -26,8 +27,6 @@ kamaboko.spawn = function() {
 	kamaboko.spawnTime = app.game.rnd.integerInRange(7000,12000);
 	kamaboko.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	kamaboko.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	kamaboko.sprite.events.onInputDown.add(collect, kamaboko);
 
 	let sheet;
 

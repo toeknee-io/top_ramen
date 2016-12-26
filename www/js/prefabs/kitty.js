@@ -22,6 +22,7 @@ kitty.init = function() {
 
 	ings.add(kitty.sprite);
 	app.level.fabs.push(kitty);
+	kitty.sprite.events.onInputDown.add(collect, kitty);
 
 	kitty.spawn();
 
@@ -41,13 +42,11 @@ kitty.spawn = function() {
 	} else {
 		kittyColor = '';
 	}
-	
+
 	kitty.speed = app.game.rnd.integerInRange(1300,1600);
 	kitty.spawnTime = app.game.rnd.integerInRange(5000,10000);
 	kitty.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	kitty.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
-
-	kitty.sprite.events.onInputDown.add(collect, kitty);
 
 	let sheet;
 

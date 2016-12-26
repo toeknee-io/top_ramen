@@ -33,6 +33,7 @@ corn.init = function() {
 
 	ings.add(corn.sprite);
 	app.level.fabs.push(corn);
+	corn.sprite.events.onInputDown.add(collect, corn);
 
 	corn.spawn();
 
@@ -54,8 +55,6 @@ corn.spawn = function() {
 	corn.sprite.x = app.game.rnd.integerInRange(leftBounds, rightBounds);
 	corn.sprite.y = app.game.rnd.integerInRange(topBounds,bottomBounds);
 
-	corn.sprite.events.onInputDown.add(collect, corn);
-
 	let sheet;
 
 	if (corn.drunk === true) {
@@ -69,7 +68,7 @@ corn.spawn = function() {
   }
 
 	corn.sprite.loadTexture('ings-sheet', `corn${blur}.png`);
-	
+
 	corn.motionTween = app.game.add.tween(corn.sprite).to({ y: 50 }, corn.speed, Phaser.Easing.easeIn, true, 0, 0, false);
 	corn.fadeInTween = app.game.add.tween(corn.sprite).to({ alpha: 1 }, 200, Phaser.Easing.easeIn, true, 0, 0, false);
 	corn.rotateTween = app.game.add.tween(corn.sprite).to({ angle: 20 }, corn.speed, Phaser.Easing.easeIn, true, 0, 0, false);

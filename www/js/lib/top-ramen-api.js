@@ -62,9 +62,7 @@
         }
       };
 
-      this.isValidLoginToken = function isValidLoginToken(token) {
-        return token && !_.isEmpty(token) && token !== 'null' && token !== 'undefined';
-      };
+      this.isValidLoginToken = token => token && !_.isEmpty(token) && token !== 'null' && token !== 'undefined';
 
       if (this.accessToken) {
         this.setAccessToken(this.accessToken);
@@ -117,7 +115,9 @@
     }
 
     getUserIdentityBySocialId(provider, externalId) {
-      if (!provider || !externalId || !this.isLoggedIn()) { return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`); }
+      if (!provider || !externalId || !this.isLoggedIn()) {
+        return console.error(`The getUserIdentityBySocialId call requires externalId [${externalId}], provider [${provider}], and isLoggedIn [${this.isLoggedIn()}]`);
+      }
       return $.get(`${Constants.URL.API.USER_IDENTITIES}?filter[where][externalId]=${externalId}`)
         .fail(err => console.error(`Failed to getUserIdentityBySocialId: ${err.responseJSON.error.message}`));
     }
